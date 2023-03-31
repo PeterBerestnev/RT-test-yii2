@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Admin;
+use app\models\User;
 use Yii;
 use app\models\TestForm;
 
@@ -38,9 +39,16 @@ class PostController extends AppController{
         $this->view->registerMetaTag(['name' => 'description', 'content' => 'описание страниц ...']);
 
         // $admin = new Admin();
-        // $admin->name = 'Qiang';
+        // $admin->name = 'Peter';
         // $admin->save();
-
+        // $username = 'Peter';
+        // $password = 'qwe123';
+        // $security = \Yii::$app->security;
+        // $user = new User();
+        // $user->username = $username;
+        // $user->password_hash = $security->generatePasswordHash($password);
+        // $user->access_token = $security->generateRandomString(255);
+        // $user->save();
         $adm =Admin::find()->all();
 
 
