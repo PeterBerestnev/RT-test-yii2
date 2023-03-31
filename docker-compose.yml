@@ -1,0 +1,29 @@
+version: "3.1"
+
+services:
+    nginx:
+        build:
+            context: .
+            dockerfile: ./docker/nginx/Dockerfile
+        ports:
+            - 80:80
+        depends_on:
+            - php-fpm
+        volumes:
+            - ./:/var/www:rw
+        restart: always
+
+    php-fpm:
+        build:
+            context: .
+            dockerfile: ./docker/php-fpm/Dockerfile
+        volumes:
+            - ./:/var/www:rw
+        user: ${UID}:${GID}
+        restart: always
+
+    mongodb:
+        build:
+            context: .
+            dockerfile: ./docker/mongodb-latest/Dockerfile
+        restart: always
