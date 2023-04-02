@@ -59,13 +59,17 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                [
+                    'class' => \yii\rest\UrlRule::class, 
+                    'controller' => ['api/article'],
+                ]
             ],
         ],
     ],
     'modules' => [
         'api' => [
             'class' => \app\modules\api\Module::class
-        ]
+        ],
     ],
     'params' => $params,
 ];
@@ -82,6 +86,7 @@ if (YII_ENV_DEV) {
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
+        
         // uncomment the following to add your IP if you are not connecting from localhost.
         'allowedIPs' => ['172.19.0.1', '::1'],
     ];

@@ -12,7 +12,7 @@ class Admin extends ActiveRecord
     {
         return 'admin';
     }
-
+    
     /**
      * @return array list of attribute names.
      */

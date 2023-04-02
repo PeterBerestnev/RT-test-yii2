@@ -1,16 +1,29 @@
 <template>
-  <div>
-      <h1>Home Page</h1>
-  </div>
+  <ArticleList
+  :posts="articles"
+  >
+
+  </ArticleList>
 </template>
 
 <script>
-// @ is an alias to /src
-
+import httpClient from '@/services/http.service'
+import ArticleList from '../components/ArticleList.vue'
 export default {
   name: 'HomeView',
-  components: {
-
+  data(){
+    return{
+      articles: []
+    }
+  },
+  components:{
+    ArticleList
+  },
+  async mounted(){
+    const {status, data} = await httpClient.get('articles')
+    if (status === 200){
+      this.articles = data
+    }
   }
 }
 </script>

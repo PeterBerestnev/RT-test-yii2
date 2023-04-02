@@ -22,7 +22,7 @@
     
 <script>
 export default {
-    name: 'my-navbar'
+    name: 'admin-navbar'
 }
 </script>
     

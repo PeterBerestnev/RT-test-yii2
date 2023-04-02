@@ -4,6 +4,6 @@
 
 <script>
     export default{
-        name:'AuthLayout'
+        name:'auth-layout'
     }
 </script>

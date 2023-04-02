@@ -8,19 +8,23 @@
             <div class="card">
                 <div class="card-body login-card-body">
                     <h4 class="text-primary text-center"><b>Вход</b></h4>
-                    <p class="login-box-msg">Авторизуйтесь для начала работы</p>
-
+                    <p v-if="errors==null" class="login-box-msg">Авторизуйтесь для начала работы</p>
+                    <div class="alert alert-danger" v-else>
+                        <div v-for="error in errors" :key="error">
+                            {{ error[0] }}
+                        </div>
+                    </div>
                     <form>
                         <div class="input-group mb-3">
-                            <input v-model="email" type="email" class="form-control" placeholder="Email">
+                            <input v-model="form.username" type="email" class="form-control" placeholder="Username">
                             <div class="input-group-append">
                                 <div class="input-group-text">
-                                    <span class="fas fa-envelope"></span>
+                                    <span class="fa-solid fa-user"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="input-group mb-3">
-                            <input v-model="password" type="password" class="form-control" placeholder="Пароль">
+                            <input v-model="form.password" type="password" class="form-control" placeholder="Password">
                             <div class="input-group-append">
                                 <div class="input-group-text">
                                     <span class="fas fa-lock"></span>
@@ -48,22 +52,28 @@
     
     
 <script>
+import authService from '../services/auth.service'
 export default {
     name: 'my-login',
     data() {
         return {
-            email: '',
-            password: ''
+            form:{
+                username: '',
+                password: '',
+            },            
+            errors: null,
         }
     },
     methods: {
-        // login() {
-        //     console.log(this.email)
-        //     axios.post('/api/auth/login', { email: this.email, password: this.password })
-        //         .then(res => {
-        //             console.log(res);
-        //         })
-        // },
+        async login() {
+            const {success,errors} = await authService.login(this.form)
+            if(success){
+                this.$router.push({name:'home'})
+            }
+            else{
+                this.errors = errors
+            }
+        },
 
     },
 }

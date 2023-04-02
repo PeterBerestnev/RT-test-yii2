@@ -12,6 +12,14 @@ use app\modules\api\models\LoginForm;
 
 class UserController extends Controller
 {
+
+    public function behaviors()
+    {
+        return array_merge(parent::behaviors(), [
+            'cors' => Cors::class
+        ]);
+    }
+
     public function actionLogin()
     {
 

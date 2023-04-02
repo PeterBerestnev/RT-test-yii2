@@ -7,6 +7,7 @@
 <script>
 
 import AuthLayout from './layouts/AuthLayout.vue'
+import AdminLayout from './layouts/AdminLayout.vue'
 import MainLayout from './layouts/MainLayout.vue'
 export default{
     // name:'App',
@@ -17,6 +18,7 @@ export default{
     },
     components:{
         AuthLayout,
+        AdminLayout,
         MainLayout
     }
 }
