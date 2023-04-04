@@ -6,26 +6,32 @@ const routes = [
     path: '/',
     name: 'home',
     meta: {layout:'main'},
-    component: () => import('../views/HomeView.vue')
+    component: () => import('../views/user/HomeView.vue')
   },
   {
     path: '/article',
     name: 'article-main',
     meta: {layout: 'main'},
     props: (route) => ({ id: route.query.id }),
-    component: () => import('../views/ArticleMain.vue')
+    component: () => import('../views/user/ArticleMain.vue')
   },
   {
     path: '/admin',
     name: 'admin-panel-main',
     meta: {layout:'admin'},
-    component: () => import('../views/AdminPanelMain.vue')
+    component: () => import('../views/admin/AdminPanelMain.vue')
   },
   {
     path: '/login',
     name: 'login',
     meta: {layout:'auth'},
     component: () => import('../views/Login.vue')
+  },
+  {
+    path: '/adminCreateArticle',
+    name: 'admin-create-article',
+    meta: {layout:'admin'},
+    component: () => import('../views/admin/AdminCreateArticle.vue')
   },
   {
     path: "/:pathMatch(.*)*",
