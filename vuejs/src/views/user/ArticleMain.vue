@@ -5,7 +5,9 @@
                 <h1>{{ post.title }}</h1>
             </div>
             <div class="card-body">
-                <div>Article body</div>
+                <img  v-if = "post.photo" class="rounded img-fluid border w-100" :src="post.photo">
+                <img  v-else  class="rounded img-fluid border w-100" src="../../assets/no-photo-svgrepo-com.svg">
+                <span v-html="post.text"> </span>
             </div>
             <div class="card-footer">
                 <div>Дата: {{post.date}}</div>
@@ -46,4 +48,6 @@ export default {
 
 </script>
 
-<style></style>
+<style scoped>
+
+</style>

@@ -1,6 +1,6 @@
 <template>
     <div class="row ps-4 pe-4 pt-3 pb-0">
-            <div class="col-4" v-for="post in posts" v-bind:key="post.id">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4" v-for="post in posts" v-bind:key="post.id">
 
                 <attribute-item 
                 :post="post"
