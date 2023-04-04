@@ -12,8 +12,11 @@ class ArticleController extends ActiveController
 {
     public $modelClass = ArticleResource::class;
 
+    public $documentPath = 'documents/';
+
     protected function verbs()
     {
+
     }
     public function behaviors()
     {
@@ -41,7 +44,6 @@ class ArticleController extends ActiveController
             'checkAccess' => [$this, 'checkAccess'],
             'scenario' => $this->createScenario,
         ];
-
         return $defaultActions;
     }
 }

@@ -18,3 +18,10 @@ import AdminNavbar from '../components/AdminNavbar.vue'
         }
     }
 </script>
+
+<style>
+.content-wrapper{
+    background-color: white !important;
+}
+
+</style>

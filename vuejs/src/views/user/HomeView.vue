@@ -8,7 +8,7 @@
 
 <script>
 import httpClient from '@/services/http.service'
-import ArticleList from '../components/ArticleList.vue'
+import ArticleList from '../../components/ArticleList.vue'
 export default {
   name: 'HomeView',
   data(){
