@@ -22,6 +22,11 @@ class MyCreateAction extends CreateAction
 
  
         $model->load(Yii::$app->getRequest()->getBodyParams(), '');
+        if($model->tags != null)
+        {
+            $model->tags = json_decode($model->tags,true);
+        }
+        
         $image = UploadedFile::getInstanceByName('photo');
         if (is_object ( $image )) { // if there is image
 			$model->photo = time () . "_" . uniqid () . '.' . $image->extension;
