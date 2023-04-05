@@ -7,7 +7,10 @@
             <div class="card-body">
                 <img  v-if = "post.photo" class="rounded img-fluid border w-100" :src="post.photo">
                 <img  v-else  class="rounded img-fluid border w-100" src="../../assets/no-photo-svgrepo-com.svg">
-                <span v-html="post.text"> </span>
+                <div class="mt-3">
+                    <span v-html="post.text"> </span>
+                </div>
+                
             </div>
             <div class="card-footer">
                 <div>Дата: {{post.date}}</div>
