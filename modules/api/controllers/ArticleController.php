@@ -3,7 +3,9 @@ namespace app\modules\api\controllers;
 
 
 use app\modules\api\actions\MyCreateAction;
+use app\modules\api\actions\MyUpdateAction;
 use app\modules\api\resources\ArticleResource;
+use app\models\Article;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\Cors;
 use yii\rest\ActiveController;
@@ -44,6 +46,22 @@ class ArticleController extends ActiveController
             'checkAccess' => [$this, 'checkAccess'],
             'scenario' => $this->createScenario,
         ];
+        $defaultActions['update'] = [
+            'class' => MyUpdateAction::class,
+            'modelClass' => $this->modelClass,
+            'checkAccess' => [$this, 'checkAccess'],
+            'scenario' => $this->updateScenario,
+        ];
+        // $defaultActions['index']['prepareDataProvider'] = [$this, 'prepareDataProvider'];
+        $defaultActions['index'] = [
+            'class' => 'yii\rest\IndexAction',
+            'modelClass' => $this->modelClass,
+            'prepareDataProvider' => function () {
+                $searchModel = new \app\modules\api\models\ArticleSearch();
+                return $searchModel->search(\Yii::$app->request->queryParams);
+            },
+        ];
+
         return $defaultActions;
     }
 }

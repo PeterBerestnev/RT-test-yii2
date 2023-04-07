@@ -1,10 +1,13 @@
 <template>
     <UserNavbar></UserNavbar>
-    <router-view></router-view>
+    <div class="mt-6">
+        <router-view></router-view>
+    </div>
+    
 </template>
 
 <script>
-import UserNavbar from '../components/UserNavbar.vue'
+import UserNavbar from '../components/User/UserNavbar.vue'
 export default{
     name: "main-layout",
     components:{
@@ -14,5 +17,7 @@ export default{
 </script>
 
 <style>
-
+.mt-6{
+    margin-top: 5rem !important;
+}
 </style>

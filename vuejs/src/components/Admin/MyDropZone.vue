@@ -5,8 +5,8 @@
         </div>
         <div class="d-flex flex-column">
             <div class="d-flex justify-content-center">
-                <img class="size" v-if="field == null" src="../assets/no-photo-svgrepo-com.svg">
-                <img v-else class="size" src="../assets/check-mark1.svg">
+                <img class="size" v-if="field == null" src="../../assets/no-photo-svgrepo-com.svg">
+                <img v-else class="size" src="../../assets/check-mark1.svg">
             </div>
 
             <div>
@@ -32,7 +32,6 @@ export default {
     setup(props, { emit }) {
         function onDrop(acceptFiles) {
             if (acceptFiles) {
-
                 emit('getPhoto', acceptFiles)
             }
         }
