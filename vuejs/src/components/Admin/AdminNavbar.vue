@@ -1,5 +1,5 @@
 <template>
-    <nav class="main-header navbar navbar-expand navbar-dark">
+    <nav class="main-header navbar navbar-expand navbar-dark ">
     <!-- Left navbar links -->
     
     <ul class="navbar-nav">
@@ -10,19 +10,24 @@
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-      <router-link to="/login">
+      <router-link @click="logout" to="/login">
         <i  class="fa-solid fa-arrow-right-from-bracket me-3 zoom"></i>
+        
       </router-link>
     </ul>
 </nav>
-    <!-- <div class="w-100 bg-dark d-flex p-2 fs-4">
-        <RouterLink class="text-decoration-none" to="/login">Login</RouterLink>
-    </div> -->
 </template>
     
 <script>
+import authService from '@/services/auth.service';
+
 export default {
-    name: 'admin-navbar'
+    name: 'admin-navbar',
+    methods:{
+      logout(){
+        authService.logout()
+      }
+    }
 }
 </script>
     
@@ -33,7 +38,7 @@ export default {
 }
 
 .zoom:hover {
-    scale: 1.2;
+    scale: 1.02;
     opacity: 1
 }
 </style>

@@ -1,14 +1,17 @@
 <template>
     <Sidebar></Sidebar>
     <AdminNavbar></AdminNavbar>
-    <div class="content-wrapper">
-        <router-view></router-view>
-    </div>  
+    <Suspense>
+        <div class="content-wrapper">
+            <router-view></router-view>
+        </div>  
+    </Suspense>
+
 </template>
 
 <script>
-import Sidebar from '../components/Sidebar.vue'
-import AdminNavbar from '../components/AdminNavbar.vue'
+import Sidebar from '../components/Admin/Sidebar.vue'
+import AdminNavbar from '../components/Admin/AdminNavbar.vue'
 
     export default{
         name: 'admin-layout',

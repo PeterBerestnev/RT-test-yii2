@@ -7,8 +7,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><router-link to="/">Главная</router-link></li>
-                        <li class="breadcrumb-item active">Новости</li>
+                        <li class="breadcrumb-item active">Главная</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->

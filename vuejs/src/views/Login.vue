@@ -68,7 +68,7 @@ export default {
         async login() {
             const {success,errors} = await authService.login(this.form)
             if(success){
-                this.$router.push({name:'home'})
+                this.$router.push({name:'admin-panel-main'})
             }
             else{
                 this.errors = errors
