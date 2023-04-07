@@ -1,22 +1,25 @@
 <template>
     <div class="container">
-        <div class="card mt-4">
+        <div class="card mt-5">
             <div class="card-header">
-                <h1>{{ post.title }}</h1>
+                <h1>
+                    <strong>
+                        {{ post.title }}
+                    </strong>
+                </h1>
             </div>
             <div class="card-body">
-                <img  v-if = "post.photo" class="rounded img-fluid border w-100" :src="post.photo">
-                <img  v-else  class="rounded img-fluid border w-100" src="../../assets/no-photo-svgrepo-com.svg">
+                <img v-if="post.photo" class="rounded img-fluid border w-100" :src="post.photo">
+                <img v-else class="rounded img-fluid border w-100" src="../../assets/no-photo-svgrepo-com.svg">
                 <div class="mt-3">
                     <span v-html="post.text"> </span>
                 </div>
-                
             </div>
             <div class="card-footer">
-                <div>Дата: {{post.date}}</div>
+                <div>Дата: {{ post.date }}</div>
                 <div class="d-flex flex-row">Теги:
-                    <div  v-for="tag in post.tags" :key="tag">
-                        <router-link to="/">#{{ tag }}</router-link>
+                    <div v-for="tag in post.tags" :key="tag">
+                        <router-link :to="{ name: 'home', query: { tags: tag} }">#{{ tag }}</router-link>
                         &nbsp;
                     </div>
                 </div>
@@ -34,7 +37,6 @@ export default {
             type: String,
             required: true,
         },
-
     },
     data() {
         return {
@@ -50,7 +52,3 @@ export default {
 }
 
 </script>
-
-<style scoped>
-
-</style>
