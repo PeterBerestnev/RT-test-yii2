@@ -1,18 +1,19 @@
 <?php
 namespace app\modules\api\controllers;
 
-
+use Yii;
+use app\models\Article;
 use app\modules\api\actions\MyCreateAction;
 use app\modules\api\actions\MyDeleteAction;
 use app\modules\api\actions\MyUpdateAction;
-use app\modules\api\resources\ArticleResource;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\Cors;
 use yii\rest\ActiveController;
+use yii\web\ServerErrorHttpException;
 
 class ArticleController extends ActiveController
 {
-    public $modelClass = ArticleResource::class;
+    public $modelClass = Article::class;
 
     protected function verbs()
     {
@@ -22,7 +23,7 @@ class ArticleController extends ActiveController
     {
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'];
-        $auth['except'] = ['view', 'index'];
+        $auth['except'] = ['view', 'index', 'increment-views'];
         $auth['authMethods'] = [
             HttpBearerAuth::class
         ];
@@ -66,4 +67,18 @@ class ArticleController extends ActiveController
 
         return $defaultActions;
     }
+
+    public function actionIncrementViews($id)
+    {
+        $model = Article::findOne($id);
+        
+     
+        $model->views = $model->views + 1;
+        
+        if ($model->save() === false && !$model->hasErrors()) {
+            throw new ServerErrorHttpException('Failed to update the object for unknown reason.');
+        }
+        return $model;
+    }
+
 }

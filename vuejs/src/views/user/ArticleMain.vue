@@ -1,12 +1,14 @@
 <template>
     <div class="container">
         <div class="card mt-5">
-            <div class="card-header">
+            <div class="card-header d-flex flex-row">
                 <h1>
                     <strong>
                         {{ post.title }}
                     </strong>
                 </h1>
+                
+                <div class="fa-solid fa-eye ms-auto align-self-center">{{ post.views }}</div>
             </div>
             <div class="card-body">
                 <img v-if="post.photo" class="rounded img-fluid border w-100" :src="post.photo">
@@ -51,10 +53,10 @@ export default {
         if (status === 200) {
             this.post = data
             if(!$cookies.isKey(this.id) ){
-                const { status, data } = await httpClient.post('article/update',null, { params: { id: this.id, views: 1 } })
+                const { status, data } = await httpClient.post('article/increment-views',null, { params: { id: this.id } })
                 if(status === 200){
                     $cookies.set(this.id, true)
-                    console.log(data)
+                    console.log(data.views)
                 }
             }        
         }

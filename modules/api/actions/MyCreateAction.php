@@ -35,7 +35,7 @@ class MyCreateAction extends CreateAction
 		} 
 
         if($model->status == 'Опубликованно'){
-            $model->date = Yii::$app->formatter->format('now', 'date');
+            $model->date = Yii::$app->formatter->asDatetime('now', 'short');
         }
         if ($model->save()) {
             $response = Yii::$app->getResponse();
