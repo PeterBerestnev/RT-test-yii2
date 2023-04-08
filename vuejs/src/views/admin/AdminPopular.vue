@@ -26,6 +26,7 @@
 
 <script>
 import httpClient from '@/services/http.service'
+import dataService from '@/services/date.service'
 import ArticleList from '../../components/ArticleList.vue'
 export default {
     name: "admin-popular",
@@ -40,14 +41,10 @@ export default {
         ArticleList
     },
     async mounted() {
-        const today = new Date();
-                    let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-                    const time = today.getHours() + ":" + today.getMinutes();
-                    date = date.split('-').reverse().join(".")
-                    const dateTime = date +' '+ time;
-                    this.date = dateTime
+        let dateTime = dataService.getYesterdayDate()
+        console.log(dateTime)
         try{
-            const { status, data } = await httpClient.get('articles',{ params: { sort: "-views", status: "Опубликованно" } })
+            const { status, data } = await httpClient.get('articles',{ params: { sort: "-views", status: "Опубликованно",date:dateTime } })
             if (status === 200) {
                 console.log(data)
                 this.articles = data
