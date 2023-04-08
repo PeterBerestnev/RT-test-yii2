@@ -17,9 +17,12 @@ class MyUpdateAction extends UpdateAction
         if ($this->checkAccess) {
             call_user_func($this->checkAccess, $this->id, $model);
         }
-
+        $count = $model->views;
         $model->scenario = $this->scenario;
         $model->load(Yii::$app->getRequest()->getBodyParams(), '');
+        if(isset($model->views)){
+            $model->views = $count + 1;
+        }
         if(isset($model->tags) && is_string($model->tags))
         {
             $model->tags = json_decode($model->tags,true);

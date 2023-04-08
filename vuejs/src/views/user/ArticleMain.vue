@@ -30,6 +30,8 @@
 
 <script>
 import httpClient from '@/services/http.service'
+import { inject } from "vue";
+
 export default {
     name: "article-main",
     props: {
@@ -44,9 +46,17 @@ export default {
         }
     },
     async mounted() {
+        const $cookies = inject('$cookies');
         const { status, data } = await httpClient.get('article/view', { params: { id: this.id } })
         if (status === 200) {
             this.post = data
+            if(!$cookies.isKey(this.id) ){
+                const { status, data } = await httpClient.post('article/update',null, { params: { id: this.id, views: 1 } })
+                if(status === 200){
+                    $cookies.set(this.id, true)
+                    console.log(data)
+                }
+            }        
         }
     }
 }
