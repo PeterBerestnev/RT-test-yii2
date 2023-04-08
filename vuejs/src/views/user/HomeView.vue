@@ -51,13 +51,13 @@ export default defineComponent({
     onMounted(async () => {
 
       if (props.tags) {
-        const { status, data } = await httpClient.get('articles', { params: { status: "Опубликованно", tags: props.tags,limit: (await httpClient.get('settings/view')).data.count } })
+        const { status, data } = await httpClient.get('articles', { params: { status: "Опубликованно", tags: props.tags,limit: (await httpClient.get('settings/view')).data.count, sort:'-date' } })
         if (status === 200) {
           posts.value = data
         }
       }
       else {
-        const { status, data } = await httpClient.get('articles', { params: { status: "Опубликованно", limit: (await httpClient.get('settings/view')).data.count} })
+        const { status, data } = await httpClient.get('articles', { params: { status: "Опубликованно", limit: (await httpClient.get('settings/view')).data.count, sort:'-date'} })
         if (status === 200) {
           posts.value = data
         }
@@ -71,7 +71,7 @@ export default defineComponent({
   watch: {
     tags: async function (newVal) { // watch it
       if (typeof newVal === 'undefined') {
-        const { status, data } = await httpClient.get('articles', { params: { status: "Опубликованно",limit: (await httpClient.get('settings/view')).data.count } })
+        const { status, data } = await httpClient.get('articles', { params: { status: "Опубликованно",limit: (await httpClient.get('settings/view')).data.count, sort:'-date' } })
         if (status === 200) {
           this.posts = data
         }
