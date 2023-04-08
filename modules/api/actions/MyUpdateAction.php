@@ -27,6 +27,7 @@ class MyUpdateAction extends UpdateAction
         
         $image = UploadedFile::getInstanceByName('photo');
         if (is_object ( $image )) { // if there is image
+            unlink(str_replace(Url::base(true),Yii::$app->basePath.'/web',$model->photo));
 			$model->photo = time () . "_" . uniqid () . '.' . $image->extension;
 			$image->saveAs ( 'img/' . $model->photo );
             $model->photo = Url::base(true).'/img/'.$model->photo;

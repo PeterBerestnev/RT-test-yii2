@@ -91,9 +91,11 @@ export default defineComponent({
         },
         setText(data){
             this.post.text = data
+            this.textChanged = true
         },
         setTitle(data){
             this.post.title = data
+            this.titleChanged = true
         },
         async updateArticle(){
             let form_data = new FormData();

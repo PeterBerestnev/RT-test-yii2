@@ -84,6 +84,9 @@ export default {
             });
         },
         focusOnTags() {
+            if(this.post.tags){
+                this.tagString = this.post.tags.join('#')
+            }
             this.changeTags = true
             this.$nextTick(() => {
                 const myRef = this.$refs.tags;

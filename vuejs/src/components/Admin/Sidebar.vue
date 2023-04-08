@@ -25,10 +25,26 @@
                 </routerLink>
               </li>
               <li class="nav-item">
+                <routerLink to="/admin" class="nav-link">
+                  <i class="nav-icon fa-solid fa-fire"></i>
+                  <p>
+                    Популярное
+                  </p>
+                </routerLink>
+              </li>
+              <li class="nav-item">
                 <routerLink to="/adminCreateArticle" class="nav-link">
                   <i class="nav-icon fa-solid fa-pen-to-square"></i>
                   <p>
                     Создать статью
+                  </p>
+                </routerLink>
+              </li>
+              <li class="nav-item">
+                <routerLink to="/adminSettings" class="nav-link">
+                  <i class="nav-icon fa-solid fa-gear"></i>
+                  <p>
+                    Настройки
                   </p>
                 </routerLink>
               </li>

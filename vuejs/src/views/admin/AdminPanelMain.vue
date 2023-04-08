@@ -15,7 +15,10 @@
     </div>
     <section class="content">
         <div>
-            <ArticleList :posts="articles">
+            <ArticleList 
+            :posts="articles"
+            @deleteItem="deleteItem"
+            >
             </ArticleList>
         </div>
     </section>
@@ -31,13 +34,32 @@ export default {
             articles: []
         }
     },
+    methods:{
+        async deleteItem(dataToDelete){
+            try{
+                await httpClient.delete('article/delete',{params:{id:dataToDelete}})
+                const { status, data } = await httpClient.get('articles')
+                if (status === 200) {
+                    this.articles = data
+                }
+            }
+            catch(e){
+                console.log(e)
+            }       
+        }
+    },
     components: {
         ArticleList
     },
     async mounted() {
-        const { status, data } = await httpClient.get('articles')
-        if (status === 200) {
-            this.articles = data
+        try{
+            const { status, data } = await httpClient.get('articles')
+            if (status === 200) {
+                this.articles = data
+            }
+        }
+        catch(e){
+            console.log(e)
         }
     }
 }

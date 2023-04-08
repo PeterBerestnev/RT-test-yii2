@@ -100,6 +100,7 @@ export default {
                 if (status == 201) {
                     this.message = [{ message: 'Запись успешно сохранена' }]
                     this.status = status
+       
                 }
             }
             catch (e) {
