@@ -46,7 +46,7 @@ class Article extends ActiveRecord
             [['text','status'], 'string'],
             [['title'],'required'],
             [['title'],'unique'],
-            [['date'], 'date'],
+            [['date'], 'datetime','format'=>'short'],
             [['photo'], 'image', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
             [['tags'],  'each', 'rule' => ['string']],
             [['views'], 'integer'],

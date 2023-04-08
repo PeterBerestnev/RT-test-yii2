@@ -22,11 +22,11 @@ class ArticleSearch extends Article
     {
         return [
             [['text', 'status', 'title'], 'string'],
-            [['date'], 'date'],
+            [['date'], 'datetime','format'=>'short'],
             [['photo'], 'image', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
             [['tags'], 'string'],
             [['views'], 'integer'],
-            [['limit'], 'integer']
+            [['limit'], 'integer'],
         ];
     }
     /**
@@ -64,13 +64,9 @@ class ArticleSearch extends Article
         if ($params) {
             // grid filtering conditions
 
-            $query->andFilterWhere(['like', 'text', $this->text])
-                ->andFilterWhere(['title' => $this->title])
-                ->andFilterWhere(['status' => $this->status])
-                ->andFilterWhere(['like', 'date', $this->date])
-                ->andFilterWhere(['like', 'photo', $this->photo])
-                ->andFilterWhere(['like', 'views', $this->views])
-                ->andFilterWhere(['tags' => $this->tags]);
+            $query->andFilterWhere(['status' => $this->status])
+                ->andFilterWhere(['tags' => $this->tags])
+                ->andFilterWhere(['>','date',$this->date]);
         }
         return $dataProvider;
     }

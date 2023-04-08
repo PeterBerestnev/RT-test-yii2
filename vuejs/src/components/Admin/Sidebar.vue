@@ -25,7 +25,7 @@
                 </routerLink>
               </li>
               <li class="nav-item">
-                <routerLink to="/admin" class="nav-link">
+                <routerLink to="/adminPopular" class="nav-link">
                   <i class="nav-icon fa-solid fa-fire"></i>
                   <p>
                     Популярное
