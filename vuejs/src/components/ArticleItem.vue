@@ -1,7 +1,7 @@
 <template>
     <div class="card bg-light ">
         <div class="card-header">
-            <div v-if="isAuth && this.$route.name == 'admin-panel-main'">
+            <div class="d-flex flex-row justify-content-between" v-if="isAuth && this.$route.name == 'admin-panel-main'">
                 <router-link :to="{ name: 'admin-update-article', query: { id: post._id } }">
                     <h2>
                         <strong>
@@ -9,6 +9,7 @@
                         </strong>
                     </h2>
                 </router-link>
+                <div @click="deleteItem" class="fa-solid fa-xmark mt-2 fs-3"></div>
             </div>
             <div v-else>
                 <router-link :to="{ name: 'article-main', query: { id: post._id } }">
@@ -43,6 +44,11 @@ export default {
             isAuth: false
         }
     },
+    methods:{
+        deleteItem(){
+            this.$emit('deleteItem',this.post._id)
+        }
+    },
     mounted(){
         this.isAuth = authService.isLoggedIn()
     }
@@ -52,5 +58,9 @@ export default {
 <style scoped>
 .card:hover {
     scale: 1.02;
+}
+.fa-xmark:hover{
+    opacity: 0.8;
+    cursor: pointer;
 }
 </style>

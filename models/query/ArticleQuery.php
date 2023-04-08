@@ -9,7 +9,7 @@ namespace app\models\query;
  */
 class ArticleQuery extends \yii\mongodb\ActiveQuery
 {
-
+    
     /**
      * {@inheritdoc}
      * @return \app\models\Article[]|array
@@ -26,5 +26,9 @@ class ArticleQuery extends \yii\mongodb\ActiveQuery
     public function one($db = null)
     {
         return parent::one($db);
+    }
+    public function limit($limit)
+    {
+        return $this->limit($limit);
     }
 }
