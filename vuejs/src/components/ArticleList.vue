@@ -4,6 +4,7 @@
 
                 <attribute-item 
                 :post="post"
+                @deleteItem="deleteItem"
                 />
 
             </div>
@@ -17,6 +18,11 @@ export default{
         posts:{
             type: Array,
             required: true,
+        }
+    },
+    methods:{
+        deleteItem(data){
+            this.$emit('deleteItem',data)
         }
     },
     components:{

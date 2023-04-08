@@ -12,7 +12,7 @@ export default{
     name: "main-layout",
     components:{
         UserNavbar
-    }
+    },
 }
 </script>
 

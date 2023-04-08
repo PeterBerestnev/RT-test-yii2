@@ -3,9 +3,9 @@ namespace app\modules\api\controllers;
 
 
 use app\modules\api\actions\MyCreateAction;
+use app\modules\api\actions\MyDeleteAction;
 use app\modules\api\actions\MyUpdateAction;
 use app\modules\api\resources\ArticleResource;
-use app\models\Article;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\Cors;
 use yii\rest\ActiveController;
@@ -13,8 +13,6 @@ use yii\rest\ActiveController;
 class ArticleController extends ActiveController
 {
     public $modelClass = ArticleResource::class;
-
-    public $documentPath = 'documents/';
 
     protected function verbs()
     {
@@ -52,7 +50,11 @@ class ArticleController extends ActiveController
             'checkAccess' => [$this, 'checkAccess'],
             'scenario' => $this->updateScenario,
         ];
-        // $defaultActions['index']['prepareDataProvider'] = [$this, 'prepareDataProvider'];
+        $defaultActions['dalete'] = [
+            'class' => MyDeleteAction::class,
+            'modelClass' => $this->modelClass,
+            'checkAccess' => [$this, 'checkAccess'],
+        ];
         $defaultActions['index'] = [
             'class' => 'yii\rest\IndexAction',
             'modelClass' => $this->modelClass,

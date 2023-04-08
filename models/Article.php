@@ -3,6 +3,7 @@
 namespace app\models;
 
 use yii\data\ActiveDataProvider;
+use yii\helpers\Url;
 use yii\web\UploadedFile;
 use Yii;
 use yii\mongodb\ActiveRecord;
@@ -16,6 +17,13 @@ class Article extends ActiveRecord
         $this->status = 'Не опубликованно';
     }
 
+    public function afterDelete(){
+        parent::afterDelete();
+        if($this->photo){
+            unlink(str_replace(Url::base(true),Yii::$app->basePath.'/web',$this->photo));
+        }
+    }
+
     public static function collectionName()
     {
         return 'article';
@@ -25,7 +33,10 @@ class Article extends ActiveRecord
     {
         return ['_id', 'title', 'text', 'photo', 'tags', 'date', 'status', 'views'];
     }
-   
+    // public static function find()
+    // {
+    //     return new \app\models\query\ArticleQuery(get_called_class());
+    // }
     /**
      * {@inheritdoc}
      */
@@ -41,40 +52,4 @@ class Article extends ActiveRecord
             [['views'], 'integer'],
         ];
     }
-//     public function loadImages()
-// {
-//     $this->photo =  UploadedFile::getInstancesByName('photo');
-//     if (!$this->photo || !$this->validate()) {
-//         return false;
-//     }
-//     foreach ($this->photo as $photo) {
-//         Juxtapose::newImages($this->id, $photo);
-//     }
-//     return true;
-// }
-    
-    // /**
-    //  * {@inheritdoc}
-    //  * @return \app\models\query\ArticleQuery the active query used by this AR class.
-    //  */
-    // public static function find()
-    // {
-    //     return new \app\models\query\ArticleQuery(get_called_class());
-    // }
-    public function search($params)
-{
-    $query = Article::find();
-    $dataProvider = new ActiveDataProvider([
-        'query' => $query,
-    ]);
-
-    $this->load($params);
-
-
-    $query->andFilterWhere([
-        'tag' => $this->tags,
-    ]);
-
-    return $dataProvider;
-}
 }
