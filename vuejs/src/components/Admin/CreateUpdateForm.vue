@@ -12,7 +12,7 @@
                     </div>
                 </div>
                 <div class="d-flex align-items-center">
-                    <button class="btn btn-primary" @click="createArticle">Сохранить</button>
+                    <button class="btn btn-primary " @click="createArticle">Сохранить</button>
                 </div>
             </div>
             <div v-show="changeTitle">
@@ -58,7 +58,8 @@
 
 <script>
 import MyDropZone from '@/components/Admin/MyDropZone.vue';
-import { QuillEditor } from '@vueup/vue-quill'
+import { QuillEditor } from '@vueup/vue-quill';
+
 
 export default {
     name: "create-update-form",
@@ -122,3 +123,7 @@ export default {
     }
 }
 </script>
+
+<style>
+
+</style>

@@ -15,16 +15,6 @@
         </div>
     </div>
     <div class="content">
-        <div v-if="status == 200" class="alert alert-success col-lg-4 col-sm-12 col-md-6">
-            <div v-for="error in message" :key="error">
-                {{ error.message }}
-            </div>
-        </div>
-        <div v-if="status == 422" class="alert alert-danger col-lg-4 col-sm-12 col-md-6">
-            <div v-for="error in message" :key="error">
-                {{ error.message }}
-            </div>
-        </div>
         <div class="card col-lg-4 col-sm-12 col-md-6">
             <div class="card-header d-flex flex-row justify-content-between">
                 <strong>
@@ -43,6 +33,7 @@
 
 <script>
 import httpClient from '@/services/http.service';
+import {getToastr} from "../../scripts/toastr"
 
 export default {
     name: "admin-settings",
@@ -50,23 +41,21 @@ export default {
         return {
             count: 0,
             data_id: "",
-            message: [],
-            status: null
         }
     },
     methods: {
         async changeCount() {
+            const toastr = getToastr()
             try {
                 const { status } = await httpClient.post('settings/update', null, { params: { id: this.data_id, count: this.count } })
                 if (status === 200) {
-                    this.message = [{ message: 'Запись успешно сохранена' }]
-                    this.status = status
+                    toastr.success('Изменения успешно внесены')
                 }
             }
             catch (e) {
-                console.log(e)
-                this.message = e.response.data
-                this.status = e.response.status
+                e.response.data.forEach(error => {
+                    toastr.error(error.message)
+                });  
             }
         }
     },
