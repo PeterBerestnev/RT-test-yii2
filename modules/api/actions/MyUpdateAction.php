@@ -18,7 +18,7 @@ class MyUpdateAction extends UpdateAction
             call_user_func($this->checkAccess, $this->id, $model);
         }
         $model->scenario = $this->scenario;
-        
+        $model->load(Yii::$app->getRequest()->getBodyParams(), '');
         if(isset($model->tags) && is_string($model->tags))
         {
             $model->tags = json_decode($model->tags,true);
