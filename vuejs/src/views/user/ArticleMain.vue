@@ -2,13 +2,13 @@
     <div class="container">
         <div class="card mt-5">
             <div class="card-header d-flex flex-row">
-                <h1>
+                <h1 class="me-1">
                     <strong>
                         {{ post.title }}
                     </strong>
                 </h1>
                 
-                <div class="fa-solid fa-eye ms-auto align-self-center">{{ post.views }}</div>
+                <div class="fa-solid fa-eye ms-auto align-self-center ">{{ post.views }}</div>
             </div>
             <div class="card-body">
                 <img v-if="post.photo" class="rounded img-fluid border w-100" :src="post.photo">
