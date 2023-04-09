@@ -6,7 +6,6 @@ const routes = [
     path: '/',
     name: 'home',
     meta: { layout: 'main', requireAuth: false },
-    props: (route) => ({ tags: route.query.tags }),
     component: () => import('../views/user/HomeView.vue')
   },
   {
@@ -52,6 +51,13 @@ const routes = [
     name: 'admin-create-article',
     meta: { layout: 'admin', requireAuth: true },
     component: () => import('../views/admin/AdminCreateArticle.vue')
+  },
+  {
+    path: '/articleTags',
+    name: 'article-tags',
+    meta: { layout: 'main', requireAuth: false },
+    props: (route) => ({ tags: route.query.tags }),
+    component: () => import('../views/user/ArticleTags.vue')
   },
   {
     path: "/:pathMatch(.*)*",
