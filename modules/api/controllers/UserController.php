@@ -1,12 +1,9 @@
 <?php
 namespace app\modules\api\controllers;
 
-use app\modules\api\models\RegisterForm;
-use app\modules\api\resources\UserResource;
 use Yii;
 use yii\filters\Cors;
 use yii\rest\Controller;
-use yii\web\UnauthorizedHttpException;
 use app\modules\api\models\LoginForm;
 
 

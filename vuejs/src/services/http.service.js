@@ -28,8 +28,8 @@ httpClient.interceptors.response.use(
     return response;
   },
   error => {
-    if (error.response.status === 401){
-      router.push({name: 'login'})
+    if (error.response.status === 401) {
+      router.push({ name: 'login' })
     }
     /** TODO: Do something with response error */
     return Promise.reject(error);

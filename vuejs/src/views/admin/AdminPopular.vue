@@ -16,9 +16,7 @@
     </div>
     <section class="content">
         <div>
-            <ArticleList 
-            :posts="articles"
-            >
+            <ArticleList :posts="articles">
             </ArticleList>
         </div>
     </section>
@@ -36,19 +34,18 @@ export default {
             date: ""
         }
     },
-
     components: {
         ArticleList
     },
     async mounted() {
         let dateTime = dataService.getYesterdayDate()
-        try{
-            const { status, data } = await httpClient.get('articles',{ params: { sort: "-views", status: "Опубликованно",date:dateTime } })
+        try {
+            const { status, data } = await httpClient.get('articles', { params: { sort: "-views", status: "Опубликованно", date: dateTime } })
             if (status === 200) {
                 this.articles = data
             }
         }
-        catch(e){
+        catch (e) {
             console.log(e)
         }
     }

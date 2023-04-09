@@ -4,14 +4,14 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 class="m-0">Создание статьи</h1>
-                </div><!-- /.col -->
+                </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><router-link to="/admin">Главная</router-link></li>
                         <li class="breadcrumb-item active">Создание статьи</li>
                     </ol>
-                </div><!-- /.col -->
-            </div><!-- /.row -->
+                </div>
+            </div>
             <div v-if="status == 201" class="alert alert-success">
                 <div v-for="error in message" :key="error">
                     {{ error.message }}
@@ -22,19 +22,11 @@
                     {{ error.message }}
                 </div>
             </div>
-        </div><!-- /.container-fluid -->
+        </div>
     </div>
     <div class="content">
-        <AdminCUForm 
-        @getArticle="createArticle"
-        :post="post"
-        @setPhoto = "setPhoto"
-        @setTags = "setTags"
-        @changeStatusValue = "changeStatusValue"
-        @setText = "setText"
-        @setTitle = "setTitle"
-        >
-
+        <AdminCUForm @getArticle="createArticle" :post="post" @setPhoto="setPhoto" @setTags="setTags"
+            @changeStatusValue="changeStatusValue" @setText="setText" @setTitle="setTitle">
         </AdminCUForm>
     </div>
 </template>
@@ -42,7 +34,6 @@
 <script>
 import httpClient from "@/services/http.service";
 import AdminCUForm from "../../components/Admin/CreateUpdateForm.vue"
-
 
 export default {
     components: {
@@ -63,19 +54,19 @@ export default {
         }
     },
     methods: {
-        setPhoto(data){
+        setPhoto(data) {
             this.post.photo = data
         },
-        setTags(data){
+        setTags(data) {
             this.post.tags = data
         },
-        changeStatusValue(data){
+        changeStatusValue(data) {
             this.post.status = data
         },
-        setText(data){
+        setText(data) {
             this.post.text = data
         },
-        setTitle(data){
+        setTitle(data) {
             this.post.title = data
         },
         async createArticle() {
@@ -83,7 +74,7 @@ export default {
             if (typeof this.post.title !== "undefined") {
                 form_data.append('title', this.post.title);
             }
-            if (typeof this.post.text === "string" && this.post.text!="") {
+            if (typeof this.post.text === "string" && this.post.text != "") {
                 form_data.append('text', this.post.text);
             }
             if (Array.isArray(this.post.tags)) {
@@ -100,7 +91,7 @@ export default {
                 if (status == 201) {
                     this.message = [{ message: 'Запись успешно сохранена' }]
                     this.status = status
-       
+
                 }
             }
             catch (e) {
@@ -114,6 +105,7 @@ export default {
 
 <style scoped>
 @import '@vueup/vue-quill/dist/vue-quill.snow.css';
+
 .pointer {
     cursor: pointer
 }

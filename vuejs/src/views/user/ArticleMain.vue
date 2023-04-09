@@ -7,7 +7,6 @@
                         {{ post.title }}
                     </strong>
                 </h1>
-                
                 <div class="fa-solid fa-eye ms-auto align-self-center ">{{ post.views }}</div>
             </div>
             <div class="card-body">
@@ -21,7 +20,7 @@
                 <div>Дата: {{ post.date }}</div>
                 <div class="d-flex flex-row">Теги:
                     <div v-for="tag in post.tags" :key="tag">
-                        <router-link :to="{ name: 'article-tags', query: { tags: tag} }">#{{ tag }}</router-link>
+                        <router-link :to="{ name: 'article-tags', query: { tags: tag } }">#{{ tag }}</router-link>
                         &nbsp;
                     </div>
                 </div>
@@ -52,15 +51,14 @@ export default {
         const { status, data } = await httpClient.get('article/view', { params: { id: this.id } })
         if (status === 200) {
             this.post = data
-            if(!$cookies.isKey(this.id) ){
-                const { status, data } = await httpClient.post('article/increment-views',null, { params: { id: this.id } })
-                if(status === 200){
+            if (!$cookies.isKey(this.id)) {
+                const { status, data } = await httpClient.post('article/increment-views', null, { params: { id: this.id } })
+                if (status === 200) {
                     $cookies.set(this.id, true)
                     console.log(data.views)
                 }
-            }        
+            }
         }
     }
 }
-
 </script>
