@@ -13,7 +13,7 @@ nbproject
 Thumbs.db
 
 # composer vendor dir
-/vendor
+vendor
 
 # composer itself is not needed
 composer.phar
@@ -34,3 +34,5 @@ tests/_support/_generated
 
 #vagrant folder
 /.vagrant
+
+node_modules
