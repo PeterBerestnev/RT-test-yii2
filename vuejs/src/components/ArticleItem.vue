@@ -1,7 +1,7 @@
 <template>
     <div class="card bg-light ">
         <div class="card-header">
-            <div class="d-flex flex-row justify-content-between" v-if="isAuth">
+            <div class="d-flex flex-row justify-content-between" v-if="isAuth && this.$route.name == 'admin-panel-main' || this.$route.name == 'admin-popular'">
                 <router-link :to="{ name: 'admin-update-article', query: { id: post._id } }">
                     <h2>
                         <strong>
