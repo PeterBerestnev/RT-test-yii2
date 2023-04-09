@@ -42,11 +42,9 @@ export default {
     },
     async mounted() {
         let dateTime = dataService.getYesterdayDate()
-        console.log(dateTime)
         try{
             const { status, data } = await httpClient.get('articles',{ params: { sort: "-views", status: "Опубликованно",date:dateTime } })
             if (status === 200) {
-                console.log(data)
                 this.articles = data
             }
         }
