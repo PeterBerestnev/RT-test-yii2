@@ -1,9 +1,7 @@
 <template>
-    <div class="container-fluid ">
-      <ArticleList :posts="posts">
-
-      </ArticleList>
-    </div>
+  <div class="container-fluid ">
+    <ArticleList :posts="posts"></ArticleList>
+  </div>
 </template>
 
 <script>
@@ -11,7 +9,7 @@ import { onMounted, ref } from "vue";
 import httpClient from '@/services/http.service'
 import ArticleList from '../../components/ArticleList.vue'
 
-export default{
+export default {
   name: 'HomeView',
   data() {
     return {
@@ -22,7 +20,6 @@ export default{
     ArticleList
   },
   setup() {
-
     const posts = ref([])
     const stat = ref([])
     onMounted(async () => {

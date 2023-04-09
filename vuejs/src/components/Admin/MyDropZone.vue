@@ -8,14 +8,12 @@
                 <img class="size" v-if="field == null" src="../../assets/no-photo-svgrepo-com.svg">
                 <img v-else class="size" src="../../assets/check-mark1.svg">
             </div>
-
             <div>
                 <div class="justify-content-center d-flex" v-if="isDragActive"><strong>Перенесите файл сюда</strong></div>
-                <div class="justify-content-center d-flex" v-else><strong>Перенесите сюда файл или нажмите на эту область,
-                        чтобы его выбрать</strong></div>
+                <div class="justify-content-center d-flex" v-else><strong>Перенесите сюда файл или нажмите на эту
+                        область,чтобы его выбрать</strong></div>
             </div>
         </div>
-
     </div>
 </template>
 
@@ -35,14 +33,11 @@ export default {
                 emit('getPhoto', acceptFiles)
             }
         }
-
         const { getRootProps, getInputProps, ...rest } = useDropzone({ onDrop });
-
         return {
             getRootProps,
             getInputProps,
             ...rest,
-
         };
     },
 }

@@ -27,15 +27,14 @@
                 <div v-else><strong>Имя файла: </strong> {{ photo }} </div>
             </div>
             <div class="mt-3">
-                <quill-editor ref="myEditor"  @textChange="setText" :content="post.text" contentType="html" />
+                <quill-editor ref="myEditor" @textChange="setText" :content="post.text" contentType="html" />
             </div>
-            
+
             <select id="status" v-on:change="changeStatusValue($event)" class="form-select mt-3">
                 <option selected disabled value>Выберите статус</option>
                 <option value="Опубликованно">Опубликованно</option>
-                <option  value="Не опубликованно">Не опубликованно</option>
+                <option value="Не опубликованно">Не опубликованно</option>
             </select>
-            
         </div>
         <div class="card-footer">
             <div @click="focusOnTags" class="d-flex flex-row align-items-center pointer">
@@ -61,7 +60,6 @@
 import MyDropZone from '@/components/Admin/MyDropZone.vue';
 import { QuillEditor } from '@vueup/vue-quill'
 
-
 export default {
     name: "create-update-form",
     props: ['post'],
@@ -84,7 +82,7 @@ export default {
             });
         },
         focusOnTags() {
-            if(this.post.tags){
+            if (this.post.tags) {
                 this.tagString = this.post.tags.join('#')
             }
             this.changeTags = true
@@ -95,7 +93,7 @@ export default {
         },
         setPhoto(data) {
             this.photo = data[0].name
-            this.$emit('setPhoto',data[0]) 
+            this.$emit('setPhoto', data[0])
         },
         setTags() {
             if (this.tagString != "") {
@@ -104,19 +102,19 @@ export default {
             }
             this.changeTags = false
         },
-        changeStatusValue(event){
+        changeStatusValue(event) {
             this.$emit('changeStatusValue', event.target.value)
         },
-        createArticle(){
+        createArticle() {
             this.$emit('getArticle')
         },
-        setText(){
-            this.$emit('setText',this.$refs.myEditor.getHTML())
+        setText() {
+            this.$emit('setText', this.$refs.myEditor.getHTML())
         },
-        setTitle(){
+        setTitle() {
             this.changeTitle = false
-            this.$emit('setTitle',this.title)
-        },   
+            this.$emit('setTitle', this.title)
+        },
     },
     components: {
         MyDropZone,
@@ -124,5 +122,3 @@ export default {
     }
 }
 </script>
-
-<style></style>

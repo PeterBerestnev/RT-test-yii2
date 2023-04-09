@@ -1,7 +1,6 @@
 <template>
     <Sidebar></Sidebar>
     <div class="wrapper">
-
         <AdminNavbar></AdminNavbar>
         <Suspense>
             <div class="content-wrapper">
@@ -9,7 +8,6 @@
             </div>
         </Suspense>
     </div>
-
     <aside class="control-sidebar control-sidebar-dark">
         <!-- Control sidebar content goes here -->
     </aside>
