@@ -4,17 +4,17 @@
 </template>
     
 <script>
-    export default{
-        name: 'not-found',
-    }
+export default {
+    name: 'not-found',
+}
 </script>
 
 <style>
-.nf{
+.nf {
     margin-top: 4%;
-    margin-left:40%;
+    margin-left: 40%;
 }
-.nf2{
-    margin-left:45%;
+.nf2 {
+    margin-left: 45%;
 }
 </style>

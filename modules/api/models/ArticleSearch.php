@@ -3,7 +3,6 @@ namespace app\modules\api\models;
 
 use app\models\Article;
 use Yii;
-
 use yii\data\ActiveDataProvider;
 
 /**

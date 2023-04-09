@@ -2,9 +2,7 @@
 
 namespace app\models;
 
-use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
-use yii\web\UploadedFile;
 use Yii;
 use yii\mongodb\ActiveRecord;
 

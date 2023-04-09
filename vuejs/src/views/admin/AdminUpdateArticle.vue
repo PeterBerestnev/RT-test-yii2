@@ -4,15 +4,15 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 class="m-0">Обновление статьи</h1>
-                </div><!-- /.col -->
+                </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><router-link to="/admin">Главная</router-link></li>
                         <li class="breadcrumb-item active">Обновление статьи</li>
                     </ol>
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-            <div v-if="status == 200 " class="alert alert-success">
+                </div>
+            </div>
+            <div v-if="status == 200" class="alert alert-success">
                 <div v-for="error in message" :key="error">
                     {{ error.message }}
                 </div>
@@ -22,19 +22,12 @@
                     {{ error.message }}
                 </div>
             </div>
-        </div><!-- /.container-fluid -->
+        </div>
     </div>
     <div class="content">
-            <AdminCUForm 
-            :post = "post"
-            @setPhoto = "setPhoto"
-            @setTags = "setTags"
-            @changeStatusValue = "changeStatusValue"
-            @setText = "setText"
-            @setTitle = "setTitle"
-            @getArticle = "updateArticle"
-            >
-            </AdminCUForm>
+        <AdminCUForm :post="post" @setPhoto="setPhoto" @setTags="setTags" @changeStatusValue="changeStatusValue"
+            @setText="setText" @setTitle="setTitle" @getArticle="updateArticle">
+        </AdminCUForm>
     </div>
 </template>
 
@@ -63,41 +56,39 @@ export default defineComponent({
         }
     },
     setup(props) {
-
         const post = ref([])
         const stat = ref([])
         onMounted(async () => {
             const { status, data } = await httpClient.get('article/view', { params: { id: props.id } })
             post.value = data
             stat.value = status
-            
         })
         return {
             post, stat
         }
     },
-    methods:{
-        setPhoto(data){
+    methods: {
+        setPhoto(data) {
             this.post.photo = data
             this.photoChanged = true
         },
-        setTags(data){
+        setTags(data) {
             this.tagsChanged = true
             this.post.tags = data
         },
-        changeStatusValue(data){
+        changeStatusValue(data) {
             this.post.status = data
             this.statusChanged = true
         },
-        setText(data){
+        setText(data) {
             this.post.text = data
             this.textChanged = true
         },
-        setTitle(data){
+        setTitle(data) {
             this.post.title = data
             this.titleChanged = true
         },
-        async updateArticle(){
+        async updateArticle() {
             let form_data = new FormData();
             if (typeof this.post.title !== "undefined" && this.titleChanged) {
                 form_data.append('title', this.post.title);
@@ -111,17 +102,15 @@ export default defineComponent({
             if (typeof this.post.status !== "undefined" && this.statusChanged) {
                 form_data.append('status', this.post.status);
             }
-            if (typeof this.post.photo !== "undefined" && this.post.photo != null && this.photoChanged == true)  {
+            if (typeof this.post.photo !== "undefined" && this.post.photo != null && this.photoChanged == true) {
                 form_data.append('photo', this.post.photo);
             }
             try {
-                
                 const { status } = await httpClient.post('article/update', form_data, { headers: { "Content-Type": " multipart/form-data" }, params: { id: this.id } })
                 if (status == 200) {
                     this.message = [{ message: 'Запись успешно сохранена' }]
                     this.status = status
                 }
-
             }
             catch (e) {
                 console.log(e)

@@ -7,6 +7,6 @@ class UserResource extends User
 {
     public function fields()
     {
-        return ['_id', 'username', 'access_token'];
+        return ['_id', 'access_token'];
     }
 }
