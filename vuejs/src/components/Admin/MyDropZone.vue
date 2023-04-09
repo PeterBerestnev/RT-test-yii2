@@ -1,8 +1,6 @@
 <template>
-    <div @click="open" class="p-3 myOpacity rounded ">
-        <div v-bind="getRootProps()">
+        <div class="p-3 myOpacity rounded " v-bind="getRootProps()">
             <input v-bind="getInputProps()" />
-        </div>
         <div class="d-flex flex-column">
             <div class="d-flex justify-content-center">
                 <img class="size" v-if="field == null" src="../../assets/no-photo-svgrepo-com.svg">
@@ -10,8 +8,7 @@
             </div>
             <div>
                 <div class="justify-content-center d-flex" v-if="isDragActive"><strong>Перенесите файл сюда</strong></div>
-                <div class="justify-content-center d-flex" v-else><strong>Перенесите сюда файл или нажмите на эту
-                        область,чтобы его выбрать</strong></div>
+                <div class="justify-content-center d-flex" v-else><strong>Перенесите сюда файл или нажмите на эту область,чтобы его выбрать</strong></div>
             </div>
         </div>
     </div>
@@ -43,7 +40,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .size {
     width: 150px
 }

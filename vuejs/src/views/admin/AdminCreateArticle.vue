@@ -12,16 +12,6 @@
                     </ol>
                 </div>
             </div>
-            <div v-if="status == 201" class="alert alert-success">
-                <div v-for="error in message" :key="error">
-                    {{ error.message }}
-                </div>
-            </div>
-            <div v-if="status == 422" class="alert alert-danger">
-                <div v-for="error in message" :key="error">
-                    {{ error.message }}
-                </div>
-            </div>
         </div>
     </div>
     <div class="content">
@@ -34,6 +24,7 @@
 <script>
 import httpClient from "@/services/http.service";
 import AdminCUForm from "../../components/Admin/CreateUpdateForm.vue"
+import {getToastr} from "../../scripts/toastr"
 
 export default {
     components: {
@@ -42,8 +33,6 @@ export default {
     name: "admin-create-article",
     data() {
         return {
-            message: [],
-            status: null,
             post: [{
                 title: "",
                 text: "",
@@ -70,6 +59,7 @@ export default {
             this.post.title = data
         },
         async createArticle() {
+            const toastr = getToastr()
             let form_data = new FormData();
             if (typeof this.post.title !== "undefined") {
                 form_data.append('title', this.post.title);
@@ -89,14 +79,13 @@ export default {
             try {
                 const { status } = await httpClient.post('article/create', form_data, { headers: { "Content-Type": " multipart/form-data" } })
                 if (status == 201) {
-                    this.message = [{ message: 'Запись успешно сохранена' }]
-                    this.status = status
-
+                    toastr.success('Запись успешно сохранена')
                 }
             }
             catch (e) {
-                this.message = e.response.data
-                this.status = e.response.status
+                e.response.data.forEach(error => {
+                    toastr.error(error.message)
+                });    
             }
         },
     }

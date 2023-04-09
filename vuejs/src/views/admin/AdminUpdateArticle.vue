@@ -12,16 +12,6 @@
                     </ol>
                 </div>
             </div>
-            <div v-if="status == 200" class="alert alert-success">
-                <div v-for="error in message" :key="error">
-                    {{ error.message }}
-                </div>
-            </div>
-            <div v-if="status == 422" class="alert alert-danger">
-                <div v-for="error in message" :key="error">
-                    {{ error.message }}
-                </div>
-            </div>
         </div>
     </div>
     <div class="content">
@@ -29,11 +19,13 @@
             @setText="setText" @setTitle="setTitle" @getArticle="updateArticle">
         </AdminCUForm>
     </div>
+    <button class="toastrDefaultSuccess">Push</button>
 </template>
 
 <script>
 import httpClient from "@/services/http.service";
 import AdminCUForm from "../../components/Admin/CreateUpdateForm.vue"
+import {getToastr} from "../../scripts/toastr"
 import { defineComponent, onMounted, ref } from "vue";
 
 export default defineComponent({
@@ -46,8 +38,6 @@ export default defineComponent({
     },
     data() {
         return {
-            message: [],
-            status: "",
             photoChanged: false,
             titleChanged: false,
             textChanged: false,
@@ -89,6 +79,7 @@ export default defineComponent({
             this.titleChanged = true
         },
         async updateArticle() {
+            const toastr = getToastr()
             let form_data = new FormData();
             if (typeof this.post.title !== "undefined" && this.titleChanged) {
                 form_data.append('title', this.post.title);
@@ -108,14 +99,14 @@ export default defineComponent({
             try {
                 const { status } = await httpClient.post('article/update', form_data, { headers: { "Content-Type": " multipart/form-data" }, params: { id: this.id } })
                 if (status == 200) {
-                    this.message = [{ message: 'Запись успешно сохранена' }]
-                    this.status = status
+                    toastr.success('Запись успешно сохранена')
                 }
             }
             catch (e) {
                 console.log(e)
-                this.message = e.response.data
-                this.status = e.response.status
+                e.response.data.forEach(error => {
+                    toastr.error(error.message)
+                });
             }
         },
     },
@@ -126,5 +117,6 @@ export default defineComponent({
 </script>
 
 <style>
+@import '../../../node_modules/toastr/build/toastr.min.css';
 @import '@vueup/vue-quill/dist/vue-quill.snow.css';
 </style>
