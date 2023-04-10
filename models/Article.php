@@ -13,6 +13,7 @@ class Article extends ActiveRecord
     {
         parent::init();
         $this->status = 'Не опубликованно';
+        $this->views = 0;
     }
 
     public function afterDelete(){

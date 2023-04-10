@@ -24,7 +24,7 @@
 
 <script>
 import httpClient from '@/services/http.service'
-import dataService from '@/services/date.service'
+import { getYesterdayDate } from '@/scripts/getYesterday'
 import ArticleList from '../../components/ArticleList.vue'
 export default {
     name: "admin-popular",
@@ -38,7 +38,7 @@ export default {
         ArticleList
     },
     async mounted() {
-        let dateTime = dataService.getYesterdayDate()
+        let dateTime = getYesterdayDate()
         try {
             const { status, data } = await httpClient.get('articles', { params: { sort: "-views", status: "Опубликованно", date: dateTime } })
             if (status === 200) {

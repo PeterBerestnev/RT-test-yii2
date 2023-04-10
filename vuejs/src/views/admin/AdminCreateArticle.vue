@@ -79,6 +79,11 @@ export default {
             try {
                 const { status } = await httpClient.post('article/create', form_data, { headers: { "Content-Type": " multipart/form-data" } })
                 if (status == 201) {
+                    this.post.photo = null
+                    this.post.tags = null
+                    this.post.title = ""
+                    this.post.text = ""
+                    this.post.status = "Не опубликлванно"
                     toastr.success('Запись успешно сохранена')
                 }
             }

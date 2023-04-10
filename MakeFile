@@ -1,0 +1,27 @@
+    mongoshComand = localhost:27017/admin2 --f ./asdasd/asd.js
+
+	SHELL := /bin/bash
+
+    .PHONY: build
+    build:
+    cd ./docker && docker-compose build
+
+    .PHONY: up
+    up:
+    cd ./docker && docker-compose up -d
+    cd ./docker && docker-compose exec basic_php-fpm_1 composer install
+
+    .PHONY: stop
+    stop:
+    cd ./docker && docker-compose stop
+
+    .PHONY: rm
+    rm:
+    cd ./docker && docker-compose rm
+
+    .PHONY: prepare
+    prepare:
+    cd ./docker && docker-compose exec basic_mongodb_1 mongosh $(mongoshComand)
+
+    .DEFAULT_GOAL := build
+
