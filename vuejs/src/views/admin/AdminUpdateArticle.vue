@@ -19,7 +19,6 @@
             @setText="setText" @setTitle="setTitle" @getArticle="updateArticle">
         </AdminCUForm>
     </div>
-    <button class="toastrDefaultSuccess">Push</button>
 </template>
 
 <script>
@@ -97,9 +96,11 @@ export default defineComponent({
                 form_data.append('photo', this.post.photo);
             }
             try {
-                const { status } = await httpClient.post('article/update', form_data, { headers: { "Content-Type": " multipart/form-data" }, params: { id: this.id } })
+                const { status, data } = await httpClient.post('article/update', form_data, { headers: { "Content-Type": " multipart/form-data" }, params: { id: this.id } })
                 if (status == 200) {
+                    this.post = data
                     toastr.success('Запись успешно сохранена')
+                    
                 }
             }
             catch (e) {

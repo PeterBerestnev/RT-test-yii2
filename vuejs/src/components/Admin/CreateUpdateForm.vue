@@ -1,5 +1,6 @@
 <template>
-    <div class="card mt-4">
+    <div class="grid">
+        <div class="card mt-4 col-lg-6">
         <div class="card-header">
             <div class="d-flex flex-row justify-content-between">
                 <div @click="focusOnTitle" class="pointer d-flex flex-row align-items-center">
@@ -16,24 +17,22 @@
                 </div>
             </div>
             <div v-show="changeTitle">
-                <input ref="text" v-model="title" @blur="setTitle" type="text" class="p-4 fs-3 form-control"
-                    placeholder="Введите заголовок">
+                <input ref="text" v-model="title" @blur="setTitle" type="text" class="p-4 fs-3 form-control" placeholder="Введите заголовок">
             </div>
         </div>
         <div class="card-body">
-            <div>
+         
+            <div class="d-flex">
+                <img v-if="typeof post.photo == 'string'" :src="post.photo" class="img-fluid mb-3 w-100 rounded">
+            </div>
                 <MyDropZone :field="post.photo" @getPhoto="setPhoto"></MyDropZone>
                 <div v-if="photo == null"><strong>Имя файла: </strong>{{ post.photo }}</div>
                 <div v-else><strong>Имя файла: </strong> {{ photo }} </div>
-            </div>
             <div class="mt-3">
                 <quill-editor ref="myEditor" @textChange="setText" :content="post.text" contentType="html" />
             </div>
-
-            <select id="status" v-on:change="changeStatusValue($event)" class="form-select mt-3">
-                <option selected disabled value>Выберите статус</option>
-                <option value="Опубликованно">Опубликованно</option>
-                <option value="Не опубликованно">Не опубликованно</option>
+            <select class="form-select mt-3" :required="true" v-on:change="changeStatusValue($event)">
+                <option  v-for="option in options" v-bind:value = "option.id" :key=option :selected="option == post.status">{{ option }}</option>
             </select>
         </div>
         <div class="card-footer">
@@ -44,15 +43,10 @@
                 </div>
             </div>
             <div v-show="changeTags">
-                <input ref="tags" v-model="tagString" @blur="setTags" type="text" class="form-control mt-2"
-                    placeholder="Введите тэги разделяя их '#' без пробелов">
+                <input ref="tags" v-model="tagString" @blur="setTags" type="text" class="form-control mt-2" placeholder="Введите тэги разделяя их '#' без пробелов">
             </div>
-            <div v-if="post.status == 'Опубликованно'" class="d-flex flex-row justify-content-between">
-                <div class="text-green">{{ post.status }}</div>
-                <div>{{ post.date }}</div>
-            </div>
-            <div v-else class="text-red">Не опубликлванно</div>
         </div>
+    </div>
     </div>
 </template>
 
@@ -72,6 +66,7 @@ export default {
             changeTitle: false,
             tagString: '',
             green: true,
+            options: ["Не опубликованно","Опубликованно"]
         }
     },
     methods: {
@@ -104,9 +99,11 @@ export default {
             this.changeTags = false
         },
         changeStatusValue(event) {
+            
             this.$emit('changeStatusValue', event.target.value)
         },
         createArticle() {
+            this.photo = null
             this.$emit('getArticle')
         },
         setText() {
@@ -123,7 +120,3 @@ export default {
     }
 }
 </script>
-
-<style>
-
-</style>
