@@ -11,8 +11,6 @@ use yii\mongodb\ActiveRecord;
  */
 class User extends  ActiveRecord implements \yii\web\IdentityInterface
 {
-
-
     public function attributes()
     {
         return ['_id', 'username', 'email', 'password_hash', 'authKey', 'access_token'];

@@ -15,28 +15,28 @@ class MyCreateAction extends CreateAction
             call_user_func($this->checkAccess, $this->id);
         }
 
-        /* @var $model \yii\db\ActiveRecord */
         $model = new $this->modelClass([
             'scenario' => $this->scenario,
         ]);
 
- 
         $model->load(Yii::$app->getRequest()->getBodyParams(), '');
-        if($model->tags != null)
-        {
+
+        if ($model->tags != null) {
             $model->tags = json_decode($model->tags,true);
         }
         
         $image = UploadedFile::getInstanceByName('photo');
-        if (is_object ( $image )) { // if there is image
-			$model->photo = time () . "_" . uniqid () . '.' . $image->extension;
-			$image->saveAs ( 'img/' . $model->photo );
-            $model->photo = Url::base(true).'/img/'.$model->photo;
+
+        if (is_object ( $image )) { 
+			$model->photo = time() . "_" . uniqid() . '.' . $image->extension;
+			$image->saveAs('img/' . $model->photo);
+            $model->photo = Url::base(true) . '/img/' . $model->photo;
 		} 
 
-        if($model->status == 'Опубликованно'){
+        if ($model->status == 'Опубликованно') {
             $model->date = Yii::$app->formatter->asDatetime('now', 'short');
         }
+
         if ($model->save()) {
             $response = Yii::$app->getResponse();
             $response->setStatusCode(201);

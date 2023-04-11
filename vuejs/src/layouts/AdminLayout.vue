@@ -8,9 +8,7 @@
             </div>
         </Suspense>
     </div>
-    <aside class="control-sidebar control-sidebar-dark">
-        <!-- Control sidebar content goes here -->
-    </aside>
+    <aside class="control-sidebar control-sidebar-dark"></aside>
 </template>
 
 <script>

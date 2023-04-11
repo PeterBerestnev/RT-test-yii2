@@ -7,6 +7,7 @@
 
 <script>
 import UserNavbar from '../components/User/UserNavbar.vue'
+
 export default {
     name: "main-layout",
     components: {

@@ -15,10 +15,8 @@ class ArticleController extends ActiveController
 {
     public $modelClass = Article::class;
 
-    protected function verbs()
-    {
+    protected function verbs(){}
 
-    }
     public function behaviors()
     {
         $behaviors = parent::behaviors();
@@ -27,7 +25,9 @@ class ArticleController extends ActiveController
         $auth['authMethods'] = [
             HttpBearerAuth::class
         ];
+
         unset($behaviors['authenticator']);
+
         $behaviors['cors'] = [
             'class' => Cors::class,
 
@@ -61,7 +61,7 @@ class ArticleController extends ActiveController
             'modelClass' => $this->modelClass,
             'prepareDataProvider' => function () {
                 $searchModel = new \app\modules\api\models\ArticleSearch();
-                return $searchModel->search(\Yii::$app->request->queryParams);
+                return $searchModel->search(Yii::$app->request->queryParams);
             },
         ];
 
@@ -71,14 +71,19 @@ class ArticleController extends ActiveController
     public function actionIncrementViews($id)
     {
         $model = Article::findOne($id);
-        
-     
         $model->views = $model->views + 1;
-        
+
         if ($model->save() === false && !$model->hasErrors()) {
             throw new ServerErrorHttpException('Failed to update the object for unknown reason.');
         }
+
         return $model;
     }
 
+    public function actionGetCount()
+    {
+        $model = Article::find()->count();
+        
+        return $model;
+    }
 }

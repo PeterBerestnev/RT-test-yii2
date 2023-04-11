@@ -17,6 +17,7 @@ class ArticleSearch extends Article
     {
         return ['_id', 'title', 'text', 'photo', 'tags', 'date', 'status', 'views','limit'];
     }
+
     public function rules()
     {
         return [
@@ -28,9 +29,6 @@ class ArticleSearch extends Article
             [['limit'], 'integer'],
         ];
     }
-    /**
-     * @inheritdoc
-     */
 
     /**
      * Creates data provider instance with search query applied
@@ -42,9 +40,7 @@ class ArticleSearch extends Article
     public function search($params)
     {
         $query = Article::find();
-        
 
-        // add conditions that should always apply here
         $this->load($params, '');
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -52,21 +48,17 @@ class ArticleSearch extends Article
                 'pageSize' => $this->limit
             ],
         ]);
-        
-        
+
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
-        
-        if ($params) {
-            // grid filtering conditions
 
+        if ($params) {
             $query->andFilterWhere(['status' => $this->status])
                 ->andFilterWhere(['tags' => $this->tags])
                 ->andFilterWhere(['>','date',$this->date]);
         }
+
         return $dataProvider;
     }
 }

@@ -16,8 +16,7 @@
     </div>
     <section class="content">
         <div>
-            <ArticleList :posts="articles">
-            </ArticleList>
+            <ArticleList :posts="articles"></ArticleList>
         </div>
     </section>
 </template>
@@ -26,6 +25,7 @@
 import httpClient from '@/services/http.service'
 import { getYesterdayDate } from '@/scripts/getYesterday'
 import ArticleList from '../../components/ArticleList.vue'
+
 export default {
     name: "admin-popular",
     data() {

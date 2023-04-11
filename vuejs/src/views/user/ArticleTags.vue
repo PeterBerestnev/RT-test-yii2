@@ -25,10 +25,6 @@ import ArticleList from '../../components/ArticleList.vue'
 
 export default {
     name: 'ArticleTags',
-    data() {
-        return {
-        }
-    },
     props: {
         tags: {
             type: String,
@@ -44,6 +40,7 @@ export default {
         onMounted(async () => {
             if (props.tags) {
                 const { status, data } = await httpClient.get('articles', { params: { status: "Опубликованно", tags: props.tags, limit: (await httpClient.get('settings/view')).data.count, sort: '-date' } })
+
                 if (status === 200) {
                     posts.value = data
                 }

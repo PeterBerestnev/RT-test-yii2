@@ -1,22 +1,18 @@
 <?php
-
 namespace app\models;
 
 use Yii;
 use yii\mongodb\ActiveRecord;
 use yii\web\NotFoundHttpException;
 
-
 class Settings extends ActiveRecord
 {
-    public function init() 
+    public function init()
     {
         parent::init();
         $this->count = 10;
         $this->name = 'count';
     }
-
-   
 
     public static function collectionName()
     {
@@ -25,9 +21,9 @@ class Settings extends ActiveRecord
 
     public function attributes()
     {
-        return ['_id','count','name'];
+        return ['_id', 'count', 'name'];
     }
-   
+
     /**
      * {@inheritdoc}
      */
@@ -38,11 +34,11 @@ class Settings extends ActiveRecord
         ];
     }
     protected function findModel($id)
-{
-    if (($model = $this->findOne($id)) !== null) {
-        return $model;
-    } else {
-        throw new NotFoundHttpException('The requested page does not exist.');
+    {
+        if (($model = $this->findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
     }
-}
 }
