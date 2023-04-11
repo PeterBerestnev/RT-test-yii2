@@ -5,12 +5,24 @@ services:
         build:
             context: .
             dockerfile: ./docker/nginx/Dockerfile
+        depends_on:
+            - php-fpm
         ports:
-            - 80:80
+            - 8080:80
+        volumes:
+            - ./:/var/www:rw
+        restart: always
+
+    node:
+        build:
+            context: .
+            dockerfile: ./docker/node-12/Dockerfile
+        ports:
+            - 80:8080
         depends_on:
             - php-fpm
         volumes:
-            - ./:/var/www:rw
+            - ./vuejs:/usr/src/app:rw
         restart: always
 
     php-fpm:

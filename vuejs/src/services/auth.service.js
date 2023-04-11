@@ -4,7 +4,7 @@ const authService = {
     user: null,
     async login(formData) {
         try {
-            const { status, data } = await axios.post('http://localhost/api/user/login', formData)
+            const { status, data } = await axios.post('http://localhost:8080/api/user/login', formData)
             if (status === 200) {
                 this.setUser(data)
                 return { success: true }
