@@ -13,8 +13,6 @@ RUN apt-get update \
     libmagickwand-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
-    && printf "\n" | pecl install imagick \
-    && docker-php-ext-enable imagick \
     && pecl install mongodb \
     && echo "extension=mongodb.so" >> /usr/local/etc/php/conf.d/mongodb.ini \
     && docker-php-ext-install \

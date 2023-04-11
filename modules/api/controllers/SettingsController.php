@@ -10,10 +10,8 @@ use yii\web\ServerErrorHttpException;
 
 class SettingsController extends Controller
 {
-    protected function verbs()
-    {
+    protected function verbs(){}
 
-    }
     public function behaviors()
     {
         $behaviors = parent::behaviors();
@@ -22,7 +20,9 @@ class SettingsController extends Controller
         $auth['authMethods'] = [
             HttpBearerAuth::class
         ];
+
         unset($behaviors['authenticator']);
+
         $behaviors['cors'] = [
             'class' => Cors::class,
 
@@ -34,10 +34,12 @@ class SettingsController extends Controller
     public function actionView()
     {
         $model = Settings::find()->where(["name" => "count"])->one();
+
         if ($model === null) {
             $model = new Settings;
             $model->save();
             $model = Settings::find()->where(["name" => "count"])->one();
+
             return $model;
         }
 
@@ -47,7 +49,7 @@ class SettingsController extends Controller
     {
         $model = Settings::findOne($id);
 
-        if($model->load(Yii::$app->getRequest()->getQueryParams(), '') && $model->save()) {
+        if ($model->load(Yii::$app->getRequest()->getQueryParams(), '') && $model->save()) {
             return $model;
         } else {
             throw new ServerErrorHttpException('Failed to update the object for unknown reason.');

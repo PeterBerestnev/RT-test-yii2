@@ -31,11 +31,9 @@ export default {
 .list-enter-active {
     transition: all 1.5s ease;
 }
-
 .list-leave-active {
     transition: all 0.8s ease;
 }
-
 .list-enter-from,
 .list-leave-to {
     opacity: 0;

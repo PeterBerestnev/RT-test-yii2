@@ -1,9 +1,7 @@
 <?php
-
 namespace app\modules\api\models;
 
 use app\modules\api\resources\UserResource;
-
 
 /**
  * LoginForm is the model behind the login form.
@@ -13,7 +11,6 @@ use app\modules\api\resources\UserResource;
  */
 class LoginForm extends \app\models\LoginForm
 {
-
     /**
      * Finds user by [[username]]
      *

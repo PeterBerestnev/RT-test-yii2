@@ -80,31 +80,35 @@ export default defineComponent({
         async updateArticle() {
             const toastr = getToastr()
             let form_data = new FormData();
+
             if (typeof this.post.title !== "undefined" && this.titleChanged) {
                 form_data.append('title', this.post.title);
             }
+
             if (typeof this.post.text === "string" && this.post.text && this.textChanged) {
                 form_data.append('text', this.post.text);
             }
+
             if (Array.isArray(this.post.tags) && this.tagsChanged) {
                 form_data.append('tags', JSON.stringify(this.post.tags));
             }
+
             if (typeof this.post.status !== "undefined" && this.statusChanged) {
                 form_data.append('status', this.post.status);
             }
+
             if (typeof this.post.photo !== "undefined" && this.post.photo != null && this.photoChanged == true) {
                 form_data.append('photo', this.post.photo);
             }
+
             try {
                 const { status, data } = await httpClient.post('article/update', form_data, { headers: { "Content-Type": " multipart/form-data" }, params: { id: this.id } })
                 if (status == 200) {
                     this.post = data
                     toastr.success('Запись успешно сохранена')
-                    
                 }
             }
             catch (e) {
-                console.log(e)
                 e.response.data.forEach(error => {
                     toastr.error(error.message)
                 });

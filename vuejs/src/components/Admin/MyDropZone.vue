@@ -1,6 +1,6 @@
 <template>
-        <div class="p-3 myOpacity rounded " v-bind="getRootProps()">
-            <input v-bind="getInputProps()" />
+    <div class="p-3 myOpacity rounded " v-bind="getRootProps()">
+        <input v-bind="getInputProps()" />
         <div class="d-flex flex-column">
             <div class="d-flex justify-content-center">
                 <img class="size" v-if="field == null" src="../../assets/no-photo-svgrepo-com.svg">
@@ -16,6 +16,7 @@
 
 <script>
 import { useDropzone } from "vue3-dropzone"
+
 export default {
     props: ['field'],
     name: "my-drop-zone",
@@ -44,7 +45,6 @@ export default {
 .size {
     width: 150px
 }
-
 .myOpacity {
     background-color: rgba(0, 0, 0, 0.1);
     border: 1px solid black

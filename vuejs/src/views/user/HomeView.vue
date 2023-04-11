@@ -11,19 +11,16 @@ import ArticleList from '../../components/ArticleList.vue'
 
 export default {
   name: 'HomeView',
-  data() {
-    return {
-      componentKey: 0,
-    }
-  },
   components: {
     ArticleList
   },
   setup() {
     const posts = ref([])
     const stat = ref([])
+
     onMounted(async () => {
       const { status, data } = await httpClient.get('articles', { params: { status: "Опубликованно", limit: (await httpClient.get('settings/view')).data.count, sort: '-date' } })
+
       if (status === 200) {
         posts.value = data
       }

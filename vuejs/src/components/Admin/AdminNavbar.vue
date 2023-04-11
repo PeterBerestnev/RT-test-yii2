@@ -8,7 +8,6 @@
     <ul class="navbar-nav ml-auto">
       <router-link @click="logout" to="/login">
         <i class="fa-solid fa-arrow-right-from-bracket me-3 zoom"></i>
-
       </router-link>
     </ul>
   </nav>

@@ -26,7 +26,6 @@
                 </div>
             </div>
         </div>
-
     </div>
     <div class="spin justify-content-center">
         <Spinner class="align-self-center" v-if="!loaded" />
@@ -53,24 +52,22 @@ export default {
         }
     },
     async mounted() {
-
         const $cookies = inject('$cookies');
         const { status, data } = await httpClient.get('article/view', { params: { id: this.id } })
+
         if (status === 200) {
             this.loaded = true
             this.post = data
+
             if (!$cookies.isKey(this.id)) {
                 const { status, data } = await httpClient.post('article/increment-views', null, { params: { id: this.id } })
+
                 if (status === 200) {
                     $cookies.set(this.id, true)
                     this.post.views = data.views
                 }
             }
         }
-
-    },
-    watch: {
-
     },
     components: {
         Spinner

@@ -6,10 +6,8 @@ use yii\filters\Cors;
 use yii\rest\Controller;
 use app\modules\api\models\LoginForm;
 
-
 class UserController extends Controller
 {
-
     public function behaviors()
     {
         return array_merge(parent::behaviors(), [
@@ -19,13 +17,14 @@ class UserController extends Controller
 
     public function actionLogin()
     {
-
         $model = new LoginForm();
+
         if ($model->load(Yii::$app->request->post(), '') && $model->login()) {
             return $model->getUser();
         }
 
         Yii::$app->response->statusCode = 422;
+
         return [
             'errors' => $model->errors
         ];

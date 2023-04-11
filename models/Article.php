@@ -1,11 +1,9 @@
 <?php
-
 namespace app\models;
 
 use yii\helpers\Url;
 use Yii;
 use yii\mongodb\ActiveRecord;
-
 
 class Article extends ActiveRecord
 {
@@ -32,13 +30,7 @@ class Article extends ActiveRecord
     {
         return ['_id', 'title', 'text', 'photo', 'tags', 'date', 'status', 'views'];
     }
-    // public static function find()
-    // {
-    //     return new \app\models\query\ArticleQuery(get_called_class());
-    // }
-    /**
-     * {@inheritdoc}
-     */
+
     public function rules()
     {
         return [

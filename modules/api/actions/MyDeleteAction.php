@@ -1,13 +1,10 @@
 <?php
-
-
 namespace app\modules\api\actions;
 
 use Yii;
 use yii\helpers\Url;
 use yii\rest\DeleteAction;
 use yii\web\ServerErrorHttpException;
-
 
 class MyDeleteAction extends DeleteAction
 {
@@ -27,8 +24,7 @@ class MyDeleteAction extends DeleteAction
         if ($model->delete() === false) {
             throw new ServerErrorHttpException('Failed to delete the object for unknown reason.');
         }
-           
-           
+
         Yii::$app->getResponse()->setStatusCode(204);
     }
 }
