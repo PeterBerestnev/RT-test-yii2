@@ -1,9 +1,14 @@
 <template>
   <div class="container-fluid ">
     <ArticleList :posts="posts"></ArticleList>
-
-    <Paginator :size="posts.length" :listData="totalArr" @changePage="changePage">
-    </Paginator>
+    <div v-if="posts.length!=0">
+      <Paginator 
+      :totalCount="totalCount" 
+      :size="size"
+      @changePage="changePage">
+      </Paginator>
+    </div>
+    
 
 
 
@@ -20,21 +25,22 @@ export default {
   name: 'HomeView',
   components: {
     ArticleList,
-    Paginator
+    Paginator,
   },
   setup() {
     const posts = ref([])
     const stat = ref([])
-    const totalArr = ref([])
+    const totalCount = ref([])
+    const size = ref([])
 
     onMounted(async () => {
-      await httpClient.get('article/get-count').then(res => {
-            for (let i = 1; i <= res.data; i++) {
-              totalArr.value.push(i)
-            }
+      await httpClient.get('article/get-count', { params: { status:"Опубликованно", tags: "" } }).then(res => {
+            totalCount.value = res.data
       })
-
-      const { status, data } = await httpClient.get('articles', { params: { status: "Опубликованно", limit: (await httpClient.get('settings/view')).data.count, sort: '-date' } })
+      await httpClient.get('settings/view').then(res => {
+        size.value = res.data.count
+      })
+      const { status, data } = await httpClient.get("articles", { params: { status: "Опубликованно", limit: size.value, sort: "-date" } })
 
       if (status === 200) {
         posts.value = data
@@ -42,12 +48,12 @@ export default {
     })
 
     return {
-      posts, stat, totalArr
+      posts, stat, totalCount, size
     }
   },
   methods: {
     async changePage(page) {
-      const { status, data } = await httpClient.get('articles', { params: { status: "Опубликованно", limit: (await httpClient.get('settings/view')).data.count, sort: '-date', page: page } })
+      const { status, data } = await httpClient.get('articles', { params: { status: "Опубликованно", limit: this.size, sort: '-date', page: page } })
 
       if (status === 200) {
         this.posts = data

@@ -6,6 +6,7 @@ use app\models\Article;
 use app\modules\api\actions\MyCreateAction;
 use app\modules\api\actions\MyDeleteAction;
 use app\modules\api\actions\MyUpdateAction;
+use yii\data\ActiveDataProvider;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\Cors;
 use yii\rest\ActiveController;
@@ -80,10 +81,20 @@ class ArticleController extends ActiveController
         return $model;
     }
 
-    public function actionGetCount()
+    public function actionGetCount($status, $tags)
     {
-        $model = Article::find()->count();
-        
-        return $model;
+        if($status == ''){
+            $query = Article::find()->count();
+        } else if ($status != '' && $tags == ''){
+            $query = Article::find()->where(['status' => $status])->count();
+        }else if($status != '' && $tags != ''){
+            $query = Article::find()->andWhere(['status' => $status])->andWhere(['tags' => $tags])->count();
+        }else if ($status == '' && $tags != ''){
+            $query = Article::find()->where(['tags' => $tags])->count();
+        }else if ($status == '' && $tags == ''){
+            $query = Article::find()->count();
+        }
+
+        return $query;
     }
 }

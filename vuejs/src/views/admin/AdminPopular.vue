@@ -14,40 +14,81 @@
         </div>
         {{ date }}
     </div>
-    <section class="content">
+    <section  class="content">
         <div>
             <ArticleList :posts="articles"></ArticleList>
         </div>
+            <Paginator v-if="loaded"
+            :totalCount="totalCount" 
+            :size="size" 
+            @changePage="changePage">
+            </Paginator>
+            <div class="d-flex justify-content-center">
+                <Spinner class="align-self-center" v-if="!loaded" />
+            </div>
     </section>
+   
 </template>
 
 <script>
-import httpClient from '@/services/http.service'
-import { getYesterdayDate } from '@/scripts/getYesterday'
-import ArticleList from '../../components/ArticleList.vue'
+import httpClient from "@/services/http.service"
+import { getYesterdayDate } from "@/scripts/getYesterday"
+import ArticleList from "../../components/ArticleList.vue"
+import Paginator from "../../components/Pagination.vue"
+import Spinner from "../../components/Spinner.vue"
 
 export default {
     name: "admin-popular",
     data() {
         return {
             articles: [],
-            date: ""
+            date: "",
+            totalCount: 0,
+            size: 0,
+            loaded: false
         }
     },
     components: {
-        ArticleList
+        ArticleList,
+        Paginator,
+        Spinner
     },
     async mounted() {
+            
+        await httpClient.get('article/get-count', { params: { status: "", tags:"" } }).then(res => {
+            this.totalCount = res.data
+        })
+
+        await httpClient.get('settings/view').then(res => {
+            this.size = res.data.count
+        })
+
         let dateTime = getYesterdayDate()
+
         try {
-            const { status, data } = await httpClient.get('articles', { params: { sort: "-views", status: "Опубликованно", date: dateTime } })
+            const { status, data } = await httpClient.get('articles', { params: { sort: "-views", status: "", date: dateTime, limit: this.size } })
             if (status === 200) {
                 this.articles = data
+                this.loaded = true
             }
         }
         catch (e) {
             console.log(e)
         }
-    }
+    },
+    methods: {
+        async changePage(page) {
+            const { status, data } = await httpClient.get('articles', { params: { status: "", limit: this.size, page: page } })
+
+            if (status === 200) {
+                this.articles = data
+                
+            }
+        },
+    },
 }
 </script>
+
+<style>
+
+</style>

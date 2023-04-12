@@ -45,7 +45,7 @@
                 </div>
                 <div v-show="changeTags">
                     <input ref="tags" v-model="tagString" @blur="setTags" type="text" class="form-control mt-2"
-                        placeholder="Введите тэги разделяя их '#' без пробелов">
+                        placeholder="Введите тэги разделяя их запятую">
                 </div>
             </div>
         </div>
@@ -80,7 +80,7 @@ export default {
         },
         focusOnTags() {
             if (this.post.tags) {
-                this.tagString = this.post.tags.join('#')
+                this.tagString = this.post.tags.join(',')
             }
             this.changeTags = true
             this.$nextTick(() => {
@@ -94,7 +94,7 @@ export default {
         },
         setTags() {
             if (this.tagString != "") {
-                let tags = this.tagString.split('#');
+                let tags = this.tagString.split(',');
                 this.$emit('setTags', tags)
             }
             this.changeTags = false

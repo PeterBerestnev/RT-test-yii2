@@ -13,23 +13,36 @@
             </div>
         </div>
     </div>
-    <section class="content">
+    <section  class="content">
         <div>
             <ArticleList :posts="articles" @deleteItem="deleteItem">
             </ArticleList>
         </div>
+            <Paginator v-if="loaded"
+            :totalCount="totalCount" 
+            :size="size" 
+            @changePage="changePage">
+            </Paginator>
+            <div class="d-flex justify-content-center">
+                <Spinner class="align-self-center" v-if="!loaded" />
+            </div>
     </section>
 </template>
 
 <script>
 import httpClient from '@/services/http.service'
 import ArticleList from '../../components/ArticleList.vue'
+import Paginator from "../../components/Pagination.vue"
+import Spinner from "../../components/Spinner.vue"
 
 export default {
     name: "admin-panel-main",
     data() {
         return {
-            articles: []
+            articles: [],
+            totalCount: 0,
+            size: 0,
+            loaded: false
         }
     },
     methods: {
@@ -44,21 +57,38 @@ export default {
             catch (e) {
                 console.log(e)
             }
-        }
-    },
-    components: {
-        ArticleList
-    },
-    async mounted() {
-        try {
-            const { status, data } = await httpClient.get('articles')
+        },
+        async changePage(page) {
+            const { status, data } = await httpClient.get('articles', { params: { status: "", limit: this.size, page: page } })
+
             if (status === 200) {
                 this.articles = data
+            }
+        },
+    },
+    components: {
+        ArticleList,
+        Paginator,
+        Spinner
+    },
+    async mounted() {
+        await httpClient.get('article/get-count',{ params: { status:"", tags: ""} }).then(res => {
+            this.totalCount = res.data
+        })
+        await httpClient.get('settings/view').then(res => {
+            this.size = res.data.count
+        })
+
+        try {
+            const { status, data } = await httpClient.get('articles', { params: { limit: this.size, status: "" } })
+            if (status === 200) {
+                this.articles = data
+                this.loaded = true
             }
         }
         catch (e) {
             console.log(e)
         }
-    }
+    },
 }
 </script>
