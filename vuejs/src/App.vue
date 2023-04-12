@@ -35,4 +35,7 @@ export default {
     padding: 0;
     margin: 0;
 }
+.sl-none{
+    user-select: none
+}
 </style>

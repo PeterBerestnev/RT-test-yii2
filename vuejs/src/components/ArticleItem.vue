@@ -3,7 +3,7 @@
         <div class="card-header">
             <div class="d-flex flex-row justify-content-between"
                 v-if="isAuth && this.$route.name == 'admin-panel-main' || this.$route.name == 'admin-popular'">
-                <router-link :to="{ name: 'admin-update-article', query: { id: post._id } }">
+                <router-link class="sl-none" :to="{ name: 'admin-update-article', query: { id: post._id } }">
                     <h2>
                         <strong>
                             {{ post.title }}
@@ -15,7 +15,7 @@
                 <div v-else-if="this.$route.name == 'admin-popular'" class="fa-solid fa-eye ms-auto align-self-center">{{ ' ' + post.views }}</div>
             </div>
             <div v-else>
-                <router-link :to="{ name: 'article-main', query: { id: post._id } }">
+                <router-link class="sl-none" :to="{ name: 'article-main', query: { id: post._id } }">
                     <h2>
                         <strong>
                             {{ post.title }}
@@ -25,8 +25,8 @@
             </div>
         </div>
         <div class="d-flex flex-column card-body"><!--justify-content-between align-items-center-->
-            <img class="rounded border image-fluid  " v-if="post.photo" :src="post.photo">
-            <img v-else class="rounded border image-fluid  " src="../assets/no-photo-svgrepo-com.svg">
+            <img class="rounded border image-fluid sl-none" v-if="post.photo" :src="post.photo">
+            <img v-else class="rounded border image-fluid sl-none" src="../assets/no-photo-svgrepo-com.svg">
         </div>
     </div>
 </template>
@@ -64,4 +64,6 @@ export default {
 .fa-xmark:hover {
     opacity: 0.8;
     cursor: pointer;
-}</style>
+}
+
+</style>

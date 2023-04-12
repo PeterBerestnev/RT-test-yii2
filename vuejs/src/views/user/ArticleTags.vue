@@ -14,14 +14,17 @@
                 </div>
             </div>
             <ArticleList :posts="posts"></ArticleList>
+            <Paginator v-if="posts.length!=0" :totalCount="totalCount" :size="size" @changePage="changePage">
+            </Paginator>
         </div>
     </Suspense>
 </template>
   
 <script>
-import { onMounted, ref } from "vue";
+import { onMounted, ref } from "vue"
 import httpClient from '@/services/http.service'
 import ArticleList from '../../components/ArticleList.vue'
+import Paginator from "../../components/Pagination.vue"
 
 export default {
     name: 'ArticleTags',
@@ -32,14 +35,26 @@ export default {
         },
     },
     components: {
-        ArticleList
+        ArticleList,
+        Paginator
     },
     setup(props) {
         const posts = ref([])
         const stat = ref([])
+        const totalCount = ref([])
+        const size = ref([])
+
         onMounted(async () => {
+
+            await httpClient.get('article/get-count', { params: { status: "Опубликованно", tags: props.tags } }).then(res => {
+                totalCount.value = res.data
+            })
+            await httpClient.get('settings/view').then(res => {
+                size.value = res.data.count
+            })
+
             if (props.tags) {
-                const { status, data } = await httpClient.get('articles', { params: { status: "Опубликованно", tags: props.tags, limit: (await httpClient.get('settings/view')).data.count, sort: '-date' } })
+                const { status, data } = await httpClient.get('articles', { params: { status: "Опубликованно", tags: props.tags, limit: size.value, sort: '-date' } })
 
                 if (status === 200) {
                     posts.value = data
@@ -47,9 +62,18 @@ export default {
             }
         })
         return {
-            posts, stat
+            posts, stat, totalCount, size
         }
     },
+    methods: {
+        async changePage(page) {
+            const { status, data } = await httpClient.get('articles', { params: { status: "Опубликованно",tags: this.tags, limit: this.size, sort: '-date', page: page } })
+
+            if (status === 200) {
+                this.posts = data
+            }
+        },
+    }
 }
 </script>
   
