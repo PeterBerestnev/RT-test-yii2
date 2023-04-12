@@ -6,7 +6,9 @@ build:
 
 .PHONY: up
 up:
-	docker-compose up
+	docker-compose up -d
+	docker-compose exec mongodb mongosh my_database --f ./migrations/init.js
+	docker-compose exec mongodb mongosh my_database --f ./migrations/admin.js
 
 .PHONY: stop
 stop:
@@ -15,10 +17,5 @@ stop:
 .PHONY: rm
 rm:
 	docker-compose rm
-
-.PHONY: prepare
-prepare:
-	docker-compose exec mongodb mongosh my_database --f ./migrations/init.js
-	docker-compose exec mongodb mongosh my_database --f ./migrations/admin.js
 
 .DEFAULT_GOAL := build
