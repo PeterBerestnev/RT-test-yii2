@@ -21,7 +21,7 @@ class ArticleController extends ActiveController
     {
         $behaviors = parent::behaviors();
         $auth = $behaviors['authenticator'];
-        $auth['except'] = ['view', 'index', 'increment-views'];
+        $auth['except'] = ['view', 'index', 'increment-views', 'get-count'];
         $auth['authMethods'] = [
             HttpBearerAuth::class
         ];
