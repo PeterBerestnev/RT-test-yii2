@@ -1,7 +1,12 @@
 <template>
   <div class="container-fluid ">
     <ArticleList :posts="posts"></ArticleList>
-    <Paginator v-if="totalCount" :size="posts.length" :listData="totalCount " ></Paginator>
+
+    <Paginator :size="posts.length" :listData="totalArr" @changePage="changePage">
+    </Paginator>
+
+
+
   </div>
 </template>
 
@@ -20,21 +25,34 @@ export default {
   setup() {
     const posts = ref([])
     const stat = ref([])
-    const totalCount = ref([])
-    
+    const totalArr = ref([])
+
     onMounted(async () => {
-      const { count } = await httpClient.get('article/get-count')
-      totalCount.value = count
+      await httpClient.get('article/get-count').then(res => {
+            for (let i = 1; i <= res.data; i++) {
+              totalArr.value.push(i)
+            }
+      })
+
       const { status, data } = await httpClient.get('articles', { params: { status: "Опубликованно", limit: (await httpClient.get('settings/view')).data.count, sort: '-date' } })
 
       if (status === 200) {
         posts.value = data
       }
     })
-    
+
     return {
-      posts, stat, totalCount
+      posts, stat, totalArr
     }
   },
+  methods: {
+    async changePage(page) {
+      const { status, data } = await httpClient.get('articles', { params: { status: "Опубликованно", limit: (await httpClient.get('settings/view')).data.count, sort: '-date', page: page } })
+
+      if (status === 200) {
+        this.posts = data
+      }
+    },
+  }
 }
 </script>
