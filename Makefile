@@ -1,7 +1,5 @@
 .PHONY: build
 build:
-	cd ./vuejs && npm install
-	composer install
 	docker-compose build
 
 .PHONY: up

@@ -9,8 +9,8 @@ services:
             - php-fpm
         ports:
             - 8080:80
-        volumes:
-            - ./:/var/www:rw
+        # volumes:
+        #     - ./:/var/www:rw
         restart: always
 
     node:
@@ -21,16 +21,16 @@ services:
             - 80:8080
         depends_on:
             - php-fpm
-        volumes:
-            - ./vuejs:/usr/src/app:rw
+        # volumes:
+        #     - ./vuejs:/usr/src/app:rw
         restart: always
 
     php-fpm:
         build:
             context: .
             dockerfile: ./docker/php-fpm/Dockerfile
-        volumes:
-            - ./:/var/www:rw
+        # volumes:
+        #     - ./:/var/www:rw
         user: ${UID}:${GID}
         restart: always
 
