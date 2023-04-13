@@ -32,5 +32,5 @@ WORKDIR /var/www
 
 #Эта строка может быть не корректной
 COPY ./ ./
-
+RUN cd web && chmod 777 img
 RUN  composer install
