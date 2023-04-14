@@ -31,7 +31,6 @@ class ArticleController extends ActiveController
 
         $behaviors['cors'] = [
             'class' => Cors::class,
-
         ];
         $behaviors['authenticator'] = $auth;
 

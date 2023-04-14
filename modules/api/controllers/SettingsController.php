@@ -25,7 +25,6 @@ class SettingsController extends Controller
 
         $behaviors['cors'] = [
             'class' => Cors::class,
-
         ];
         $behaviors['authenticator'] = $auth;
 

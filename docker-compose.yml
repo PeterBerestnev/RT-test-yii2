@@ -16,13 +16,13 @@ services:
     node:
         build:
             context: .
-            dockerfile: ./docker/node-12/Dockerfile
+            dockerfile: ./docker/node/Dockerfile
         ports:
             - 80:8080
         depends_on:
             - php-fpm
         volumes:
-            - ./vuejs:/usr/src/app:rw
+            - ./vuejs/src:/usr/src/app/src:rw
         restart: always
 
     php-fpm:
@@ -37,5 +37,5 @@ services:
     mongodb:
         build:
             context: .
-            dockerfile: ./docker/mongodb-latest/Dockerfile
+            dockerfile: ./docker/mongodb/Dockerfile
         restart: always

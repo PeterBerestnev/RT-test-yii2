@@ -12,7 +12,9 @@
                 </router-link>
                 <div @click="deleteItem" v-if="this.$route.name == 'admin-panel-main'" class="fa-solid fa-xmark mt-2 fs-3">
                 </div>
-                <div v-else-if="this.$route.name == 'admin-popular'" class="fa-solid fa-eye ms-auto align-self-center">{{ ' ' + post.views }}</div>
+                <div v-else-if="this.$route.name == 'admin-popular'" class="fa-solid fa-eye align-self-center d-flex ms-2">
+                    <div class="ms-1">{{ post.views }}</div>
+                </div>
             </div>
             <div v-else>
                 <router-link class="sl-none" :to="{ name: 'article-main', query: { id: post._id } }">

@@ -7,7 +7,9 @@
                         {{ post.title }}
                     </strong>
                 </h1>
-                <div class="fa-solid fa-eye ms-auto align-self-center">{{ ' ' + post.views }}</div>
+                <div class="fa-solid fa-eye ms-auto d-flex align-self-center">
+                    <div class="ms-1">{{ post.views }}</div>
+                </div>
             </div>
             <div class="card-body">
                 <img v-if="post.photo" class="rounded img-fluid border w-100" :src="post.photo">

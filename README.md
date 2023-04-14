@@ -3,19 +3,9 @@
 * make
 * docker v23.0.3
 * docker-compose v2.17.2
-* php v8.1
-* composer v2.5.5
-* node js v18.13
-* npm v8.19.3
-
-## Установка расширений для php
-~~~
-sudo apt-get install php8.1-mongodb
-sudo apt-get install php8.1-dom
-sudo apt-get install php8.1-curl
-~~~
 
 ## Запуск в dev режиме
+В файле .env необходимо задать GID и UID текущего пользователя
 ~~~
 make
 make up

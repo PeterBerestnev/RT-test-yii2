@@ -48,11 +48,16 @@ class ArticleSearch extends Article
                 'pageSize' => $this->limit
             ],
         ]);
-
+        
         if (!$this->validate()) {
             return $dataProvider;
         }
 
+        if($this->date != null){
+            if($this->date !== Yii::$app->formatter->asDatetime('now', 'short'))
+            str_replace(",",", ",$this->date);
+        }
+        
         if ($params) {
             $query->andFilterWhere(['status' => $this->status])
                 ->andFilterWhere(['tags' => $this->tags])
