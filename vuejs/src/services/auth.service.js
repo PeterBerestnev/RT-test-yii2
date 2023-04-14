@@ -9,6 +9,7 @@ const authService = {
                 this.setUser(data)
                 return { success: true }
             }
+            
         }
         catch (e) {
             return { success: false, errors: e.response.data.errors }
