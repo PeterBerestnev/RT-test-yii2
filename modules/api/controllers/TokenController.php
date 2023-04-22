@@ -31,10 +31,10 @@ class TokenController extends Controller
         $token = $config->builder()
             ->issuedBy(Yii::$app->request->hostInfo)
             ->permittedFor(Yii::$app->request->hostInfo)
-            ->identifiedBy('64425cb31c2d42406fab3118')// _id пользователя
+            ->identifiedBy($user->_id)// _id пользователя
             ->issuedAt($now)
             ->expiresAt($now->modify('+1 hour'))
-            ->withClaim('username', 'Peter') // Имя пользователя
+            ->withClaim('username', $user->username) // Имя пользователя
             ->getToken($config->signer(), $config->signingKey());
 
             $response = Yii::$app->getResponse();

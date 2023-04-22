@@ -13,6 +13,16 @@ use yii\web\IdentityInterface;
  */
 class User extends  ActiveRecord implements IdentityInterface
 {
+
+    const SCENARIO_LOGIN = 'login'; // define the scenario constant
+
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_LOGIN] = ['username', 'password_hash']; // define the fields for the scenario
+        return $scenarios;
+    }
+
     public function attributes()
     {
         return ['_id', 'username', 'email', 'password_hash', 'authKey', 'access_token'];
@@ -33,11 +43,16 @@ class User extends  ActiveRecord implements IdentityInterface
         $jwt = \Yii::$app->jwt;
         try {
             $data = $jwt->getParser()->parse((string) $token); // Parses from a string
-            $userId = $data->getClaim('sub');
+            $userId = $data->claims()->get('sub');
             return static::findOne(['_id' => $userId]);
         } catch (\Exception $e) {
             return null;
         }
+    }
+
+    public static function findByUsername($username)
+    {
+        return self::find()->andWhere(['username' => $username])->one();
     }
 
     public function getId()
@@ -53,5 +68,9 @@ class User extends  ActiveRecord implements IdentityInterface
     public function validateAuthKey($authKey)
     {
         return $this->authKey === $authKey;
+    }
+    public function validatePassword($password)
+    {
+        return \Yii::$app->security->validatePassword($password,$this->password_hash);
     }
 }

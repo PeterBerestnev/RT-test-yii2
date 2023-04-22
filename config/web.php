@@ -49,7 +49,10 @@ $config = [
         'jwt' => [
             'class' => \bizley\jwt\Jwt::class,
             'signer' => 'HS256',
-            'signingKey' => '11381bffc704ecefae61591ab6cdcd77b1bfc6e4a8adeaf33db36fdcaa6443b1' 
+            'signingKey' => '11381bffc704ecefae61591ab6cdcd77b1bfc6e4a8adeaf33db36fdcaa6443b1' ,
+            'validationConstraints' => [
+                new \Lcobucci\JWT\Validation\Constraint\IssuedBy('http://localhost:8080'),
+            ],
         ],
         'mongodb' => [
             'class' => '\yii\mongodb\Connection',

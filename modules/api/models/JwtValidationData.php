@@ -4,7 +4,7 @@
 namespace app\modules\api\models;
 use Yii;
 
-class JwtValidationData extends \sizeg\jwt\Jwt
+class JwtValidationData extends \bizley\jwt\Jwt
 {
  
  /**
@@ -12,9 +12,8 @@ class JwtValidationData extends \sizeg\jwt\Jwt
 */
     public function init()
  { 
- $this->validationData->setIssuer('http://example.com');
- $this->validationData->setAudience('http://example.org');
- $this->validationData->setId('4f1g23a12aa');
+ $this->validationData->setIssuer(Yii::$app->request->hostInfo);
+ $this->validationData->setAudience(Yii::$app->request->hostInfo);
 
  parent::init();
  }

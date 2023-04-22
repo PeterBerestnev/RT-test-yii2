@@ -21,19 +21,22 @@ class ArticleController extends ActiveController
     public function behaviors()
     {
         $behaviors = parent::behaviors();
-        $auth = $behaviors['authenticator'];
-        $auth['except'] = ['view', 'index', 'increment-views', 'get-count'];
-        $auth['authMethods'] = [
-            HttpBearerAuth::class
+
+        $behaviors['authenticator'] = [
+            'class' => \bizley\jwt\JwtHttpBearerAuth::class,
+            'except' => ['view', 'index', 'increment-views', 'get-count'],
         ];
-
+    
+        $auth = $behaviors['authenticator'];
+    
         unset($behaviors['authenticator']);
-
+    
         $behaviors['cors'] = [
             'class' => Cors::class,
         ];
+    
         $behaviors['authenticator'] = $auth;
-
+    
         return $behaviors;
     }
     public function actions()
@@ -51,7 +54,7 @@ class ArticleController extends ActiveController
             'checkAccess' => [$this, 'checkAccess'],
             'scenario' => $this->updateScenario,
         ];
-        $defaultActions['dalete'] = [
+        $defaultActions['delete'] = [
             'class' => MyDeleteAction::class,
             'modelClass' => $this->modelClass,
             'checkAccess' => [$this, 'checkAccess'],
