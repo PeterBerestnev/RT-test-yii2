@@ -10,7 +10,7 @@ $config = [
     'language' => 'ru',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
+        '@npm' => '@vendor/npm-asset',
     ],
     'components' => [
         'request' => [
@@ -46,7 +46,11 @@ $config = [
                 ],
             ],
         ],
-        'db' => $db,
+        'jwt' => [
+            'class' => \bizley\jwt\Jwt::class,
+            'signer' => 'HS256',
+            'signingKey' => '11381bffc704ecefae61591ab6cdcd77b1bfc6e4a8adeaf33db36fdcaa6443b1' 
+        ],
         'mongodb' => [
             'class' => '\yii\mongodb\Connection',
             'dsn' => 'mongodb://mongodb:27017/my_database',
@@ -60,7 +64,7 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 [
-                    'class' => \yii\rest\UrlRule::class, 
+                    'class' => \yii\rest\UrlRule::class,
                     'controller' => ['api/article'],
                 ]
             ],
@@ -70,6 +74,16 @@ $config = [
         'api' => [
             'class' => \app\modules\api\Module::class
         ],
+        // 'v1' => [
+        //     'class' => 'app\modules\v1\Module',
+        //     'as jwt' => [
+        //         'class' => bizley\jwt\Jwt::class,
+        //         'identityClass' => 'app\models\User',
+        //         'jwtOptions' => [
+        //             'leeway' => 60,
+        //         ]
+        //     ]
+        // ]
     ],
     'params' => $params,
 ];
@@ -86,7 +100,7 @@ if (YII_ENV_DEV) {
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
-        
+
         // uncomment the following to add your IP if you are not connecting from localhost.
         'allowedIPs' => ['172.19.0.1', '::1'],
     ];

@@ -1,7 +1,9 @@
 <?php
 namespace app\models;
 
+use Yii;
 use yii\mongodb\ActiveRecord;
+use yii\web\IdentityInterface;
 /**
  * Class User
  * 
@@ -9,7 +11,7 @@ use yii\mongodb\ActiveRecord;
  * 
  * @property string $password_hash
  */
-class User extends  ActiveRecord implements \yii\web\IdentityInterface
+class User extends  ActiveRecord implements IdentityInterface
 {
     public function attributes()
     {
@@ -21,64 +23,35 @@ class User extends  ActiveRecord implements \yii\web\IdentityInterface
         return 'user';
     }
     
-    /**
-     * {@inheritdoc}
-     */
-    public static function findIdentity($_id)
+    public static function findIdentity($id)
     {
-        return self::findOne($_id);
+        return static::findOne(['_id' => $id]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        return self::find()->andWhere(['access_token' => $token])->one();
+        $jwt = \Yii::$app->jwt;
+        try {
+            $data = $jwt->getParser()->parse((string) $token); // Parses from a string
+            $userId = $data->getClaim('sub');
+            return static::findOne(['_id' => $userId]);
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
-    /**
-     * Finds user by username
-     *
-     * @param string $username
-     */
-    public static function findByUsername($username)
-    {
-        return self::find()->andWhere(['username' => $username])->one();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getId()
     {
-        return $this->getPrimaryKey();
+        return (string) $this->_id;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getAuthKey()
     {
-        return null;
+        return $this->authKey;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function validateAuthKey($authKey)
     {
-        return false;
-    }
-
-    /**
-     * Validates password
-     *
-     * @param string $password password to validate
-     * @return bool if password provided is valid for current user
-     */
-    public function validatePassword($password)
-    {
-        return \Yii::$app->security->validatePassword($password,$this->password_hash);
+        return $this->authKey === $authKey;
     }
 }
