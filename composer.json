@@ -15,8 +15,7 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=7.4.0",
-        "lcobucci/jwt": "5",
-        "bizley/jwt": "^4.1"
+        "sizeg/yii2-jwt": "^2.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

@@ -47,12 +47,8 @@ $config = [
             ],
         ],
         'jwt' => [
-            'class' => \bizley\jwt\Jwt::class,
-            'signer' => 'HS256',
-            'signingKey' => '11381bffc704ecefae61591ab6cdcd77b1bfc6e4a8adeaf33db36fdcaa6443b1' ,
-            'validationConstraints' => [
-                new \Lcobucci\JWT\Validation\Constraint\IssuedBy('http://localhost:8080'),
-            ],
+            'class' => \sizeg\jwt\Jwt::class,
+            'key' => 'secret',
         ],
         'mongodb' => [
             'class' => '\yii\mongodb\Connection',
@@ -77,16 +73,6 @@ $config = [
         'api' => [
             'class' => \app\modules\api\Module::class
         ],
-        // 'v1' => [
-        //     'class' => 'app\modules\v1\Module',
-        //     'as jwt' => [
-        //         'class' => bizley\jwt\Jwt::class,
-        //         'identityClass' => 'app\models\User',
-        //         'jwtOptions' => [
-        //             'leeway' => 60,
-        //         ]
-        //     ]
-        // ]
     ],
     'params' => $params,
 ];

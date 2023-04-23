@@ -40,12 +40,10 @@ class User extends  ActiveRecord implements IdentityInterface
 
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        $jwt = \Yii::$app->jwt;
-        try {
-            $data = $jwt->getParser()->parse((string) $token); // Parses from a string
-            $userId = $data->claims()->get('sub');
-            return static::findOne(['_id' => $userId]);
-        } catch (\Exception $e) {
+        $user = self::findOne(['_id' => (string) $token->getClaim('uid')]);
+        if ($user !== null) {
+            return new static($user->attributes);
+        } else {
             return null;
         }
     }

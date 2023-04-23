@@ -1,14 +1,8 @@
 <?php
-declare(strict_types=1);
 namespace app\modules\api\controllers;
 
-use Lcobucci\JWT\Signer\Key\InMemory;
-use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Yii;
 use yii\rest\Controller;
-use bizley\jwt\JwtHttpBearerAuth;
-use Lcobucci\JWT\Configuration;
-use yii\web\Response;
 use yii\filters\Cors;
 use app\models\LoginForm;
 
@@ -27,23 +21,25 @@ class UserController extends Controller
 
         if ($model->load(Yii::$app->request->post(), '') && $model->login()) {
             $user = $model->getUser();
-            $now = new \DateTimeImmutable();
-            $config = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText(Yii::$app->jwt->signingKey));
 
-            $token = $config->builder()
-                ->issuedBy(Yii::$app->request->hostInfo)
-                ->permittedFor(Yii::$app->request->hostInfo)
-                ->identifiedBy((string)$user->_id) // _id пользователя
-                ->issuedAt($now)
-                ->canOnlyBeUsedAfter($now)
-                ->expiresAt($now->modify('+1 minute'))
-                ->withClaim('username', $user->username) // Имя пользователя
-                ->getToken($config->signer(), $config->signingKey());
 
-            $response = Yii::$app->getResponse();
-            $response->format = Response::FORMAT_JSON;
-            $response->data = ['token' => $token->toString()];
-            return $response;
+
+            $jwt = Yii::$app->jwt;
+            $signer = $jwt->getSigner('HS256');
+            $key = $jwt->getKey();
+            $time = time();
+            $token = $jwt->getBuilder()
+                // ->issuedBy('http://example.com') // Configures the issuer (iss claim)
+                // ->permittedFor('http://example.org') // Configures the audience (aud claim)
+                // ->identifiedBy('4f1g23a12aa', true) // Configures the id (jti claim), replicating as a header item
+                ->issuedAt($time) // Configures the time that the token was issue (iat claim)
+                ->expiresAt($time + 3600) // Configures the expiration time of the token (exp claim)
+                ->withClaim('uid', (string)$user->_id) // Configures a new claim, called "uid"
+                ->getToken($signer, $key); // Retrieves the generated token
+
+            return $this->asJson([
+                'token' => (string) $token,
+            ]);
         }
 
         Yii::$app->response->statusCode = 422;

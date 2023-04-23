@@ -23,7 +23,7 @@ class ArticleController extends ActiveController
         $behaviors = parent::behaviors();
 
         $behaviors['authenticator'] = [
-            'class' => \bizley\jwt\JwtHttpBearerAuth::class,
+            'class' => \sizeg\jwt\JwtHttpBearerAuth::class,
             'except' => ['view', 'index', 'increment-views', 'get-count'],
         ];
     
