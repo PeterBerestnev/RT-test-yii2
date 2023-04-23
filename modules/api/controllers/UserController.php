@@ -81,7 +81,7 @@ class UserController extends Controller
             'httpOnly' => true,
             'sameSite' => 'none',
             'secure' => true,
-            'path' => '/v1/auth/refresh-token', //endpoint URI for renewing the JWT token using this refresh-token, or deleting refresh-token
+            'path' => '/api/user/refresh-token', //endpoint URI for renewing the JWT token using this refresh-token, or deleting refresh-token
         ]));
 
         return $userRefreshToken;
@@ -103,7 +103,6 @@ class UserController extends Controller
 
             $user = \app\models\User::find() //adapt this to your needs
                 ->where(['userID' => $userRefreshToken->urf_userID])
-                ->andWhere(['not', ['usr_status' => 'inactive']])
                 ->one();
             if (!$user) {
                 $userRefreshToken->delete();

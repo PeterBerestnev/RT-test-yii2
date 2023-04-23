@@ -14,8 +14,10 @@ $config = [
     ],
     'components' => [
         'request' => [
+            'class' => \yii\web\Request::class,
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'KlihtX8t1RTZSUn5Dr9R8-6RRYfXCi1O',
+            'enableCookieValidation' => true,
             'parsers' => [
                 'application/json' => yii\web\JsonParser::class
             ]
