@@ -10,9 +10,28 @@ class UserController extends Controller
 {
     public function behaviors()
     {
-        return array_merge(parent::behaviors(), [
-            'cors' => Cors::class,
-        ]);
+        $behaviors = parent::behaviors();
+
+        $behaviors['authenticator'] = [
+			'class' => \sizeg\jwt\JwtHttpBearerAuth::class,
+			'except' => [
+				'login',
+				'refresh-token',
+				'options',
+			],
+		];
+    
+        $auth = $behaviors['authenticator'];
+    
+        unset($behaviors['authenticator']);
+    
+        $behaviors['cors'] = [
+            'class' => Cors::class,
+        ];
+    
+        $behaviors['authenticator'] = $auth;
+    
+        return $behaviors;
     }
 
     public function actionLogin()
@@ -83,12 +102,13 @@ class UserController extends Controller
             'secure' => true,
             'path' => '/api/user/refresh-token', //endpoint URI for renewing the JWT token using this refresh-token, or deleting refresh-token
         ]));
-
         return $userRefreshToken;
     }
     public function actionRefreshToken()
-    {
+    {   
+        Yii::info(Yii::$app->request->cookies->getValue('refresh-token'));
         $refreshToken = Yii::$app->request->cookies->getValue('refresh-token', false);
+        
         if (!$refreshToken) {
             return new \yii\web\UnauthorizedHttpException('No refresh token found.');
         }

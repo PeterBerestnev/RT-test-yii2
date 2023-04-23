@@ -22,7 +22,7 @@ const authService = {
     },
     setUser(user) {
         this.user = user
-        localStorage.setItem('ACCESS_TOKEN', user.access_token);
+        localStorage.setItem('ACCESS_TOKEN', user.token);
     },
     logout() {
         localStorage.removeItem('ACCESS_TOKEN')
