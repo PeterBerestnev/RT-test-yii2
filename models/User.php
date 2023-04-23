@@ -4,6 +4,7 @@ namespace app\models;
 use Yii;
 use yii\mongodb\ActiveRecord;
 use yii\web\IdentityInterface;
+
 /**
  * Class User
  * 
@@ -11,7 +12,7 @@ use yii\web\IdentityInterface;
  * 
  * @property string $password_hash
  */
-class User extends  ActiveRecord implements IdentityInterface
+class User extends ActiveRecord implements IdentityInterface
 {
 
     const SCENARIO_LOGIN = 'login'; // define the scenario constant
@@ -32,17 +33,21 @@ class User extends  ActiveRecord implements IdentityInterface
     {
         return 'user';
     }
-    
+
     public static function findIdentity($id)
     {
         return static::findOne(['_id' => $id]);
     }
 
-    public static function findIdentityByAccessToken($token, $type = null) {
-		return static::find()
-			->where(['userID' => (string) $token->getClaim('uid') ])
-			->one();
-	}
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        $user = self::findOne(['_id' => (string) $token->getClaim('uid')]);
+        if ($user !== null) {
+            return new static($user->attributes);
+        } else {
+            return null;
+        }
+    }
 
     public static function findByUsername($username)
     {
@@ -65,6 +70,6 @@ class User extends  ActiveRecord implements IdentityInterface
     }
     public function validatePassword($password)
     {
-        return \Yii::$app->security->validatePassword($password,$this->password_hash);
+        return \Yii::$app->security->validatePassword($password, $this->password_hash);
     }
 }

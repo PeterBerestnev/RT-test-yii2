@@ -27,7 +27,6 @@ class UserController extends Controller
             $this->generateRefreshToken($user);
 
             return [
-                'user' => $user,
                 'token' => (string) $token,
             ];
         }

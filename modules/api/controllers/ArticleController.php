@@ -6,8 +6,6 @@ use app\models\Article;
 use app\modules\api\actions\MyCreateAction;
 use app\modules\api\actions\MyDeleteAction;
 use app\modules\api\actions\MyUpdateAction;
-use yii\data\ActiveDataProvider;
-use yii\filters\auth\HttpBearerAuth;
 use yii\filters\Cors;
 use yii\rest\ActiveController;
 use yii\web\ServerErrorHttpException;
