@@ -38,15 +38,11 @@ class User extends  ActiveRecord implements IdentityInterface
         return static::findOne(['_id' => $id]);
     }
 
-    public static function findIdentityByAccessToken($token, $type = null)
-    {
-        $user = self::findOne(['_id' => (string) $token->getClaim('uid')]);
-        if ($user !== null) {
-            return new static($user->attributes);
-        } else {
-            return null;
-        }
-    }
+    public static function findIdentityByAccessToken($token, $type = null) {
+		return static::find()
+			->where(['userID' => (string) $token->getClaim('uid') ])
+			->one();
+	}
 
     public static function findByUsername($username)
     {

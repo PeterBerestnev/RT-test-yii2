@@ -48,7 +48,8 @@ $config = [
         ],
         'jwt' => [
             'class' => \sizeg\jwt\Jwt::class,
-            'key' => 'secret',
+            'key' => 'SECRET-KEY',  //typically a long random string
+            'jwtValidationData' => \app\modules\api\components\JwtValidationData::class,
         ],
         'mongodb' => [
             'class' => '\yii\mongodb\Connection',
