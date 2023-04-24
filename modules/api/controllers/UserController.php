@@ -106,14 +106,15 @@ class UserController extends Controller
     }
     public function actionRefreshToken()
     {   
-        Yii::info(Yii::$app->request->cookies->getValue('refresh-token'));
+        
         $refreshToken = Yii::$app->request->cookies->getValue('refresh-token', false);
         
         if (!$refreshToken) {
             return new \yii\web\UnauthorizedHttpException('No refresh token found.');
         }
-
-        $userRefreshToken = \app\modules\api\models\RefreshToken::findOne(['urf_token' => $refreshToken]);
+        
+        echo $refreshToken;
+        $userRefreshToken = \app\modules\api\models\RefreshToken::findOne(['urf_token' => '$refreshToken']);
 
         if (Yii::$app->request->getMethod() == 'POST') {
             // Getting new JWT after it has expired

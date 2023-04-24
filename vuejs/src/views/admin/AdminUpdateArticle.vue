@@ -109,9 +109,7 @@ export default defineComponent({
                 }
             }
             catch (e) {
-                e.response.data.forEach(error => {
-                    toastr.error(error.message)
-                });
+                    toastr.error(e.response.data.message)
             }
         },
     },
