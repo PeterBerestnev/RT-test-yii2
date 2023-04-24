@@ -14,6 +14,19 @@ const authService = {
             return { success: false, errors: e.response.data.errors }
         }
     },
+    async refreshToken() {
+        try {
+            const { status, data } = await axios.post('http://localhost:8080/api/user/refresh-token', { withCredentials: true })
+            if (status === 200) {
+                this.setUser(data)
+                console.log(data)
+                return { success: true }
+            }
+        }
+        catch (e) {
+            return { success: false, errors: e.response.data.errors }
+        }
+    },
     isLoggedIn() {
         return !!localStorage.getItem('ACCESS_TOKEN')
     },
@@ -21,6 +34,7 @@ const authService = {
         return localStorage.getItem('ACCESS_TOKEN')
     },
     setUser(user) {
+        console.log(user)
         this.user = user
         localStorage.setItem('ACCESS_TOKEN', user.token);
     },

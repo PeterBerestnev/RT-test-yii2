@@ -8,31 +8,23 @@ use app\models\LoginForm;
 
 class UserController extends Controller
 {
-    public function behaviors()
-    {
-        $behaviors = parent::behaviors();
 
-        $behaviors['authenticator'] = [
-			'class' => \sizeg\jwt\JwtHttpBearerAuth::class,
-			'except' => [
-				'login',
-				'refresh-token',
-				'options',
-			],
-		];
+    public function behaviors()
+{
+    $behaviors = parent::behaviors();
+
+    $behaviors['cors'] = [
+        'class' => Cors::class,
+        'cors' => [
+
+            'Access-Control-Request-Method' => ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS'],
+            'Access-Control-Allow-Credentials' => true,
+            'Access-Control-Allow-Origin' => isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '',
+        ],
+    ];
     
-        $auth = $behaviors['authenticator'];
-    
-        unset($behaviors['authenticator']);
-    
-        $behaviors['cors'] = [
-            'class' => Cors::class,
-        ];
-    
-        $behaviors['authenticator'] = $auth;
-    
-        return $behaviors;
-    }
+    return $behaviors;
+}
 
     public function actionLogin()
     {
@@ -105,16 +97,13 @@ class UserController extends Controller
         return $userRefreshToken;
     }
     public function actionRefreshToken()
-    {   
-        
+    {
+
         $refreshToken = Yii::$app->request->cookies->getValue('refresh-token', false);
-        
         if (!$refreshToken) {
             return new \yii\web\UnauthorizedHttpException('No refresh token found.');
         }
-        
-        echo $refreshToken;
-        $userRefreshToken = \app\modules\api\models\RefreshToken::findOne(['urf_token' => '$refreshToken']);
+        $userRefreshToken = \app\modules\api\models\RefreshToken::findOne(['urf_token' => $refreshToken]);
 
         if (Yii::$app->request->getMethod() == 'POST') {
             // Getting new JWT after it has expired
@@ -123,7 +112,7 @@ class UserController extends Controller
             }
 
             $user = \app\models\User::find() //adapt this to your needs
-                ->where(['userID' => $userRefreshToken->urf_userID])
+                ->where(['_id' => $userRefreshToken->urf_userID])
                 ->one();
             if (!$user) {
                 $userRefreshToken->delete();

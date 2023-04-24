@@ -31,6 +31,10 @@ class ArticleController extends ActiveController
     
         $behaviors['cors'] = [
             'class' => Cors::class,
+            'cors' => [
+                'Access-Control-Request-Method' => ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS'],
+                'Access-Control-Allow-Origin' => isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '',
+            ],
         ];
     
         $behaviors['authenticator'] = $auth;
