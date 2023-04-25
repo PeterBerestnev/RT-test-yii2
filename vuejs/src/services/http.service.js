@@ -23,15 +23,30 @@ httpClient.interceptors.response.use(
   },
   error => {
     const originalRequest = error.config;
-    const status = error.response ? error.response.status : false;
-    let refresh = null;
+
+    if (error.config.url === '/auth/refresh-token') {
+      console.log('REDIRECT TO LOGIN');
+      authService.logout()
+      router.push({ name: 'login' })
+    }
+
     console.log(originalRequest)
-    console.log(status)
+
     if (error.response.status === 401) {
-        refresh = authService.refreshToken()
-        console.log(refresh)
+      authService.refreshToken()
+      if (!authService.isLoggedIn()) {
+        console.log('some error acured!')
         router.push({ name: 'login' })
-      
+      }
+      else {
+        console.log('Request has been send')
+        return new Promise(resolve => {
+          // Replace the expired token with the new token and retry the original request
+          originalRequest.headers["Authorization"] = 'Bearer ' + authService.getToken();
+          resolve(axios(originalRequest));
+        });
+      }
+
     }
 
     return Promise.reject(error);
