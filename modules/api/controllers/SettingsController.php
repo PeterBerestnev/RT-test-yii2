@@ -26,8 +26,10 @@ class SettingsController extends Controller
         $behaviors['cors'] = [
             'class' => Cors::class,
             'cors' => [
+                'Origin' => ['http://localhost'],
                 'Access-Control-Request-Method' => ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS'],
                 'Access-Control-Allow-Origin' => isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '',
+                'Access-Control-Allow-Headers' => ['*'],
             ],
         ];
         $behaviors['authenticator'] = $auth;

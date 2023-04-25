@@ -1,10 +1,14 @@
 import axios from "axios"
 
+const axiosInstance = axios.create({
+    withCredentials: true,
+  });
+
 const authService = {
     user: null,
     async login(formData) {
         try {
-            const { status, data } = await axios.post('http://localhost:8080/api/user/login', formData)
+            const { status, data } = await axiosInstance.post('http://localhost:8080/api/user/login', formData)
             if (status === 200) {
                 this.setUser(data)
                 return { success: true }
@@ -16,14 +20,15 @@ const authService = {
     },
     async refreshToken() {
         try {
-            const { status, data } = await axios.post('http://localhost:8080/api/user/refresh-token', { withCredentials: true })
-            if (status === 200) {
+            const { status, data } = await axiosInstance.post('http://localhost:8080/api/user/refresh-token')
+            if (!data.statusCode  && status === 200) {
+                this.logout()
                 this.setUser(data)
-                console.log(data)
                 return { success: true }
             }
         }
         catch (e) {
+            this.logout()
             return { success: false, errors: e.response.data.errors }
         }
     },
@@ -34,7 +39,6 @@ const authService = {
         return localStorage.getItem('ACCESS_TOKEN')
     },
     setUser(user) {
-        console.log(user)
         this.user = user
         localStorage.setItem('ACCESS_TOKEN', user.token);
     },

@@ -22,12 +22,16 @@ httpClient.interceptors.response.use(
     return response;
   },
   error => {
+    const originalRequest = error.config;
+    const status = error.response ? error.response.status : false;
+    let refresh = null;
+    console.log(originalRequest)
+    console.log(status)
     if (error.response.status === 401) {
-      if(!authService.refreshToken().success){
-        console.log('itworks')
-      authService.logout()
-      router.push({ name: 'login' })
-      }
+        refresh = authService.refreshToken()
+        console.log(refresh)
+        router.push({ name: 'login' })
+      
     }
 
     return Promise.reject(error);
