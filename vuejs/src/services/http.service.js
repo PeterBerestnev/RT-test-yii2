@@ -14,6 +14,8 @@ const authInterceptor = config => {
   return config;
 };
 
+
+
 httpClient.interceptors.request.use(authInterceptor);
 
 httpClient.interceptors.response.use(
@@ -29,24 +31,21 @@ httpClient.interceptors.response.use(
       authService.logout()
       router.push({ name: 'login' })
     }
-
-    console.log(originalRequest)
-
     if (error.response.status === 401) {
-      authService.refreshToken()
-      if (!authService.isLoggedIn()) {
-        console.log('some error acured!')
-        router.push({ name: 'login' })
-      }
-      else {
-        console.log('Request has been send')
-        return new Promise(resolve => {
-          // Replace the expired token with the new token and retry the original request
-          originalRequest.headers["Authorization"] = 'Bearer ' + authService.getToken();
-          resolve(axios(originalRequest));
-        });
-      }
-
+      authService.refreshToken().then(()=>{
+        if (!authService.isLoggedIn()) {
+          console.log('some error accured!')
+          router.push({ name: 'login' })
+        }
+        else {
+          console.log('Request has been send')
+          return new Promise(resolve => {
+            // Replace the expired token with the new token and retry the original request
+            originalRequest.headers["Authorization"] = 'Bearer ' + authService.getToken();
+            resolve(axios(originalRequest));
+          });
+        }
+      })
     }
 
     return Promise.reject(error);

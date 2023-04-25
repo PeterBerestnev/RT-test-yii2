@@ -24,7 +24,7 @@
 <script>
 import httpClient from "@/services/http.service";
 import AdminCUForm from "../../components/Admin/CreateUpdateForm.vue"
-import {getToastr} from "../../scripts/toastr"
+import { getToastr } from "../../scripts/toastr"
 
 export default {
     components: {
@@ -58,8 +58,15 @@ export default {
         setTitle(data) {
             this.post.title = data
         },
+        clearTab() {
+            this.post.photo = null
+            this.post.tags = null
+            this.post.title = ""
+            this.post.text = ""
+            this.post.status = "Не опубликлванно"
+            getToastr().success('Запись успешно сохранена')
+        },
         async createArticle() {
-            const toastr = getToastr()
             let form_data = new FormData();
             if (typeof this.post.title !== "undefined") {
                 form_data.append('title', this.post.title);
@@ -79,18 +86,18 @@ export default {
             try {
                 const { status } = await httpClient.post('article/create', form_data, { headers: { "Content-Type": " multipart/form-data" } })
                 if (status == 201) {
-                    this.post.photo = null
-                    this.post.tags = null
-                    this.post.title = ""
-                    this.post.text = ""
-                    this.post.status = "Не опубликлванно"
-                    toastr.success('Запись успешно сохранена')
+                    this.clearTab()
                 }
             }
             catch (e) {
-                e.response.data.forEach(error => {
-                    toastr.error(error.message)
-                });    
+                if (e.response.data.status != 401) {
+                    e.response.data.forEach(error => {
+                        getToastr().error(error.message)
+                    });
+                }
+                else {
+                    this.clearTab()
+                }
             }
         },
     }

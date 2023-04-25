@@ -30,6 +30,10 @@
             <img class="rounded border image-fluid sl-none" v-if="post.photo" :src="post.photo">
             <img v-else class="rounded border image-fluid sl-none" src="../assets/no-photo-svgrepo-com.svg">
         </div>
+        <div class="card-footer d-flex flex-column" v-if="isAuth && this.$route.name == 'admin-panel-main' || this.$route.name == 'admin-popular'">
+            <div>{{ post.status }}</div>
+            <div>{{ post.date }}</div>
+        </div>
     </div>
 </template>
     
@@ -46,6 +50,7 @@ export default {
     data() {
         return {
             isAuth: false,
+            errorClass: 'notPublished' 
         }
     },
     methods: {
@@ -67,5 +72,4 @@ export default {
     opacity: 0.8;
     cursor: pointer;
 }
-
 </style>

@@ -105,6 +105,8 @@ export default {
         },
         createArticle() {
             this.photo = null
+            this.title = '',
+            this.tagString = '',
             this.$emit('getArticle')
         },
         setText() {

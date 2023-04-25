@@ -78,7 +78,6 @@ export default defineComponent({
             this.titleChanged = true
         },
         async updateArticle() {
-            const toastr = getToastr()
             let form_data = new FormData();
 
             if (typeof this.post.title !== "undefined" && this.titleChanged) {
@@ -105,11 +104,18 @@ export default defineComponent({
                 const { status, data } = await httpClient.post('article/update', form_data, { headers: { "Content-Type": " multipart/form-data" }, params: { id: this.id } })
                 if (status == 200) {
                     this.post = data
-                    toastr.success('Запись успешно сохранена')
+                    getToastr().success('Запись успешно сохранена')
                 }
             }
             catch (e) {
-                    toastr.error(e.response.data.message)
+                if (e.response.data.status != 401) {
+                    e.response.data.forEach(error => {
+                        getToastr().error(error.message)
+                    });
+                }
+                else {
+                    getToastr().success('Запись успешно сохранена')
+                }
             }
         },
     },
