@@ -1,8 +1,9 @@
 import axios from 'axios';
 import authService from "./auth.service";
 import router from '../router/index';
+import { getToastr } from '../scripts/toastr'
 
-const API_ENDPOINT = process.env.VUE_APP_API_ENDPOINT || 'http://localhost:8080/';
+const API_ENDPOINT = process.env.VUE_APP_URL;
 let config = {
   baseURL: `${API_ENDPOINT}api/`
 };
@@ -39,10 +40,19 @@ httpClient.interceptors.response.use(
         }
         else {
           console.log('Request has been send')
-          return new Promise(resolve => {
+          return new Promise((resolve, reject) => {
             // Replace the expired token with the new token and retry the original request
             originalRequest.headers["Authorization"] = 'Bearer ' + authService.getToken();
-            resolve(axios(originalRequest));
+            axios(originalRequest)
+              .then(response => {
+                resolve(response);
+                getToastr().success('Запись успешно сохранена')
+              })
+              .catch(error => {
+                // Display an error notification using toast
+                getToastr().error(error.response.data[0].message);
+                reject(error);
+              });
           });
         }
       })

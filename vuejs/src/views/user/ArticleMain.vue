@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <img v-if="post.photo" class="rounded img-fluid border w-100" :src="post.photo">
+                <img v-if="post.photo" class="rounded img-fluid border w-100" :src="img+post.photo">
                 <img v-else class="rounded img-fluid border w-100" src="../../assets/no-photo-svgrepo-com.svg">
                 <div class="mt-3">
                     <span v-html="post.text"> </span>
@@ -50,7 +50,8 @@ export default {
     data() {
         return {
             post: [],
-            loaded: false
+            loaded: false,
+            img:process.env.VUE_APP_IMG_URL
         }
     },
     async mounted() {

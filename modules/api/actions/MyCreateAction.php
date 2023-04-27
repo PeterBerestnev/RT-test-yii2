@@ -22,30 +22,33 @@ class MyCreateAction extends CreateAction
         $model->load(Yii::$app->getRequest()->getBodyParams(), '');
 
         if ($model->tags != null) {
-            $model->tags = json_decode($model->tags,true);
+            $model->tags = json_decode($model->tags, true);
         }
-        
+
         $image = UploadedFile::getInstanceByName('photo');
 
-        if (is_object ( $image )) { 
-			$model->photo = time() . "_" . uniqid() . '.' . $image->extension;
-			$image->saveAs('img/' . $model->photo);
-            $model->photo = Url::base(true) . '/img/' . $model->photo;
-		} 
+       
 
         if ($model->status == 'Опубликованно') {
             $model->date = Yii::$app->formatter->asDatetime('now', 'short');
         }
-
-        if ($model->save()) {
-            $response = Yii::$app->getResponse();
-            $response->setStatusCode(201);
-            $id = implode(',', $model->getPrimaryKey(true));
-            $response->getHeaders()->set('Location', Url::toRoute([$this->viewAction, 'id' => $id], true));
-        } elseif (!$model->hasErrors()) {
-            throw new ServerErrorHttpException('Failed to create the object for unknown reason.');
+        if (is_object($image)) {
+            $model->photo = $image;
         }
-
+        if ($model->validate()) {
+            if(is_object($image)){
+                $model->photo = time() . "_" . uniqid() . '.' . $image->extension;
+                $image->saveAs('img/' . $model->photo);
+            }
+            if ($model->save()) {
+                $response = Yii::$app->getResponse();
+                $response->setStatusCode(201);
+                $id = implode(',', $model->getPrimaryKey(true));
+                $response->getHeaders()->set('Location', Url::toRoute([$this->viewAction, 'id' => $id], true));
+            } elseif (!$model->hasErrors()) {
+                throw new ServerErrorHttpException('Failed to create the object for unknown reason.');
+            }
+        }
         return $model;
     }
 }

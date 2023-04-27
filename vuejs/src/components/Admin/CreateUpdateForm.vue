@@ -23,7 +23,7 @@
             </div>
             <div class="card-body">
                 <div class="d-flex">
-                    <img v-if="typeof post.photo == 'string'" :src="post.photo" class="img-fluid mb-3 w-100 rounded">
+                    <img v-if="typeof post.photo == 'string'" :src="img+post.photo" class="img-fluid mb-3 w-100 rounded">
                 </div>
                 <MyDropZone :field="post.photo" @getPhoto="setPhoto"></MyDropZone>
                 <div v-if="photo == null"><strong>Имя файла: </strong>{{ post.photo }}</div>
@@ -67,7 +67,8 @@ export default {
             changeTitle: false,
             tagString: '',
             green: true,
-            options: ["Не опубликованно", "Опубликованно"]
+            options: ["Не опубликованно", "Опубликованно"],
+            img: process.env.VUE_APP_IMG_URL
         }
     },
     methods: {

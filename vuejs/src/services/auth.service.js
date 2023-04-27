@@ -8,7 +8,8 @@ const authService = {
     user: null,
     async login(formData) {
         try {
-            const { status, data } = await axiosInstance.post('http://localhost:8080/api/user/login', formData, { headers: { "Content-Type": " multipart/form-data" }})
+            console.log(process.env)
+            const { status, data } = await axiosInstance.post(process.env.VUE_APP_URL+'api/user/login', formData, { headers: { "Content-Type": " multipart/form-data" }})
             if (status === 200) {
                 this.setUser(data)
                 return { success: true }

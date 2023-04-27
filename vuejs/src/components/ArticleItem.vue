@@ -27,12 +27,12 @@
             </div>
         </div>
         <div class="d-flex flex-column card-body"><!--justify-content-between align-items-center-->
-            <img class="rounded border image-fluid sl-none" v-if="post.photo" :src="post.photo">
+            <img class="rounded border image-fluid sl-none" v-if="post.photo" :src="img+post.photo">
             <img v-else class="rounded border image-fluid sl-none" src="../assets/no-photo-svgrepo-com.svg">
         </div>
         <div class="card-footer d-flex flex-column" v-if="isAuth && this.$route.name == 'admin-panel-main' || this.$route.name == 'admin-popular'">
-            <div>{{ post.status }}</div>
-            <div>{{ post.date }}</div>
+            <div :class="{ active: post.status == 'Опубликованно', 'text-danger': post.status != 'Опубликованно' }">{{ post.status }}</div>
+            <div v-if="post.status == 'Опубликованно'" >{{ post.date }}</div>
         </div>
     </div>
 </template>
@@ -50,7 +50,8 @@ export default {
     data() {
         return {
             isAuth: false,
-            errorClass: 'notPublished' 
+            errorClass: 'notPublished',
+            img: process.env.VUE_APP_IMG_URL 
         }
     },
     methods: {
@@ -64,12 +65,12 @@ export default {
 }
 </script>
     
-<style scoped>
-.card:hover {
-    scale: 1.02;
-}
+<style scoped> 
 .fa-xmark:hover {
     opacity: 0.8;
     cursor: pointer;
+}
+.active{
+    color: green
 }
 </style>

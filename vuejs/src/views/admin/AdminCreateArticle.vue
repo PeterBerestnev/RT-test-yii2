@@ -64,7 +64,6 @@ export default {
             this.post.title = ""
             this.post.text = ""
             this.post.status = "Не опубликлванно"
-            getToastr().success('Запись успешно сохранена')
         },
         async createArticle() {
             let form_data = new FormData();
@@ -87,6 +86,7 @@ export default {
                 const { status } = await httpClient.post('article/create', form_data, { headers: { "Content-Type": " multipart/form-data" } })
                 if (status == 201) {
                     this.clearTab()
+                    getToastr.success('Запись успешно сохранена')
                 }
             }
             catch (e) {

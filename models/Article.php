@@ -17,7 +17,7 @@ class Article extends ActiveRecord
     public function afterDelete(){
         parent::afterDelete();
         if($this->photo){
-            unlink(str_replace(Url::base(true),Yii::$app->basePath.'/web',$this->photo));
+            unlink('img/'.$this->photo);
         }
     }
 
@@ -34,11 +34,10 @@ class Article extends ActiveRecord
     public function rules()
     {
         return [
-            [['text','status'], 'string'],
+            [['text','status','title'], 'string'],
             [['title'],'required'],
-            [['title'],'unique'],
             [['date'], 'datetime','format'=>'short'],
-            [['photo'], 'image', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
+            [['photo'], 'image', 'skipOnEmpty' => true, 'extensions' => 'jpg','mimeTypes' => 'image/jpeg'],
             [['tags'],  'each', 'rule' => ['string']],
             [['views'], 'integer'],
         ];

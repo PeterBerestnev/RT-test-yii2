@@ -113,9 +113,6 @@ export default defineComponent({
                         getToastr().error(error.message)
                     });
                 }
-                else {
-                    getToastr().success('Запись успешно сохранена')
-                }
             }
         },
     },
