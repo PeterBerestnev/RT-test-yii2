@@ -29,8 +29,8 @@ class MyCreateAction extends CreateAction
 
        
 
-        if ($model->status == 'Опубликованно') {
-            $model->date = Yii::$app->formatter->asDatetime('now', 'short');
+        if ($model->status == 'Опубликовано') {
+            $model->date = Yii::$app->formatter->asDatetime('now', 'php:Y-m-d H:i:s', 'UTC');
         }
         if (is_object($image)) {
             $model->photo = $image;

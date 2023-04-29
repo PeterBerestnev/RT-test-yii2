@@ -46,7 +46,7 @@ export default {
 
         onMounted(async () => {
 
-            await httpClient.get('article/get-count', { params: { status: "Опубликованно", tags: props.tags } }).then(res => {
+            await httpClient.get('article/get-count', { params: { status: "Опубликовано", tags: props.tags } }).then(res => {
                 totalCount.value = res.data
             })
             await httpClient.get('settings/view').then(res => {
@@ -54,7 +54,7 @@ export default {
             })
 
             if (props.tags) {
-                const { status, data } = await httpClient.get('articles', { params: { status: "Опубликованно", tags: props.tags, limit: size.value, sort: '-date' } })
+                const { status, data } = await httpClient.get('articles', { params: { status: "Опубликовано", tags: props.tags, limit: size.value, sort: '-date' } })
 
                 if (status === 200) {
                     posts.value = data
@@ -67,7 +67,7 @@ export default {
     },
     methods: {
         async changePage(page) {
-            const { status, data } = await httpClient.get('articles', { params: { status: "Опубликованно",tags: this.tags, limit: this.size, sort: '-date', page: page } })
+            const { status, data } = await httpClient.get('articles', { params: { status: "Опубликовано",tags: this.tags, limit: this.size, sort: '-date', page: page } })
 
             if (status === 200) {
                 this.posts = data

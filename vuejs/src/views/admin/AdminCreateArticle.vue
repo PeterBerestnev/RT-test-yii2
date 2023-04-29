@@ -38,7 +38,7 @@ export default {
                 text: "",
                 photo: null,
                 tags: null,
-                status: "Не опубликлванно",
+                status: "Не опубликовано",
             }],
         }
     },
@@ -63,7 +63,7 @@ export default {
             this.post.tags = null
             this.post.title = ""
             this.post.text = ""
-            this.post.status = "Не опубликлванно"
+            this.post.status = "Не опубликовано"
         },
         async createArticle() {
             let form_data = new FormData();
@@ -78,6 +78,8 @@ export default {
             }
             if (typeof this.post.status !== "undefined") {
                 form_data.append('status', this.post.status);
+            } else {
+                form_data.append('status', 'Не опубликовано');
             }
             if (typeof this.post.photo !== "undefined" && this.post.photo != null) {
                 form_data.append('photo', this.post.photo);

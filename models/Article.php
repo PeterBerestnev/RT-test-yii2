@@ -4,13 +4,30 @@ namespace app\models;
 use yii\helpers\Url;
 use Yii;
 use yii\mongodb\ActiveRecord;
+use yii\behaviors\TimestampBehavior;
+use MongoDB\BSON\UTCDateTime;
 
 class Article extends ActiveRecord
 {
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+                // если вместо метки времени UNIX используется datetime:
+                'value' => new UTCDateTime((new \DateTime())->getTimestamp() * 1000),
+            ],
+        ];
+    }
+
     public function init() 
     {
         parent::init();
-        $this->status = 'Не опубликованно';
+        $this->status = 'Не опубликовано';
         $this->views = 0;
     }
 
@@ -28,18 +45,17 @@ class Article extends ActiveRecord
 
     public function attributes()
     {
-        return ['_id', 'title', 'text', 'photo', 'tags', 'date', 'status', 'views'];
+        return ['_id', 'title', 'text', 'photo', 'tags', 'date', 'status', 'views', 'created_at', 'updated_at'];
     }
 
     public function rules()
     {
         return [
             [['text','status','title'], 'string'],
+            [['status'],'in', 'range' => ['Не опубликовано', 'Опубликовано']],
             [['title'],'required'],
-            [['date'], 'datetime','format'=>'short'],
             [['photo'], 'image', 'skipOnEmpty' => true, 'extensions' => 'jpg','mimeTypes' => 'image/jpeg'],
             [['tags'],  'each', 'rule' => ['string']],
-            [['views'], 'integer'],
         ];
     }
 }

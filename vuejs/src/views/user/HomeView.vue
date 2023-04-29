@@ -34,13 +34,13 @@ export default {
     const size = ref([])
 
     onMounted(async () => {
-      await httpClient.get('article/get-count', { params: { status:"Опубликованно", tags: "" } }).then(res => {
+      await httpClient.get('article/get-count', { params: { status:"Опубликовано", tags: "" } }).then(res => {
             totalCount.value = res.data
       })
       await httpClient.get('settings/view').then(res => {
         size.value = res.data.count
       })
-      const { status, data } = await httpClient.get("articles", { params: { status: "Опубликованно", limit: size.value, sort: "-date" } })
+      const { status, data } = await httpClient.get("articles", { params: { status: "Опубликовано", limit: size.value, sort: "-date" } })
 
       if (status === 200) {
         posts.value = data
@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     async changePage(page) {
-      const { status, data } = await httpClient.get('articles', { params: { status: "Опубликованно", limit: this.size, sort: '-date', page: page } })
+      const { status, data } = await httpClient.get('articles', { params: { status: "Опубликовано", limit: this.size, sort: '-date', page: page } })
 
       if (status === 200) {
         this.posts = data

@@ -59,7 +59,7 @@ export default {
             }
         },
         async changePage(page) {
-            const { status, data } = await httpClient.get('articles', { params: { status: "", limit: this.size, page: page } })
+            const { status, data } = await httpClient.get('articles', { params: { status: "", limit: this.size, page: page, sort: 'created_at' } })
 
             if (status === 200) {
                 this.articles = data
@@ -80,7 +80,7 @@ export default {
         })
 
         try {
-            const { status, data } = await httpClient.get('articles', { params: { limit: this.size, status: "" } })
+            const { status, data } = await httpClient.get('articles', { params: { limit: this.size, status: "",sort: '-created_at'  } })
             if (status === 200) {
                 this.articles = data
                 this.loaded = true

@@ -27,9 +27,9 @@ class MyUpdateAction extends UpdateAction
         $image = UploadedFile::getInstanceByName('photo');
         $oldImage = $model->photo;
 
-        if ($model->status == 'Опубликованно') {
-            $model->date = Yii::$app->formatter->asDatetime('now', 'short');
-        }
+            if ($model->status == 'Опубликовано' && empty($model->date)) {
+                $model->date = Yii::$app->formatter->asDatetime('now', 'php:Y-m-d H:i:s', 'UTC');
+            }
 
         if ($model->save() === false && !$model->hasErrors()) {
             throw new ServerErrorHttpException('Failed to update the object for unknown reason.');

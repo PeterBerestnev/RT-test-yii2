@@ -1,15 +1,19 @@
 export function getYesterdayDate() {
     const today = new Date();
     let date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + (today.getDate() - 1);
-    const time = today.getHours() + ":" + today.getMinutes();
-    console.log(typeof time)
-    date = date.split('-').reverse()
+    let time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
+    date = date.split('-')
+    time = time.split(':')
     for (let i = 0; i < 3; i++) {
         if (date[i].length < 2) {
             date[i] = '0' + date[i]
         }
+        if(time[i].length < 2){
+            time[i] = '0' + time[i]
+        }
     }
-    date = date.join('.') + ','
+    date = date.join('-') + ' '
+    time = time.join(':')
     
     const dateTime = date + time;
 

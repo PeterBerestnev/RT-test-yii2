@@ -64,7 +64,7 @@ export default {
         })
 
         let dateTime = getYesterdayDate()
-
+        console.log(dateTime)
         try {
             const { status, data } = await httpClient.get('articles', { params: { sort: "-views", status: "", date: dateTime, limit: this.size } })
             if (status === 200) {

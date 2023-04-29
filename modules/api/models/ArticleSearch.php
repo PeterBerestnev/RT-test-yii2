@@ -22,13 +22,21 @@ class ArticleSearch extends Article
     {
         return [
             [['text', 'status', 'title'], 'string'],
-            [['date'], 'datetime','format'=>'short'],
             [['photo'], 'image', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
             [['tags'], 'string'],
             [['views'], 'integer'],
+            [['date'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
             [['limit'], 'integer'],
         ];
     }
+
+    public function validateDateTime($attribute, $params)
+{
+    $timestamp = strtotime($this->$attribute);
+    if ($timestamp === false) {
+        $this->addError($attribute, 'Invalid datetime value');
+    }
+}
 
     /**
      * Creates data provider instance with search query applied
@@ -51,11 +59,6 @@ class ArticleSearch extends Article
         
         if (!$this->validate()) {
             return $dataProvider;
-        }
-
-        if($this->date != null){
-            if($this->date !== Yii::$app->formatter->asDatetime('now', 'short'))
-            str_replace(",",", ",$this->date);
         }
         
         if ($params) {

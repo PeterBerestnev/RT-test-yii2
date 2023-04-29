@@ -31,8 +31,8 @@
             <img v-else class="rounded border image-fluid sl-none" src="../assets/no-photo-svgrepo-com.svg">
         </div>
         <div class="card-footer d-flex flex-column" v-if="isAuth && this.$route.name == 'admin-panel-main' || this.$route.name == 'admin-popular'">
-            <div :class="{ active: post.status == 'Опубликованно', 'text-danger': post.status != 'Опубликованно' }">{{ post.status }}</div>
-            <div v-if="post.status == 'Опубликованно'" >{{ post.date }}</div>
+            <div :class="{ active: post.status == 'Опубликовано', 'text-danger': post.status != 'Опубликовано' }">{{ post.status }}</div>
+            <div v-if="post.status == 'Опубликовано'" >{{ post.date }}</div>
         </div>
     </div>
 </template>

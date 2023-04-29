@@ -45,7 +45,7 @@
                 </div>
                 <div v-show="changeTags">
                     <input ref="tags" v-model="tagString" @blur="setTags" type="text" class="form-control mt-2"
-                        placeholder="Введите тэги разделяя их запятую">
+                        placeholder="Введите тэги разделяя их запятой">
                 </div>
             </div>
         </div>
@@ -67,7 +67,7 @@ export default {
             changeTitle: false,
             tagString: '',
             green: true,
-            options: ["Не опубликованно", "Опубликованно"],
+            options: ["Не опубликовано", "Опубликовано"],
             img: process.env.VUE_APP_IMG_URL
         }
     },
@@ -101,7 +101,6 @@ export default {
             this.changeTags = false
         },
         changeStatusValue(event) {
-
             this.$emit('changeStatusValue', event.target.value)
         },
         createArticle() {
