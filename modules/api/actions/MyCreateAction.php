@@ -38,7 +38,9 @@ class MyCreateAction extends CreateAction
         if ($model->validate()) {
             if(is_object($image)){
                 $model->photo = time() . "_" . uniqid() . '.' . $image->extension;
-                $image->saveAs('img/' . $model->photo);
+                if(!$image->saveAs('img/' . $model->photo)){
+                    $model->addError('photo', 'Failed to save the photo.');
+                }
             }
             if ($model->save()) {
                 $response = Yii::$app->getResponse();

@@ -20,6 +20,7 @@ import { onMounted, ref } from "vue";
 import httpClient from "@/services/http.service"
 import ArticleList from "../../components/ArticleList.vue"
 import Paginator from "../../components/Pagination.vue"
+import { getToastr } from "@/scripts/toastr";
 
 export default {
   name: 'HomeView',
@@ -37,9 +38,14 @@ export default {
       await httpClient.get('article/get-count', { params: { status:"Опубликовано", tags: "" } }).then(res => {
             totalCount.value = res.data
       })
-      await httpClient.get('settings/view').then(res => {
-        size.value = res.data.count
+      try{
+        await httpClient.get('settings/view', {params: {name: "user_page_size"}}).then(res => {
+        size.value = res.data.value
       })
+      } catch(e) {
+        getToastr().error(e.response.data[0].message)
+      }
+      
       const { status, data } = await httpClient.get("articles", { params: { status: "Опубликовано", limit: size.value, sort: "-date" } })
 
       if (status === 200) {

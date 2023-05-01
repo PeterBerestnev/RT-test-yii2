@@ -60,10 +60,10 @@ export default {
     methods: {
         async login() {
             const { success, errors } = await authService.login(this.form)
-            
             if (success) {
                 this.$router.push({ name: 'admin-panel-main' })
             } else {
+                console.log(errors)
                 this.errors = errors
             }
         },

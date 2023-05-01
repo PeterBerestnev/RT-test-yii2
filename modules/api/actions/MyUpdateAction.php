@@ -27,33 +27,34 @@ class MyUpdateAction extends UpdateAction
         $image = UploadedFile::getInstanceByName('photo');
         $oldImage = $model->photo;
 
-            if ($model->status == 'Опубликовано' && empty($model->date)) {
-                $model->date = Yii::$app->formatter->asDatetime('now', 'php:Y-m-d H:i:s', 'UTC');
-            }
+        if ($model->status == 'Опубликовано' && empty($model->date)) {
+            $model->date = Yii::$app->formatter->asDatetime('now', 'php:Y-m-d H:i:s', 'UTC');
+        }
 
         if ($model->save() === false && !$model->hasErrors()) {
             throw new ServerErrorHttpException('Failed to update the object for unknown reason.');
         }
-        if(is_object($image)){
+        if (is_object($image)) {
             $model->photo = $image;
         }
-        
-        if ($model->validate()) {
-           
-            if(is_object($image)){
-                if(isset($oldImage)){
-                    unlink('img/'.$oldImage);
-                }
-                    $model->photo = time() . "_" . uniqid() . '.' . $image->extension;
-                    $image->saveAs('img/' . $model->photo);
-                
-            }
-            if ($model->save()) {
-                return $model;
-            } elseif (!$model->hasErrors()) {
-                throw new ServerErrorHttpException('Failed to create the object for unknown reason.');
-            }
-        } 
 
+        if ($model->validate()) {
+
+            if (is_object($image)) {
+                $model->photo = time() . "_" . uniqid() . '.' . $image->extension;
+                if ($image->saveAs('img/' . $model->photo)) {
+                    if (isset($oldImage)) {
+                        unlink('img/' . $oldImage);
+                    }
+                } else {
+                    $model->addError('photo', 'Failed to save the photo.');
+                }
+            }
+            if ($model->save() === false && !$model->hasErrors()) {
+                throw new ServerErrorHttpException('Failed to update the object for unknown reason.');
+            }
+        }
+
+        return $model;
     }
 }

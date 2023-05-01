@@ -88,10 +88,13 @@ export default {
                 const { status } = await httpClient.post('article/create', form_data, { headers: { "Content-Type": " multipart/form-data" } })
                 if (status == 201) {
                     this.clearTab()
-                    getToastr.success('Запись успешно сохранена')
+                    getToastr().success('Запись успешно сохранена')
                 }
             }
             catch (e) {
+                if(!e.response){
+                    getToastr().error('Ошибка сервера!')
+                }
                 if (e.response.data.status != 401) {
                     e.response.data.forEach(error => {
                         getToastr().error(error.message)

@@ -55,7 +55,7 @@ class Article extends ActiveRecord
             [['status'],'in', 'range' => ['Не опубликовано', 'Опубликовано']],
             [['title'],'required'],
             [['photo'], 'image', 'skipOnEmpty' => true, 'extensions' => 'jpg','mimeTypes' => 'image/jpeg'],
-            [['tags'],  'each', 'rule' => ['string']],
+            [['tags'],  'each', 'rule' => ['match', 'pattern' => '/^[a-zA-Z0-9\s]+$/', 'message' => 'Tags can only contain letters, numbers, and spaces.']],
         ];
     }
 }

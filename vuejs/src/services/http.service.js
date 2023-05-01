@@ -21,10 +21,10 @@ httpClient.interceptors.request.use(authInterceptor);
 
 httpClient.interceptors.response.use(
   response => {
-
     return response;
   },
   error => {
+    
     const originalRequest = error.config;
 
     if (error.config.url === '/auth/refresh-token') {
@@ -41,15 +41,14 @@ httpClient.interceptors.response.use(
         else {
           console.log('Request has been send')
           return new Promise((resolve, reject) => {
-            // Replace the expired token with the new token and retry the original request
             originalRequest.headers["Authorization"] = 'Bearer ' + authService.getToken();
             axios(originalRequest)
               .then(response => {
                 resolve(response);
-                getToastr().success('Запись успешно сохранена')
+                router.go(0)
+                localStorage.setItem('toastrMessage', 'Вы били переавторизованы, последняя операция завершена успешно!');
               })
               .catch(error => {
-                // Display an error notification using toast
                 getToastr().error(error.response.data[0].message);
                 reject(error);
               });
@@ -57,9 +56,8 @@ httpClient.interceptors.response.use(
         }
       })
     }
-
+  
     return Promise.reject(error);
-  }
-);
+  });
 
 export default httpClient;

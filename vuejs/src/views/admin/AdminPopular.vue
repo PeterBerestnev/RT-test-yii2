@@ -36,6 +36,7 @@ import { getYesterdayDate } from "@/scripts/getYesterday"
 import ArticleList from "../../components/ArticleList.vue"
 import Paginator from "../../components/Pagination.vue"
 import Spinner from "../../components/Spinner.vue"
+import { getToastr } from "@/scripts/toastr"
 
 export default {
     name: "admin-popular",
@@ -59,14 +60,18 @@ export default {
             this.totalCount = res.data
         })
 
-        await httpClient.get('settings/view').then(res => {
-            this.size = res.data.count
-        })
-
-        let dateTime = getYesterdayDate()
-        console.log(dateTime)
         try {
-            const { status, data } = await httpClient.get('articles', { params: { sort: "-views", status: "", date: dateTime, limit: this.size } })
+            const { status, data } = await httpClient.get('settings/view', { params: { name: 'admin_page_size' } })
+            if (status === 200) {
+                this.size = data.value
+            }
+        } catch (e) {
+            if (e.response.data.status != 401) {
+                getToastr().error(e.response.data[0].message)
+            }
+        }
+        try {
+            const { status, data } = await httpClient.get('articles', { params: { sort: "-views", status: "", date: getYesterdayDate(), limit: this.size } })
             if (status === 200) {
                 this.articles = data
                 this.loaded = true
@@ -78,17 +83,12 @@ export default {
     },
     methods: {
         async changePage(page) {
-            const { status, data } = await httpClient.get('articles', { params: { status: "", limit: this.size, page: page } })
+            const { status, data } = await httpClient.get('articles', { params: { status: "", limit: this.size,date: getYesterdayDate() ,page: page } })
 
             if (status === 200) {
                 this.articles = data
-                
             }
         },
     },
 }
 </script>
-
-<style>
-
-</style>

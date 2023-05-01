@@ -15,56 +15,92 @@
         </div>
     </div>
     <div class="content">
-        <div class="card col-lg-4 col-sm-12 col-md-6">
-            <div class="card-header d-flex flex-row justify-content-between">
-                <strong>
-                    <h3>Количество статей на странице</h3>
-                </strong>
-                <div class="d-flex align-items-center ms-auto">
-                    <button @click="changeCount" class="btn btn-primary">Сохранить</button>
-                </div>
-            </div>
-            <div class="card-body">
-                <input v-model="count" min="0" type="number" class="form-control" :placeholder="count">
-            </div>
-        </div>
+        <Settings @update="updateUserSide" :title="'Количество статей на стороне пользователя'" :count="userSide"
+            @saveChanges="changeUserCount">
+        </Settings>
+        <Settings @update="updateAdminSide" :title="'Количество статей на стороне администратора'" :count="adminSide"
+            @saveChanges="changeAdminCount">
+        </Settings>
     </div>
 </template>
 
 <script>
-import httpClient from '@/services/http.service';
-import {getToastr} from "../../scripts/toastr"
+import httpClient from "@/services/http.service";
+import Settings from "../../components/Admin/SettingsElement.vue"
+import { getToastr } from "../../scripts/toastr"
 
 export default {
     name: "admin-settings",
     data() {
         return {
-            count: 0,
-            data_id: "",
+            userSide: 0,
+            adminSide: 0,
         }
     },
     methods: {
-        async changeCount() {
-            const toastr = getToastr()
+        async changeUserCount() {
             try {
-                const { status } = await httpClient.post('settings/update', null, { params: { id: this.data_id, count: this.count } })
+                const { status } = await httpClient.post('settings/update', null, { params: { name: 'user_page_size', value: this.userSide } })
                 if (status === 200) {
-                    toastr.success('Изменения успешно внесены')
+                    getToastr().success('Изменения успешно внесены')
                 }
             }
             catch (e) {
-                e.response.data.forEach(error => {
-                    toastr.error(error.message)
-                });  
+                if(!e.response){
+                    getToastr().error('Ошибка сервера!')
+                }
+                if (e.response.data.status != 401) {
+                    getToastr().error(e.response.data[0].message)
+                }
             }
+        },
+        async changeAdminCount() {
+            try {
+                const { status } = await httpClient.post('settings/update', null, { params: { name: 'admin_page_size', value: this.adminSide } })
+                if (status === 200) {
+                    getToastr().success('Изменения успешно внесены')
+                }
+            }
+            catch (e) {
+                if(!e.response){
+                    getToastr().error('Ошибка сервера!')
+                }
+                if (e.response.data.status != 401) {
+                    getToastr().error(e.response.data[0].message)
+                }
+            }
+        },
+        updateUserSide(data) {
+            this.userSide = data
+        },
+        updateAdminSide(data) {
+            this.adminSide = data
         }
     },
     async mounted() {
-        const { status, data } = await httpClient.get('settings/view')
-        if (status === 200) {
-            this.data_id = data._id
-            this.count = data.count
+        try {
+            const { status, data } = await httpClient.get('settings/view', { params: { name: 'user_page_size' } })
+            if (status === 200) {
+                this.userSide = data.value
+            }
+        } catch (e) {
+            if (e.response.data.status != 401) {
+                getToastr().error(e.response.data[0].message)
+            }
         }
+        try {
+            const { status, data } = await httpClient.get('settings/view', { params: { name: 'admin_page_size' } })
+            if (status === 200) {
+                this.adminSide = data.value
+            }
+        } catch (e) {
+            if (e.response.data.status != 401) {
+                getToastr().error(e.response.data[0].message)
+            }
+        }
+    },
+    components: {
+        Settings
     },
 }
 </script>

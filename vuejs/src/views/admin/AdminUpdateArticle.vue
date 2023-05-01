@@ -108,6 +108,9 @@ export default defineComponent({
                 }
             }
             catch (e) {
+                if(!e.response){
+                    getToastr().error('Ошибка сервера!')
+                }
                 if (e.response.data.status != 401) {
                     e.response.data.forEach(error => {
                         getToastr().error(error.message)

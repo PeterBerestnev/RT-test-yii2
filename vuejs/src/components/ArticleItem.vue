@@ -4,7 +4,7 @@
             <div class="d-flex flex-row justify-content-between"
                 v-if="isAuth && this.$route.name == 'admin-panel-main' || this.$route.name == 'admin-popular'">
                 <router-link class="sl-none" :to="{ name: 'admin-update-article', query: { id: post._id } }">
-                    <h2>
+                    <h2 class="text-break">
                         <strong>
                             {{ post.title }}
                         </strong>
@@ -28,7 +28,7 @@
         </div>
         <div class="d-flex flex-column card-body"><!--justify-content-between align-items-center-->
             <img class="rounded border image-fluid sl-none" v-if="post.photo" :src="img+post.photo">
-            <img v-else class="rounded border image-fluid sl-none" src="../assets/no-photo-svgrepo-com.svg">
+            <img style="max-height:270px" v-else class="rounded border image-fluid sl-none" src="../assets/no-photo-svgrepo-com.svg">
         </div>
         <div class="card-footer d-flex flex-column" v-if="isAuth && this.$route.name == 'admin-panel-main' || this.$route.name == 'admin-popular'">
             <div :class="{ active: post.status == 'Опубликовано', 'text-danger': post.status != 'Опубликовано' }">{{ post.status }}</div>

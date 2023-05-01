@@ -49,8 +49,8 @@ export default {
             await httpClient.get('article/get-count', { params: { status: "Опубликовано", tags: props.tags } }).then(res => {
                 totalCount.value = res.data
             })
-            await httpClient.get('settings/view').then(res => {
-                size.value = res.data.count
+            await httpClient.get('settings/view', {params: {name: "user_page_size"}}).then(res => {
+                size.value = res.data.value
             })
 
             if (props.tags) {

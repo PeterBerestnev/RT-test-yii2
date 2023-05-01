@@ -2,7 +2,6 @@
 namespace app\modules\api\controllers;
 
 use Yii;
-use yii\filters\auth\HttpBearerAuth;
 use yii\filters\Cors;
 use yii\rest\Controller;
 use app\models\Settings;
@@ -15,11 +14,12 @@ class SettingsController extends Controller
     public function behaviors()
     {
         $behaviors = parent::behaviors();
-        $auth = $behaviors['authenticator'];
-        $auth['except'] = ['view'];
-        $auth['authMethods'] = [
-            HttpBearerAuth::class
+        $behaviors['authenticator'] = [
+            'class' => \sizeg\jwt\JwtHttpBearerAuth::class,
+            'except' => ['view'],
         ];
+    
+        $auth = $behaviors['authenticator'];
 
         unset($behaviors['authenticator']);
 
@@ -36,23 +36,29 @@ class SettingsController extends Controller
 
         return $behaviors;
     }
-    public function actionView()
-    {
-        $model = Settings::find()->where(["name" => "count"])->one();
+    public function actionView($name)
+    {   
 
-        if ($model === null) {
+        $model = Settings::find()->where(["name" => $name])->one();
+
+        if(!isset($model)){
             $model = new Settings;
-            $model->save();
-            $model = Settings::find()->where(["name" => "count"])->one();
-
-            return $model;
+            $model->name = $name;
+            $model->value = 0;
+            $model->addError('name', 'Администратору необходимо выставить настройки для:'.$name);
         }
 
         return $model;    
     }
-    public function actionUpdate($id)
+    public function actionUpdate($name)
     {
-        $model = Settings::findOne($id);
+        $model = Settings::find()->where(["name" => $name])->one();
+        
+        if(!isset($model)) {
+            $model = new Settings;
+            $model->name = $name;
+            $model->value = 0;
+        }
 
         if ($model->load(Yii::$app->getRequest()->getQueryParams(), '') && $model->save()) {
             return $model;

@@ -2,18 +2,20 @@
     <div class="container">
         <div v-show="loaded" class="card mt-5">
             <div class="card-header d-flex flex-row">
-                <h1 class="me-1">
+                <h1 class="me-1 text-break">
                     <strong>
                         {{ post.title }}
                     </strong>
                 </h1>
-                <div class="fa-solid fa-eye ms-auto d-flex align-self-center">
-                    <div class="ms-1">{{ post.views }}</div>
+                <div class="ms-auto d-flex flex-row">
+                    <img v-if="!post.photo" style="width:45px" class="rounded" src="../../assets/no-photo-svgrepo-com.svg">
+                    <div class="fa-solid fa-eye d-flex align-self-center">
+                        <div class="ms-1">{{ post.views }}</div>
+                    </div>
                 </div>
             </div>
             <div class="card-body">
                 <img v-if="post.photo" class="rounded img-fluid border w-100" :src="img+post.photo">
-                <img v-else class="rounded img-fluid border w-100" src="../../assets/no-photo-svgrepo-com.svg">
                 <div class="mt-3">
                     <span v-html="post.text"> </span>
                 </div>

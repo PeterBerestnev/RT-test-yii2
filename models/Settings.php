@@ -7,12 +7,7 @@ use yii\web\NotFoundHttpException;
 
 class Settings extends ActiveRecord
 {
-    public function init()
-    {
-        parent::init();
-        $this->count = 10;
-        $this->name = 'count';
-    }
+
 
     public static function collectionName()
     {
@@ -21,7 +16,7 @@ class Settings extends ActiveRecord
 
     public function attributes()
     {
-        return ['_id', 'count', 'name'];
+        return ['_id', 'value', 'name'];
     }
 
     /**
@@ -30,12 +25,13 @@ class Settings extends ActiveRecord
     public function rules()
     {
         return [
-            [['count'], 'integer'],
+            [['value'], 'integer'],
+            [['name'], 'unique']
         ];
     }
-    protected function findModel($id)
+    protected function findModel($name)
     {
-        if (($model = $this->findOne($id)) !== null) {
+        if (($model = $this->findOne($name)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

@@ -34,6 +34,7 @@ import httpClient from '@/services/http.service'
 import ArticleList from '../../components/ArticleList.vue'
 import Paginator from "../../components/Pagination.vue"
 import Spinner from "../../components/Spinner.vue"
+import { getToastr } from '@/scripts/toastr'
 
 export default {
     name: "admin-panel-main",
@@ -59,7 +60,7 @@ export default {
             }
         },
         async changePage(page) {
-            const { status, data } = await httpClient.get('articles', { params: { status: "", limit: this.size, page: page, sort: 'created_at' } })
+            const { status, data } = await httpClient.get('articles', { params: { status: "", limit: this.size, page: page, sort: '-created_at' } })
 
             if (status === 200) {
                 this.articles = data
@@ -75,9 +76,16 @@ export default {
         await httpClient.get('article/get-count',{ params: { status:"", tags: ""} }).then(res => {
             this.totalCount = res.data
         })
-        await httpClient.get('settings/view').then(res => {
-            this.size = res.data.count
-        })
+        try {
+            const { status, data } = await httpClient.get('settings/view', { params: { name: 'admin_page_size' } })
+            if (status === 200) {
+                this.size = data.value
+            }
+        } catch (e) {
+            if (e.response.data.status != 401) {
+                getToastr().error(e.response.data[0].message)
+            }
+        }
 
         try {
             const { status, data } = await httpClient.get('articles', { params: { limit: this.size, status: "",sort: '-created_at'  } })

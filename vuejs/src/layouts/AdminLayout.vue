@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import { getToastr } from '@/scripts/toastr';
 import Sidebar from '../components/Admin/Sidebar.vue'
 import AdminNavbar from '../components/Admin/AdminNavbar.vue'
 
@@ -20,6 +21,13 @@ export default {
     components: {
         AdminNavbar,
         Sidebar
+    },
+    mounted() {
+        const toastrMessage = localStorage.getItem('toastrMessage');
+        if (toastrMessage) {
+            getToastr().success(toastrMessage);
+            localStorage.removeItem('toastrMessage');
+        }
     }
 }
 </script>

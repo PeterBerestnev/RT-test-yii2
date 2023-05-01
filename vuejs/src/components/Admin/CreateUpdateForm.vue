@@ -3,10 +3,10 @@
         <div class="card mt-4 col-lg-6">
             <div class="card-header">
                 <div class="d-flex flex-row justify-content-between">
-                    <div @click="focusOnTitle" class="pointer d-flex flex-row align-items-center">
+                    <div @click="focusOnTitle" class="pointer d-flex flex-row align-items-center ">
                         <div class="fa fa-pencil fs-3 me-2"></div>
                         <div v-if="post.title">
-                            <h1>{{ post.title }}</h1>
+                            <h1 class="text-break">{{ post.title }}</h1>
                         </div>
                         <div v-else>
                             <h1> Заголовок</h1>
@@ -26,8 +26,6 @@
                     <img v-if="typeof post.photo == 'string'" :src="img+post.photo" class="img-fluid mb-3 w-100 rounded">
                 </div>
                 <MyDropZone :field="post.photo" @getPhoto="setPhoto"></MyDropZone>
-                <div v-if="photo == null"><strong>Имя файла: </strong>{{ post.photo }}</div>
-                <div v-else><strong>Имя файла: </strong> {{ photo }} </div>
                 <div class="mt-3">
                     <quill-editor ref="myEditor" @textChange="setText" :content="post.text" contentType="html" />
                 </div>
