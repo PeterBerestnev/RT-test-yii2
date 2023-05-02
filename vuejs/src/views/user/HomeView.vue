@@ -35,7 +35,7 @@ export default {
     const size = ref([])
 
     onMounted(async () => {
-      await httpClient.get('article/get-count', { params: { status:"Опубликовано", tags: "" } }).then(res => {
+      await httpClient.get('article/get-count', { params: { status:"Опубликовано"} }).then(res => {
             totalCount.value = res.data
       })
       try{

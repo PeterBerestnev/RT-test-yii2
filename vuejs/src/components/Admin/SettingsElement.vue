@@ -1,5 +1,5 @@
 <template>
-    <div class="card col-lg-4 col-sm-12 col-md-6">
+    <div class="card col-lg-6 col-sm-12 col-md-6">
         <div class="card-header d-flex flex-row justify-content-between">
             <strong>
                 <h3>{{ title }}</h3>

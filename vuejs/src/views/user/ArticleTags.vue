@@ -46,7 +46,7 @@ export default {
 
         onMounted(async () => {
 
-            await httpClient.get('article/get-count', { params: { status: "Опубликовано", tags: props.tags } }).then(res => {
+            await httpClient.get('article/get-count', { params: { status: "Опубликовано", tags: props.tags} }).then(res => {
                 totalCount.value = res.data
             })
             await httpClient.get('settings/view', {params: {name: "user_page_size"}}).then(res => {

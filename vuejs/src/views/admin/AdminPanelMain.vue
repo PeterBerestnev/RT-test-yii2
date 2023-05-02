@@ -73,7 +73,7 @@ export default {
         Spinner
     },
     async mounted() {
-        await httpClient.get('article/get-count',{ params: { status:"", tags: ""} }).then(res => {
+        await httpClient.get('article/get-count').then(res => {
             this.totalCount = res.data
         })
         try {

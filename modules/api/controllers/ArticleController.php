@@ -14,7 +14,9 @@ class ArticleController extends ActiveController
 {
     public $modelClass = Article::class;
 
-    protected function verbs(){}
+    protected function verbs()
+    {
+    }
 
     public function behaviors()
     {
@@ -24,11 +26,11 @@ class ArticleController extends ActiveController
             'class' => \sizeg\jwt\JwtHttpBearerAuth::class,
             'except' => ['view', 'index', 'increment-views', 'get-count'],
         ];
-    
+
         $auth = $behaviors['authenticator'];
-    
+
         unset($behaviors['authenticator']);
-    
+
         $behaviors['cors'] = [
             'class' => Cors::class,
             'cors' => [
@@ -38,9 +40,9 @@ class ArticleController extends ActiveController
                 'Access-Control-Allow-Headers' => ['*'],
             ],
         ];
-    
+
         $behaviors['authenticator'] = $auth;
-    
+
         return $behaviors;
     }
     public function actions()
@@ -87,20 +89,22 @@ class ArticleController extends ActiveController
         return $model;
     }
 
-    public function actionGetCount($status, $tags)
+    public function actionGetCount($status = null, $tags = null, $date = null)
     {
-        if($status == ''){
-            $query = Article::find()->count();
-        } else if ($status != '' && $tags == ''){
-            $query = Article::find()->where(['status' => $status])->count();
-        }else if($status != '' && $tags != ''){
-            $query = Article::find()->andWhere(['status' => $status])->andWhere(['tags' => $tags])->count();
-        }else if ($status == '' && $tags != ''){
-            $query = Article::find()->where(['tags' => $tags])->count();
-        }else if ($status == '' && $tags == ''){
-            $query = Article::find()->count();
+        $query = Article::find();
+    
+        if ($status !== null) {
+            $query->andWhere(['status' => $status]);
         }
-
-        return $query;
+    
+        if ($tags !== null) {
+            $query->andWhere(['tags' => $tags]);
+        }
+    
+        if ($date !== null) {
+            $query->andWhere(['>=', 'date', $date]);
+        }
+    
+        return $query->count();
     }
 }

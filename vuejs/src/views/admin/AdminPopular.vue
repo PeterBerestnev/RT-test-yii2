@@ -56,7 +56,7 @@ export default {
     },
     async mounted() {
             
-        await httpClient.get('article/get-count', { params: { status: "", tags:"" } }).then(res => {
+        await httpClient.get('article/get-count', { params: { date: getYesterdayDate() } }).then(res => {
             this.totalCount = res.data
         })
 
