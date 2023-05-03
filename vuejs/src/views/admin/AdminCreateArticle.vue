@@ -15,7 +15,7 @@
         </div>
     </div>
     <div class="content">
-        <AdminCUForm @getArticle="createArticle" :post="post" @setPhoto="setPhoto" @setTags="setTags"
+        <AdminCUForm @getArticle="createArticle" :editorKey="keyForChild" :post="post" @setPhoto="setPhoto" @setTags="setTags"
             @changeStatusValue="changeStatusValue" @setText="setText" @setTitle="setTitle">
         </AdminCUForm>
     </div>
@@ -33,6 +33,7 @@ export default {
     name: "admin-create-article",
     data() {
         return {
+            keyForChild: 0,
             post: [{
                 title: "",
                 text: "",
@@ -88,6 +89,7 @@ export default {
                 const { status } = await httpClient.post('article/create', form_data, { headers: { "Content-Type": " multipart/form-data" } })
                 if (status == 201) {
                     this.clearTab()
+                    this.keyForChild += 1,
                     getToastr().success('Запись успешно сохранена')
                 }
             }
@@ -102,6 +104,7 @@ export default {
                 }
                 else {
                     this.clearTab()
+                    this.keyForChild += 1
                 }
             }
         },

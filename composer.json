@@ -15,7 +15,8 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=7.4.0",
-        "sizeg/yii2-jwt": "^2.0"
+        "sizeg/yii2-jwt": "^2.0",
+        "vlucas/phpdotenv": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

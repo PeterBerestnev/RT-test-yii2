@@ -23,11 +23,11 @@
             </div>
             <div class="card-body">
                 <div class="d-flex">
-                    <img v-if="typeof post.photo == 'string'" :src="img+post.photo" class="img-fluid mb-3 w-100 rounded">
+                    <img v-if="typeof post.photo == 'string'" :src="img + post.photo" class="img-fluid mb-3 w-100 rounded">
                 </div>
                 <MyDropZone :field="post.photo" @getPhoto="setPhoto"></MyDropZone>
                 <div class="mt-3">
-                    <quill-editor ref="myEditor" @textChange="setText" :content="post.text" contentType="html" />
+                    <quill-editor ref="myEditor" @textChange="setText" :content="post.text" contentType="html" :key="editorKey"/>
                 </div>
                 <select class="form-select mt-3" :required="true" v-on:change="changeStatusValue($event)">
                     <option v-for="option in options" v-bind:value="option.id" :key=option
@@ -56,7 +56,7 @@ import { QuillEditor } from '@vueup/vue-quill';
 
 export default {
     name: "create-update-form",
-    props: ['post'],
+    props: ['post','editorKey'],
     data() {
         return {
             title: '',
@@ -118,6 +118,6 @@ export default {
     components: {
         MyDropZone,
         QuillEditor
-    }
+    },
 }
 </script>

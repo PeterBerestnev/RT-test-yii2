@@ -1,10 +1,10 @@
 if (db.getUser("my_user") == null) { 
     db.createUser({
-        user: "my_user",
-        pwd: "my_password",
+        user: $_ENV['DB_USER'],
+        pwd: $_ENV['DB_PASS'],
         roles: [{
             role: "readWrite",
-            db: "my_database"
+            db: $_ENV['DB_NAME']
         }]
     })
 }

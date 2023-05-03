@@ -16,9 +16,11 @@ const authService = {
             }
         }
         catch (e) {
-            if(!e.response){
+            if(!e.response || e.response.status === 500){
+    
                 return { success: false, errors: [['Ошибка сервера, повторите попытку позже']]}
             }
+            
             return { success: false, errors: e.response.data.errors }
         }
     },

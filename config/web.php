@@ -1,7 +1,6 @@
 <?php
 
 $params = require __DIR__ . '/params.php';
-$db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic',
@@ -15,7 +14,6 @@ $config = [
     'components' => [
         'request' => [
             'class' => \yii\web\Request::class,
-            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'KlihtX8t1RTZSUn5Dr9R8-6RRYfXCi1O',
             'enableCookieValidation' => true,
             'parsers' => [
@@ -33,12 +31,6 @@ $config = [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        'mailer' => [
-            'class' => \yii\symfonymailer\Mailer::class,
-            'viewPath' => '@app/mail',
-            // send all mails to a file by default.
-            'useFileTransport' => true,
-        ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
@@ -50,15 +42,15 @@ $config = [
         ],
         'jwt' => [
             'class' => \sizeg\jwt\Jwt::class,
-            'key' => 'SECRET-KEY',  //typically a long random string
+            'key' => 'SECRET-KEY',
             'jwtValidationData' => \app\modules\api\components\JwtValidationData::class,
         ],
         'mongodb' => [
             'class' => '\yii\mongodb\Connection',
-            'dsn' => 'mongodb://mongodb:27017/my_database',
+            'dsn' => 'mongodb://'.$_ENV['DB_HOST'].'/'.$_ENV['DB_NAME'],
             'options' => [
-                "username" => "my_user",
-                "password" => "my_password"
+                "username" => $_ENV['DB_USER'],
+                "password" => $_ENV['DB_PASS']
             ]
         ],
         'urlManager' => [
@@ -86,7 +78,7 @@ if (YII_ENV_DEV) {
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
-        'allowedIPs' => ['172.19.0.1', '::1'],
+        // 'allowedIPs' => ['172.19.0.1', '::1'],
     ];
 
     $config['bootstrap'][] = 'gii';
@@ -94,7 +86,7 @@ if (YII_ENV_DEV) {
         'class' => 'yii\gii\Module',
 
         // uncomment the following to add your IP if you are not connecting from localhost.
-        'allowedIPs' => ['172.19.0.1', '::1'],
+        // 'allowedIPs' => ['172.19.0.1', '::1'],
     ];
 }
 
