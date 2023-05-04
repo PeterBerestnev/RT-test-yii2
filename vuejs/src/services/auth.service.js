@@ -1,3 +1,4 @@
+import router from "@/router";
 import axios from "axios"
 
 const axiosInstance = axios.create({
@@ -31,6 +32,10 @@ const authService = {
                 this.logout()
                 this.setUser(data)
                 return { success: true }
+            }
+            else{
+                this.logout()
+                router.push('login')
             }
         }
         catch (e) {

@@ -37,8 +37,8 @@
             <div class="card-footer">
                 <div @click="focusOnTags" class="d-flex flex-row align-items-center pointer">
                     <div v-show="!changeTags" class="fa fa-pencil me-2"></div>
-                    <div v-show="!changeTags">Теги:</div>
-                    <div v-show="!changeTags" class="text-primary" v-for="tag in post.tags" :key="tag">#{{ tag }} &nbsp;
+                    <div class="me-1" v-show="!changeTags">Теги:</div>
+                    <div v-show="!changeTags" class="text-primary text-break" v-for="tag in post.tags" :key="tag">#{{ tag }} &nbsp;
                     </div>
                 </div>
                 <div v-show="changeTags">

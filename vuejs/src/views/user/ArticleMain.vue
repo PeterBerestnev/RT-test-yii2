@@ -23,7 +23,7 @@
             <div class="card-footer">
                 <div>Дата: {{ post.date }}</div>
                 <div class="d-flex flex-row">Теги:
-                    <div v-for="tag in post.tags" :key="tag">
+                    <div class="text-break" v-for="tag in post.tags" :key="tag">
                         <router-link :to="{ name: 'article-tags', query: { tags: tag } }">#{{ tag }}</router-link>
                         &nbsp;
                     </div>

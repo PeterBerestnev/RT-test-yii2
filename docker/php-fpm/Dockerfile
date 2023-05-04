@@ -19,6 +19,6 @@ RUN apt-get update \
     zip \
     gd \
     exif \
-    intl
+    intl 
 
 WORKDIR /var/www

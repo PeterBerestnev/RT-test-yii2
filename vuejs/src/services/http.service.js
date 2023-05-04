@@ -49,11 +49,14 @@ httpClient.interceptors.response.use(
                 localStorage.setItem('toastrMessage', 'Вы били переавторизованы, последняя операция завершена успешно!');
               })
               .catch(error => {
+                console.log(error)
                 getToastr().error(error.response.data[0].message);
                 reject(error);
               });
           });
         }
+      }).catch(error => {
+        console.log(error)
       })
     }
   
