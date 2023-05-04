@@ -5,6 +5,7 @@ use Yii;
 use yii\rest\Controller;
 use yii\filters\Cors;
 use app\models\LoginForm;
+use app\models\User;
 
 class UserController extends Controller
 {
@@ -12,6 +13,8 @@ class UserController extends Controller
     public function behaviors()
 {
     $behaviors = parent::behaviors();
+
+
 
     $behaviors['cors'] = [
         'class' => Cors::class,
@@ -24,6 +27,8 @@ class UserController extends Controller
         ],
     ];
     
+ 
+
     return $behaviors;
 }
 
@@ -96,6 +101,13 @@ class UserController extends Controller
             'path' => '/api/user/refresh-token', //endpoint URI for renewing the JWT token using this refresh-token, or deleting refresh-token
         ]));
         return $userRefreshToken;
+    }
+
+    public function actionView($id){
+        $user = User::findIdentity($id);
+
+     
+        return $user->username;
     }
     public function actionRefreshToken()
     {

@@ -1,10 +1,10 @@
-if (db.getUser("my_user") == null) { 
+if (db.getUser("dev_user") == null) { 
     db.createUser({
-        user: "my_user",
-        pwd: "my_password",
+        user: "dev_user",
+        pwd: "wwsasdkasdwqasd",
         roles: [{
             role: "readWrite",
-            db: "my_database"
+            db: "GoodNews"
         }]
     })
 }

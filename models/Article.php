@@ -45,7 +45,7 @@ class Article extends ActiveRecord
 
     public function attributes()
     {
-        return ['_id', 'title', 'text', 'photo', 'tags', 'date', 'status', 'views', 'created_at', 'updated_at'];
+        return ['_id', 'title', 'text', 'photo', 'tags', 'date', 'status', 'views', 'created_at', 'updated_at', 'created_by', 'updated_by'];
     }
 
     public function rules()

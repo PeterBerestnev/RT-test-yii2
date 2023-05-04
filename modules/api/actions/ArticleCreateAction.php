@@ -6,8 +6,9 @@ use yii\helpers\Url;
 use yii\web\ServerErrorHttpException;
 use yii\rest\CreateAction;
 use yii\web\UploadedFile;
+use sizeg\jwt\Jwt;
 
-class MyCreateAction extends CreateAction
+class ArticleCreateAction extends CreateAction
 {
     public function run()
     {
@@ -18,8 +19,9 @@ class MyCreateAction extends CreateAction
         $model = new $this->modelClass([
             'scenario' => $this->scenario,
         ]);
-
+            
         $model->load(Yii::$app->getRequest()->getBodyParams(), '');
+
 
         if ($model->tags != null) {
             $model->tags = json_decode($model->tags, true);
@@ -27,7 +29,7 @@ class MyCreateAction extends CreateAction
 
         $image = UploadedFile::getInstanceByName('photo');
 
-       
+
 
         if ($model->status == 'Опубликовано') {
             $model->date = Yii::$app->formatter->asDatetime('now', 'php:Y-m-d H:i:s', 'UTC');
@@ -36,9 +38,17 @@ class MyCreateAction extends CreateAction
             $model->photo = $image;
         }
         if ($model->validate()) {
-            if(is_object($image)){
+
+            $authHeader = Yii::$app->request->headers->get('Authorization');
+            $authToken = preg_replace('/^Bearer\s/', '', $authHeader);
+            $token = Yii::$app->get('jwt')->getParser()->parse((string) $authToken);
+            $userId = $token->getClaim('uid');
+            $model->created_by = $userId;
+           
+
+            if (is_object($image)) {
                 $model->photo = time() . "_" . uniqid() . '.' . $image->extension;
-                if(!$image->saveAs('img/' . $model->photo)){
+                if (!$image->saveAs('img/' . $model->photo)) {
                     $model->addError('photo', 'Failed to save the photo.');
                 }
             }

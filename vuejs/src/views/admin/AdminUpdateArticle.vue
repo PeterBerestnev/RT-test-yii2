@@ -2,8 +2,14 @@
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
-                <div class="col-sm-6">
+                <div class="col-sm-6" :key="post">
                     <h1 class="m-0">Обновление статьи</h1>
+                    <div class="mt-2">
+                        Создано {{ created_by }}  {{ post.created_at }} 
+                    </div>
+                    <div class="d-flex flex-row">
+                        Последнее изменение: <div class="ms-1 me-1" v-if="updated_by!=''">{{ updated_by }}</div> {{ post.updated_at }} 
+                    </div>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -22,9 +28,10 @@
 </template>
 
 <script>
-import httpClient from "@/services/http.service";
+import httpClient from "@/services/http.service"
 import AdminCUForm from "../../components/Admin/CreateUpdateForm.vue"
-import {getToastr} from "../../scripts/toastr"
+import { getToastr } from "../../scripts/toastr"
+import { convertData } from "../../scripts/convertData"
 import { defineComponent, onMounted, ref } from "vue";
 
 export default defineComponent({
@@ -47,13 +54,20 @@ export default defineComponent({
     setup(props) {
         const post = ref([])
         const stat = ref([])
+        const created_by = ref([])
+        const updated_by = ref([])
+
         onMounted(async () => {
             const { status, data } = await httpClient.get('article/view', { params: { id: props.id } })
-            post.value = data
+            post.value = convertData(data)
             stat.value = status
+       
+            created_by.value = (await httpClient.get('user/view', { params: { id: post.value.created_by } })).data
+            if(post.value.updated_by)
+            updated_by.value = (await httpClient.get('user/view', { params: { id: post.value.updated_by } })).data
         })
         return {
-            post, stat
+            post, stat, created_by, updated_by
         }
     },
     methods: {
@@ -103,12 +117,12 @@ export default defineComponent({
             try {
                 const { status, data } = await httpClient.post('article/update', form_data, { headers: { "Content-Type": " multipart/form-data" }, params: { id: this.id } })
                 if (status == 200) {
-                    this.post = data
+                    this.post = convertData(data)
                     getToastr().success('Запись успешно сохранена')
                 }
             }
             catch (e) {
-                if(!e.response){
+                if (!e.response) {
                     getToastr().error('Ошибка сервера!')
                 }
                 if (e.response.data.status != 401) {

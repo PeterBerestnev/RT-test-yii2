@@ -7,7 +7,7 @@ use yii\rest\UpdateAction;
 use yii\web\ServerErrorHttpException;
 use yii\web\UploadedFile;
 
-class MyUpdateAction extends UpdateAction
+class ArticleUpdateAction extends UpdateAction
 {
     public function run($id)
     {
@@ -39,6 +39,12 @@ class MyUpdateAction extends UpdateAction
         }
 
         if ($model->validate()) {
+
+            $authHeader = Yii::$app->request->headers->get('Authorization');
+            $authToken = preg_replace('/^Bearer\s/', '', $authHeader);
+            $token = Yii::$app->get('jwt')->getParser()->parse((string) $authToken);
+            $userId = $token->getClaim('uid');
+            $model->updated_by = $userId;
 
             if (is_object($image)) {
                 $model->photo = time() . "_" . uniqid() . '.' . $image->extension;

@@ -19,7 +19,7 @@ import { useDropzone } from "vue3-dropzone"
 
 export default {
     props: ['field'],
-    name: "my-drop-zone",
+    name: "drop-zone",
     data() {
         return {
             path: ''

@@ -3,9 +3,9 @@ namespace app\modules\api\controllers;
 
 use Yii;
 use app\models\Article;
-use app\modules\api\actions\MyCreateAction;
-use app\modules\api\actions\MyDeleteAction;
-use app\modules\api\actions\MyUpdateAction;
+use app\modules\api\actions\ArticleCreateAction;
+use app\modules\api\actions\ArticleDeleteAction;
+use app\modules\api\actions\ArticleUpdateAction;
 use yii\filters\Cors;
 use yii\rest\ActiveController;
 use yii\web\ServerErrorHttpException;
@@ -49,19 +49,19 @@ class ArticleController extends ActiveController
     {
         $defaultActions = parent::actions();
         $defaultActions['create'] = [
-            'class' => MyCreateAction::class,
+            'class' => ArticleCreateAction::class,
             'modelClass' => $this->modelClass,
             'checkAccess' => [$this, 'checkAccess'],
             'scenario' => $this->createScenario,
         ];
         $defaultActions['update'] = [
-            'class' => MyUpdateAction::class,
+            'class' => ArticleUpdateAction::class,
             'modelClass' => $this->modelClass,
             'checkAccess' => [$this, 'checkAccess'],
             'scenario' => $this->updateScenario,
         ];
         $defaultActions['delete'] = [
-            'class' => MyDeleteAction::class,
+            'class' => ArticleDeleteAction::class,
             'modelClass' => $this->modelClass,
             'checkAccess' => [$this, 'checkAccess'],
         ];

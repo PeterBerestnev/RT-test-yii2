@@ -6,7 +6,7 @@ use yii\helpers\Url;
 use yii\rest\DeleteAction;
 use yii\web\ServerErrorHttpException;
 
-class MyDeleteAction extends DeleteAction
+class ArticleDeleteAction extends DeleteAction
 {
     /**
      * Deletes a model.

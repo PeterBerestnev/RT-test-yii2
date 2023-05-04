@@ -15,7 +15,7 @@
     </div>
     <section  class="content">
         <div>
-            <ArticleList :posts="articles" @deleteItem="deleteItem">
+            <ArticleList :posts="articles" @deleteItem="deleteItem" :key="articles">
             </ArticleList>
         </div>
             <Paginator v-if="loaded"
@@ -50,7 +50,10 @@ export default {
         async deleteItem(dataToDelete) {
             try {
                 await httpClient.delete('article/delete', { params: { id: dataToDelete } })
-                const { status, data } = await httpClient.get('articles')
+                await httpClient.get('article/get-count').then(res => {
+                    this.totalCount = res.data
+                })
+                const { status, data } = await httpClient.get('articles', { params: { limit: this.size, status: "",sort: '-created_at'  } })
                 if (status === 200) {
                     this.articles = data
                 }

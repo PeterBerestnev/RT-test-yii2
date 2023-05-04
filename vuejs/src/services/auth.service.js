@@ -33,7 +33,7 @@ const authService = {
                 this.setUser(data)
                 return { success: true }
             }
-            else{
+            else if(data.statusCode){ // может вызвать проблемы
                 this.logout()
                 router.push('login')
             }

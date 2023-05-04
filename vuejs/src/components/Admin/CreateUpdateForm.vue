@@ -25,7 +25,7 @@
                 <div class="d-flex">
                     <img v-if="typeof post.photo == 'string'" :src="img + post.photo" class="img-fluid mb-3 w-100 rounded">
                 </div>
-                <MyDropZone :field="post.photo" @getPhoto="setPhoto"></MyDropZone>
+                <DropZone :field="post.photo" @getPhoto="setPhoto"></DropZone>
                 <div class="mt-3">
                     <quill-editor ref="myEditor" @textChange="setText" :content="post.text" contentType="html" :key="editorKey"/>
                 </div>
@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import MyDropZone from '@/components/Admin/MyDropZone.vue';
+import DropZone from '@/components/Admin/DropZone.vue';
 import { QuillEditor } from '@vueup/vue-quill';
 
 export default {
@@ -116,7 +116,7 @@ export default {
         },
     },
     components: {
-        MyDropZone,
+        DropZone,
         QuillEditor
     },
 }
