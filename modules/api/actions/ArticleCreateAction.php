@@ -1,4 +1,5 @@
 <?php
+
 namespace app\modules\api\actions;
 
 use Yii;
@@ -12,40 +13,48 @@ class ArticleCreateAction extends CreateAction
 {
     public function run()
     {
+        // Check access if provided
         if ($this->checkAccess) {
             call_user_func($this->checkAccess, $this->id);
         }
 
+        // Create a new model instance
         $model = new $this->modelClass([
             'scenario' => $this->scenario,
         ]);
-            
+
+        // Load the request body parameters into the model
         $model->load(Yii::$app->getRequest()->getBodyParams(), '');
 
-
+        // Decode tags if provided
         if ($model->tags != null) {
             $model->tags = json_decode($model->tags, true);
         }
 
+        // Get the uploaded image file
         $image = UploadedFile::getInstanceByName('photo');
 
-
-
+        // Set the date if status is "Опубликовано" ("Published" in Russian)
         if ($model->status == 'Опубликовано') {
             $model->date = Yii::$app->formatter->asDatetime('now', 'php:Y-m-d H:i:s', 'UTC');
         }
+
+        // Set the photo attribute if an image was uploaded
         if (is_object($image)) {
             $model->photo = $image;
         }
+
+        // Validate the model
         if ($model->validate()) {
 
+            // Get the user ID from the JWT token
             $authHeader = Yii::$app->request->headers->get('Authorization');
             $authToken = preg_replace('/^Bearer\s/', '', $authHeader);
             $token = Yii::$app->get('jwt')->getParser()->parse((string) $authToken);
             $userId = $token->getClaim('uid');
             $model->created_by = $userId;
-           
 
+            // Save the image file and model
             if (is_object($image)) {
                 $model->photo = time() . "_" . uniqid() . '.' . $image->extension;
                 if (!$image->saveAs('img/' . $model->photo)) {
@@ -53,6 +62,8 @@ class ArticleCreateAction extends CreateAction
                 }
             }
             if ($model->save()) {
+
+                // Set the response status and location header
                 $response = Yii::$app->getResponse();
                 $response->setStatusCode(201);
                 $id = implode(',', $model->getPrimaryKey(true));
@@ -61,6 +72,8 @@ class ArticleCreateAction extends CreateAction
                 throw new ServerErrorHttpException('Failed to create the object for unknown reason.');
             }
         }
+
+        // Return the model
         return $model;
     }
 }

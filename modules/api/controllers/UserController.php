@@ -1,4 +1,5 @@
 <?php
+
 namespace app\modules\api\controllers;
 
 use Yii;
@@ -9,29 +10,26 @@ use app\models\User;
 
 class UserController extends Controller
 {
-
+    // Set up CORS behavior for the controller
     public function behaviors()
-{
-    $behaviors = parent::behaviors();
+    {
+        $behaviors = parent::behaviors();
 
+        $behaviors['cors'] = [
+            'class' => Cors::class,
+            'cors' => [
+                'Origin' => ['http://localhost'],
+                'Access-Control-Request-Method' => ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS'],
+                'Access-Control-Allow-Credentials' => true,
+                'Access-Control-Allow-Origin' => isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '',
+                'Access-Control-Allow-Headers' => ['*'],
+            ],
+        ];
 
+        return $behaviors;
+    }
 
-    $behaviors['cors'] = [
-        'class' => Cors::class,
-        'cors' => [
-            'Origin' => ['http://localhost'],
-            'Access-Control-Request-Method' => ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS'],
-            'Access-Control-Allow-Credentials' => true,
-            'Access-Control-Allow-Origin' => isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '',
-            'Access-Control-Allow-Headers' => ['*'],
-        ],
-    ];
-    
- 
-
-    return $behaviors;
-}
-
+    // Handle user login
     public function actionLogin()
     {
         $model = new LoginForm();
@@ -39,14 +37,19 @@ class UserController extends Controller
         if ($model->load(Yii::$app->request->post(), '') && $model->login()) {
             $user = $model->getUser();
 
+            // Generate a JWT for the user
             $token = $this->generateJwt($user);
 
+            // Generate a refresh token for the user
             $this->generateRefreshToken($user);
 
+            // Return the JWT to the user
             return [
                 'token' => (string) $token,
             ];
         }
+
+        // Return validation errors if login fails
         Yii::$app->response->statusCode = 422;
 
         return [
@@ -54,7 +57,8 @@ class UserController extends Controller
         ];
     }
 
-    private function generateJwt(\app\models\User $user)
+    // Generate a JWT for the given user
+    private function generateJwt(User $user)
     {
         $jwt = Yii::$app->jwt;
         $signer = $jwt->getSigner('HS256');
@@ -63,23 +67,25 @@ class UserController extends Controller
 
         $jwtParams = Yii::$app->params['jwt'];
 
+        // Set the JWT claims and return the token
         return $jwt->getBuilder()
-            // ->issuedBy($jwtParams['issuer'])
-            // ->permittedFor($jwtParams['audience'])
             ->identifiedBy($jwtParams['id'], true)
             ->issuedAt($time)
             ->expiresAt($time + $jwtParams['expire'])
             ->withClaim('uid', (string) $user->_id)
             ->getToken($signer, $key);
     }
+
+    // Generate a refresh token for the given user
     /**
      * @throws yii\base\Exception
      */
-    private function generateRefreshToken(\app\models\User $user, \app\models\User $impersonator = null): \app\modules\api\models\RefreshToken
+    private function generateRefreshToken(User $user, User $impersonator = null): \app\modules\api\models\RefreshToken
     {
+        // Generate a random refresh token string
         $refreshToken = Yii::$app->security->generateRandomString(200);
 
-        // TODO: Don't always regenerate - you could reuse existing one if user already has one with same IP and user agent
+        // Create a new refresh token model
         $userRefreshToken = new \app\modules\api\models\RefreshToken([
             'urf_userID' => (string) $user->_id,
             'urf_token' => $refreshToken,
@@ -87,6 +93,8 @@ class UserController extends Controller
             'urf_user_agent' => Yii::$app->request->userAgent,
             'urf_created' => gmdate('Y-m-d H:i:s'),
         ]);
+
+        // Save the new refresh token to the database
         if (!$userRefreshToken->save()) {
             throw new \yii\web\ServerErrorHttpException('Failed to save the refresh token: ' . $userRefreshToken->getErrorSummary(true));
         }
@@ -98,56 +106,74 @@ class UserController extends Controller
             'httpOnly' => true,
             'sameSite' => 'none',
             'secure' => true,
-            'path' => '/api/user/refresh-token', //endpoint URI for renewing the JWT token using this refresh-token, or deleting refresh-token
+            'path' => '/',
         ]));
+        
         return $userRefreshToken;
     }
 
-    public function actionView($id){
+    public function actionView($id)
+    {
+        // Find user by ID
         $user = User::findIdentity($id);
 
-     
+        // Return username
         return $user->username;
     }
+
     public function actionRefreshToken()
     {
+        // Get refresh token from cookies
+        $refreshToken = Yii::$app->getRequest()->getCookies()->getValue('refresh-token', false);
 
-        $refreshToken = Yii::$app->request->cookies->getValue('refresh-token', false);
+        // Throw exception if refresh token is not found
         if (!$refreshToken) {
-            return new \yii\web\UnauthorizedHttpException('No refresh token found.');
+            throw new \yii\web\UnauthorizedHttpException('No refresh token found.');
         }
+
+        // Find user refresh token by token value
         $userRefreshToken = \app\modules\api\models\RefreshToken::findOne(['urf_token' => $refreshToken]);
 
-        if (Yii::$app->request->getMethod() == 'POST') {
-            // Getting new JWT after it has expired
+        // Generate new JWT if request method is POST
+        if (Yii::$app->getRequest()->getMethod() === 'POST') {
+            // Throw exception if user refresh token is not found
             if (!$userRefreshToken) {
-                return new \yii\web\UnauthorizedHttpException('The refresh token no longer exists.');
+                throw new \yii\web\UnauthorizedHttpException('The refresh token no longer exists.');
             }
 
-            $user = \app\models\User::find() //adapt this to your needs
+            // Find user by user ID in refresh token
+            $user = \app\models\User::find()
                 ->where(['_id' => $userRefreshToken->urf_userID])
                 ->one();
+
+            // Throw exception if user is not found
             if (!$user) {
                 $userRefreshToken->delete();
-                return new \yii\web\UnauthorizedHttpException('The user is inactive.');
+                throw new \yii\web\UnauthorizedHttpException('The user is inactive.');
             }
 
+            // Generate new JWT token
             $token = $this->generateJwt($user);
 
+            // Return response with new token
             return [
                 'status' => 'ok',
                 'token' => (string) $token,
             ];
-
-        } elseif (Yii::$app->request->getMethod() == 'DELETE') {
-            // Logging out
+        }
+        // Delete user refresh token if request method is DELETE
+        elseif (Yii::$app->getRequest()->getMethod() === 'DELETE') {
+            // Throw exception if user refresh token is not deleted successfully
             if ($userRefreshToken && !$userRefreshToken->delete()) {
-                return new \yii\web\ServerErrorHttpException('Failed to delete the refresh token.');
+                throw new \yii\web\ServerErrorHttpException('Failed to delete the refresh token.');
             }
 
+            // Return response with status 'ok'
             return ['status' => 'ok'];
-        } else {
-            return new \yii\web\UnauthorizedHttpException('The user is inactive.');
+        }
+        // Throw exception if request method is neither POST nor DELETE
+        else {
+            throw new \yii\web\UnauthorizedHttpException('The user is inactive.');
         }
     }
 }

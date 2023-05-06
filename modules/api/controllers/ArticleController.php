@@ -14,10 +14,21 @@ class ArticleController extends ActiveController
 {
     public $modelClass = Article::class;
 
+    /**
+     * Return an empty verbs list to disable default RESTful actions.
+     *
+     * @return array
+     */
     protected function verbs()
     {
+        return [];
     }
 
+    /**
+     * Define controller behaviors.
+     *
+     * @return array
+     */
     public function behaviors()
     {
         $behaviors = parent::behaviors();
@@ -45,6 +56,12 @@ class ArticleController extends ActiveController
 
         return $behaviors;
     }
+
+    /**
+     * Define controller actions.
+     *
+     * @return array
+     */
     public function actions()
     {
         $defaultActions = parent::actions();
@@ -77,6 +94,13 @@ class ArticleController extends ActiveController
         return $defaultActions;
     }
 
+    /**
+     * Increment the views count of an article.
+     *
+     * @param mixed $id id of the article to update.
+     * @return Article the updated article.
+     * @throws ServerErrorHttpException if the update failed.
+     */
     public function actionIncrementViews($id)
     {
         $model = Article::findOne($id);
@@ -89,22 +113,32 @@ class ArticleController extends ActiveController
         return $model;
     }
 
+
+    /**
+     * Retrieves the count of articles filtered by status, tags, and date.
+     *
+     * @param string|null $status The status of the articles to filter by.
+     * @param string|null $tags The tags of the articles to filter by.
+     * @param string|null $date The date from which to filter the articles.
+     *
+     * @return int Returns the count of articles that match the specified filters.
+     */
     public function actionGetCount($status = null, $tags = null, $date = null)
     {
         $query = Article::find();
-    
+
         if ($status !== null) {
             $query->andWhere(['status' => $status]);
         }
-    
+
         if ($tags !== null) {
             $query->andWhere(['tags' => $tags]);
         }
-    
+
         if ($date !== null) {
             $query->andWhere(['>=', 'date', $date]);
         }
-    
+
         return $query->count();
     }
 }
