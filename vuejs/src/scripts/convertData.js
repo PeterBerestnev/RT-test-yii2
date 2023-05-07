@@ -1,6 +1,7 @@
 export function convertData(data) {
     data.created_at = convertTime(data.created_at)
     data.updated_at = convertTime(data.updated_at)
+    data.date = convertTime(data.date)
     return data
   }
 

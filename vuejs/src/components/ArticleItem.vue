@@ -39,6 +39,7 @@
     
 <script>
 import authService from '../services/auth.service'
+import {convertData} from '../scripts/convertData'
 
 export default {
     props: {
@@ -57,10 +58,11 @@ export default {
     methods: {
         deleteItem() {
             this.$emit('deleteItem', this.post._id)
-        }
+        },
     },
     mounted() {
         this.isAuth = authService.isLoggedIn()
+        this.date = convertData(this.post)
     }
 }
 </script>

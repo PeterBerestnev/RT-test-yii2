@@ -139,69 +139,76 @@ class ArticleController extends ActiveController
 
 
     public function actionIndex()
-{
-    $request = Yii::$app->getRequest();
-    $status = $request->get('status');
-    $tags = $request->get('tags');
-    $limit = intval($request->get('limit'));
-    $sortParam = $request->get('sort');
-    $page = intval($request->get('page'));
-    $date = $request->get('date');
+    {
+        $request = Yii::$app->getRequest();
+        $status = $request->get('status');
+        $tags = $request->get('tags');
+        $limit = intval($request->get('limit'));
+        $sortParam = $request->get('sort');
+        $page = intval($request->get('page'));
+        $date = $request->get('date');
 
-    $collection = Yii::$app->mongodb->getCollection('article');
+        $collection = Yii::$app->mongodb->getCollection('article');
 
-    $pipeline = [];
+        $pipeline = [];
 
-    if ($status && $tags) {
-        $pipeline[] = ['$match' => ['status' => $status, 'tags' => $tags]];
-    } elseif ($status) {
-        $pipeline[] = ['$match' => ['status' => $status]];
-    } elseif ($tags) {
-        $pipeline[] = ['$match' => ['tags' => $tags]];
-    }
-
-    if ($sortParam) {
-        $sort = explode(',', $sortParam);
-        $sortArray = [];
-        foreach ($sort as $s) {
-            $field = trim($s);
-            if (substr($field, 0, 1) == '-') {
-                $sortArray[substr($field, 1)] = -1;
-            } else {
-                $sortArray[$field] = 1;
-            }
+        if ($status && $tags) {
+            $pipeline[] = ['$match' => ['status' => $status, 'tags' => $tags]];
+        } elseif ($status) {
+            $pipeline[] = ['$match' => ['status' => $status]];
+        } elseif ($tags) {
+            $pipeline[] = ['$match' => ['tags' => $tags]];
         }
-        $pipeline[] = ['$sort' => $sortArray];
-    } else {
-        $pipeline[] = ['$sort' => ['created_at' => -1]];
-    }
 
-    if ($date) {
-        $pipeline[] = ['$unwind' => '$views'];
-        $pipeline[] = [
-            '$match' => [
-                'views' => [
-                    '$gte' => new UTCDateTime((new \DateTime('-1 day'))->getTimestamp() * 1000),
+    
+
+        if ($sortParam) {
+            $sort = explode(',', $sortParam);
+            $sortArray = [];
+            foreach ($sort as $s) {
+                $field = trim($s);
+                if (substr($field, 0, 1) == '-') {
+                    $sortArray[substr($field, 1)] = -1;
+                } else {
+                    $sortArray[$field] = 1;
+                }
+            }
+            $pipeline[] = ['$sort' => $sortArray];
+        } else {
+            $pipeline[] = ['$sort' => ['created_at' => -1]];
+        }
+        if($date) {
+            $pipeline[] = ['$unwind' => '$views'];
+            $pipeline[] = [
+                '$match' => [
+                    'views' => [
+                        '$gte' => new UTCDateTime((new \DateTime('-1 day'))->getTimestamp() * 1000),
+                    ],
                 ],
-            ],
-        ];
-        $pipeline[] = ['$group' => [
-            '_id' => ['$toString' => '$_id'],
-            'title' => ['$first' => '$title'],
-            'text' => ['$first' => '$text'],
-            'views' => ['$sum' => 1],
-            'created_by' => ['$first' => '$created_by'],
-            'updated_by' => ['$first' => '$updated_by'],
-            'created_at' => ['$first' => '$created_at'],
-            'updated_at' => ['$first' => '$updated_at'],
-            'status' => ['$first' => '$status'],
-            'photo' => ['$first' => '$photo'],
-            'tags' => ['$first' => '$tags'],
-            'date' => ['$first' => '$date'],
-        ]];
-        $pipeline[] = ['$project' => [
+            ];
+            $pipeline[] = ['$group' => [
                 '_id' => ['$toString' => '$_id'],
-                'views' => 1,
+                'title' => ['$first' => '$title'],
+                'text' => ['$first' => '$text'],
+                'views' => ['$sum' => 1],
+                'created_by' => ['$first' => '$created_by'],
+                'updated_by' => ['$first' => '$updated_by'],
+                'created_at' => ['$first' => '$created_at'],
+                'updated_at' => ['$first' => '$updated_at'],
+                'status' => ['$first' => '$status'],
+                'photo' => ['$first' => '$photo'],
+                'tags' => ['$first' => '$tags'],
+                'date' => ['$first' => '$date'],
+            ]];
+            $pipeline[] = ['$project' => [
+                '_id' => ['$toString' => '$_id'],
+                'views' => [
+                    '$cond' => [
+                        'if' => ['$eq' => ['$views', null]],
+                        'then' => '$$REMOVE',
+                        'else' => ['$toLong' => '$views']
+                    ]
+                ],
                 'title' => 1,
                 'text' => [
                     '$cond' => [
@@ -230,7 +237,7 @@ class ArticleController extends ActiveController
                     '$cond' => [
                         'if' => ['$eq' => ['$date', null]],
                         'then' => '$$REMOVE',
-                        'else' => '$date'
+                        'else' => ['$toLong' => '$date']
                     ]
                 ],
                 'updated_by' => [
@@ -240,27 +247,37 @@ class ArticleController extends ActiveController
                         'else' => '$updated_by'
                     ]
                 ],
-                'created_at' => 1,
+                'created_at' => ['$toLong' => '$created_at'],
                 'updated_at' => [
                     '$cond' => [
                         'if' => ['$eq' => ['$updated_at', null]],
                         'then' => '$$REMOVE',
-                        'else' => '$updated_at'
+                        'else' => ['$toLong' => '$updated_at']
                     ]
                 ],
-            ]];
+            ]
+        ];
         }
+        
+        $pipeline[] = [
+            '$addFields' => [
+                'created_at' => ['$toLong' => '$created_at'],
+                'updated_at' => [
+                    ['$ifNull' => ['$toLong' => '$updated_at'], 0]
+                ],
+            ]
+        ];
         
         if ($page && $limit) {
             $pipeline[] = ['$skip' => ($page - 1) * $limit];
         }
-        
+            
         if ($limit) {
             $pipeline[] = ['$limit' => $limit];
         }
-        
+            
         $result = $collection->aggregate($pipeline);
-        
+            
         // Return the result as an array
         return $result;
     }
