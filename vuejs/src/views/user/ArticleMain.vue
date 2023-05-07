@@ -65,7 +65,7 @@ export default {
             this.post = data
 
             if (!$cookies.isKey(this.id)) {
-                const { status, data } = await httpClient.post('article/increment-views', null, { params: { id: this.id } })
+                const { status, data } = await httpClient.post('article/add-view', null, { params: { id: this.id } })
 
                 if (status === 200) {
                     $cookies.set(this.id, true)

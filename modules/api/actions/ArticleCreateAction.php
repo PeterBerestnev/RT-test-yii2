@@ -8,6 +8,7 @@ use yii\web\ServerErrorHttpException;
 use yii\rest\CreateAction;
 use yii\web\UploadedFile;
 use sizeg\jwt\Jwt;
+use MongoDB\BSON\UTCDateTime;
 
 class ArticleCreateAction extends CreateAction
 {
@@ -36,7 +37,7 @@ class ArticleCreateAction extends CreateAction
 
         // Set the date if status is "Опубликовано" ("Published" in Russian)
         if ($model->status == 'Опубликовано') {
-            $model->date = Yii::$app->formatter->asDatetime('now', 'php:Y-m-d H:i:s', 'UTC');
+            $model->date = new UTCDateTime((new \DateTime())->getTimestamp() * 1000);
         }
 
         // Set the photo attribute if an image was uploaded

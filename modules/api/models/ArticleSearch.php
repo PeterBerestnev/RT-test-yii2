@@ -5,6 +5,7 @@ namespace app\modules\api\models;
 use app\models\Article;
 use Yii;
 use yii\data\ActiveDataProvider;
+use MongoDB\BSON\UTCDateTime;
 
 /**
  * ArticleSearch represents the model behind the search form for articles.
@@ -81,8 +82,19 @@ class ArticleSearch extends Article
         // Filter query based on search parameters
         if ($params) {
             $query->andFilterWhere(['status' => $this->status])
-                ->andFilterWhere(['tags' => $this->tags])
-                ->andFilterWhere(['>', 'date', $this->date]);
+                ->andFilterWhere(['tags' => $this->tags]);
+                if ($this->date) {
+                    $utcDateTime = new UTCDateTime((new \DateTime())->getTimestamp() * 1000); // создаем объект UTCDateTime
+                    $dateTime = $utcDateTime->toDateTime(); // преобразуем объект UTCDateTime в объект DateTime
+                    $dateTime->modify('-1 day'); // вычитаем один день из объекта DateTime
+                    $utcDateTime = new UTCDateTime($dateTime->getTimestamp() * 1000); // создаем новый объект UTCDateTime на основе измененного объекта DateTime
+                    
+                    $query->andFilterWhere(['>=', 'views', $utcDateTime]);
+                    // $resultViews = array_filter([$utcDateTime], function ($value) use ($utcDateTime) {
+                    //     return $value >= $utcDateTime;
+                    // });
+                    // $query->andFilterWhere(['in', 'views', $resultViews]);
+                }
         }
 
         // Return the data provider instance

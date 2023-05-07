@@ -9,6 +9,7 @@ use app\modules\api\actions\ArticleUpdateAction;
 use yii\filters\Cors;
 use yii\rest\ActiveController;
 use yii\web\ServerErrorHttpException;
+use MongoDB\BSON\UTCDateTime;
 
 class ArticleController extends ActiveController
 {
@@ -35,7 +36,7 @@ class ArticleController extends ActiveController
 
         $behaviors['authenticator'] = [
             'class' => \sizeg\jwt\JwtHttpBearerAuth::class,
-            'except' => ['view', 'index', 'increment-views', 'get-count'],
+            'except' => ['view', 'index', 'add-view', 'get-count'],
         ];
 
         $auth = $behaviors['authenticator'];
@@ -101,15 +102,21 @@ class ArticleController extends ActiveController
      * @return Article the updated article.
      * @throws ServerErrorHttpException if the update failed.
      */
-    public function actionIncrementViews($id)
+    public function actionAddView($id)
     {
         $model = Article::findOne($id);
-        $model->views = $model->views + 1;
+        $utcDateTime = new UTCDateTime((new \DateTime())->getTimestamp() * 1000); // создаем объект UTCDateTime
+        $dateTime = $utcDateTime->toDateTime(); // преобразуем объект UTCDateTime в объект DateTime
+        $dateTime->modify('-2 day'); // вычитаем один день из объекта DateTime
+        $utcDateTime = new UTCDateTime($dateTime->getTimestamp() * 1000); // создаем новый объект UTCDateTime на основе измененного объекта DateTime
 
-        if ($model->save() === false && !$model->hasErrors()) {
+       
+        $model->views = array_merge($model->views, [$utcDateTime]) ;
+        
+        if (!$model->save()) {
             throw new ServerErrorHttpException('Failed to update the object for unknown reason.');
         }
-
+        
         return $model;
     }
 

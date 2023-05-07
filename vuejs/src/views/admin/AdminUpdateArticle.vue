@@ -7,8 +7,8 @@
                     <div class="mt-2">
                         Создано {{ created_by }}  {{ post.created_at }} 
                     </div>
-                    <div class="d-flex flex-row">
-                        Последнее изменение: <div class="ms-1 me-1" v-if="updated_by!=''">{{ updated_by }}</div> {{ post.updated_at }} 
+                    <div class="d-flex flex-row" v-if="post.updated_by != null">
+                        Последнее изменение: {{ updated_by }} {{ post.updated_at }} 
                     </div>
                 </div>
                 <div class="col-sm-6">

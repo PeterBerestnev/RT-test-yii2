@@ -10,6 +10,19 @@ use app\models\User;
 
 class UserController extends Controller
 {
+
+    /**
+     * @SWG\Get(path="/api/user",
+     *     tags={"User"},
+     *     summary="Retrieves the collection of User resources.",
+     *     @SWG\Response(
+     *         response = 200,
+     *         description = "User collection response",
+     *         @SWG\Schema(ref = "#/definitions/User")
+     *     ),
+     * )
+     */
+
     // Set up CORS behavior for the controller
     public function behaviors()
     {

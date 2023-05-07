@@ -22,7 +22,7 @@ class Article extends ActiveRecord
             [
                 'class' => TimestampBehavior::class,
                 'attributes' => [
-                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
                 ],
                 'value' => new UTCDateTime((new \DateTime())->getTimestamp() * 1000),
@@ -38,7 +38,7 @@ class Article extends ActiveRecord
     {
         parent::init();
         $this->status = 'Не опубликовано';
-        $this->views = 0;
+        $this->views = [];
     }
 
     /**

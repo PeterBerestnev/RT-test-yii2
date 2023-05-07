@@ -7,6 +7,7 @@ use yii\helpers\Url;
 use yii\rest\UpdateAction;
 use yii\web\ServerErrorHttpException;
 use yii\web\UploadedFile;
+use MongoDB\BSON\UTCDateTime;
 
 class ArticleUpdateAction extends UpdateAction
 {
@@ -35,7 +36,7 @@ class ArticleUpdateAction extends UpdateAction
 
         // Set the publication date if the model is being published for the first time
         if ($model->status == 'Опубликовано' && empty($model->date)) {
-            $model->date = Yii::$app->formatter->asDatetime('now', 'php:Y-m-d H:i:s', 'UTC');
+            $model->date = new UTCDateTime((new \DateTime())->getTimestamp() * 1000);
         }
 
         // Save the model and check for errors
