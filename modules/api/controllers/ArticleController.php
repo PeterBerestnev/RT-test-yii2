@@ -10,6 +10,9 @@ use yii\filters\Cors;
 use yii\rest\ActiveController;
 use yii\web\ServerErrorHttpException;
 use MongoDB\BSON\UTCDateTime;
+use MongoDB\Client;
+use MongoDB\Collection;
+use MongoDB\BSON\ObjectId;
 
 class ArticleController extends ActiveController
 {
@@ -61,65 +64,207 @@ class ArticleController extends ActiveController
     /**
      * Define controller actions.
      *
-     * @return array
+     * This method defines the actions that this controller supports. It returns an array of action configurations,
+     * where each configuration specifies a different action that this controller handles.
+     *
+     * @return array an array of action configurations.
      */
     public function actions()
     {
+        // Get the default actions supported by the parent class.
         $defaultActions = parent::actions();
+
+        // Add custom configuration for the 'create' action.
         $defaultActions['create'] = [
             'class' => ArticleCreateAction::class,
             'modelClass' => $this->modelClass,
             'checkAccess' => [$this, 'checkAccess'],
             'scenario' => $this->createScenario,
         ];
+
+        // Add custom configuration for the 'update' action.
         $defaultActions['update'] = [
             'class' => ArticleUpdateAction::class,
             'modelClass' => $this->modelClass,
             'checkAccess' => [$this, 'checkAccess'],
             'scenario' => $this->updateScenario,
         ];
+
+        // Add custom configuration for the 'delete' action.
         $defaultActions['delete'] = [
             'class' => ArticleDeleteAction::class,
             'modelClass' => $this->modelClass,
             'checkAccess' => [$this, 'checkAccess'],
         ];
-        $defaultActions['index'] = [
-            'class' => 'yii\rest\IndexAction',
-            'modelClass' => $this->modelClass,
-            'prepareDataProvider' => function () {
-                $searchModel = new \app\modules\api\models\ArticleSearch();
-                return $searchModel->search(Yii::$app->request->queryParams);
-            },
-        ];
 
+        // Remove the 'index' action from the list of supported actions.
+        unset($defaultActions['index']);
+
+        // Return the final array of action configurations.
         return $defaultActions;
     }
 
-    /**
-     * Increment the views count of an article.
+/**
+     * Adds a new view to the specified article.
      *
-     * @param mixed $id id of the article to update.
-     * @return Article the updated article.
-     * @throws ServerErrorHttpException if the update failed.
+     * @param int $id the ID of the article to update.
+     * @return Article the updated article model.
+     * @throws ServerErrorHttpException if the update fails.
      */
     public function actionAddView($id)
     {
+        // Retrieve the article model.
         $model = Article::findOne($id);
-        $utcDateTime = new UTCDateTime((new \DateTime())->getTimestamp() * 1000); // создаем объект UTCDateTime
-        $dateTime = $utcDateTime->toDateTime(); // преобразуем объект UTCDateTime в объект DateTime
-        $dateTime->modify('-2 day'); // вычитаем один день из объекта DateTime
-        $utcDateTime = new UTCDateTime($dateTime->getTimestamp() * 1000); // создаем новый объект UTCDateTime на основе измененного объекта DateTime
 
-       
-        $model->views = array_merge($model->views, [$utcDateTime]) ;
-        
+        // Get the current UTC datetime.
+        $utcDateTime = new UTCDateTime((new \DateTime())->getTimestamp() * 1000);
+
+        // Convert the UTC datetime to a DateTime instance.
+        $dateTime = $utcDateTime->toDateTime();
+
+        // Convert the DateTime instance back to a UTC datetime.
+        $utcDateTime = new UTCDateTime($dateTime->getTimestamp() * 1000); 
+
+        // Add the new view to the article's views array.
+        $model->views = array_merge($model->views, [$utcDateTime]);
+
+        // Save the updated article model.
         if (!$model->save()) {
             throw new ServerErrorHttpException('Failed to update the object for unknown reason.');
         }
-        
+
+        // Return the updated article model.
         return $model;
     }
 
+
+    public function actionIndex()
+{
+    $request = Yii::$app->getRequest();
+    $status = $request->get('status');
+    $tags = $request->get('tags');
+    $limit = intval($request->get('limit'));
+    $sortParam = $request->get('sort');
+    $page = intval($request->get('page'));
+    $date = $request->get('date');
+
+    $collection = Yii::$app->mongodb->getCollection('article');
+
+    $pipeline = [];
+
+    if ($status && $tags) {
+        $pipeline[] = ['$match' => ['status' => $status, 'tags' => $tags]];
+    } elseif ($status) {
+        $pipeline[] = ['$match' => ['status' => $status]];
+    } elseif ($tags) {
+        $pipeline[] = ['$match' => ['tags' => $tags]];
+    }
+
+    if ($sortParam) {
+        $sort = explode(',', $sortParam);
+        $sortArray = [];
+        foreach ($sort as $s) {
+            $field = trim($s);
+            if (substr($field, 0, 1) == '-') {
+                $sortArray[substr($field, 1)] = -1;
+            } else {
+                $sortArray[$field] = 1;
+            }
+        }
+        $pipeline[] = ['$sort' => $sortArray];
+    } else {
+        $pipeline[] = ['$sort' => ['created_at' => -1]];
+    }
+
+    if ($date) {
+        $pipeline[] = ['$unwind' => '$views'];
+        $pipeline[] = [
+            '$match' => [
+                'views' => [
+                    '$gte' => new UTCDateTime((new \DateTime('-1 day'))->getTimestamp() * 1000),
+                ],
+            ],
+        ];
+        $pipeline[] = ['$group' => [
+            '_id' => ['$toString' => '$_id'],
+            'title' => ['$first' => '$title'],
+            'text' => ['$first' => '$text'],
+            'views' => ['$sum' => 1],
+            'created_by' => ['$first' => '$created_by'],
+            'updated_by' => ['$first' => '$updated_by'],
+            'created_at' => ['$first' => '$created_at'],
+            'updated_at' => ['$first' => '$updated_at'],
+            'status' => ['$first' => '$status'],
+            'photo' => ['$first' => '$photo'],
+            'tags' => ['$first' => '$tags'],
+            'date' => ['$first' => '$date'],
+        ]];
+        $pipeline[] = ['$project' => [
+                '_id' => ['$toString' => '$_id'],
+                'views' => 1,
+                'title' => 1,
+                'text' => [
+                    '$cond' => [
+                        'if' => ['$eq' => ['$text', null]],
+                        'then' => '$$REMOVE',
+                        'else' => '$text'
+                    ]
+                ],
+                'status' => 1,
+                'created_by' => 1,
+                'photo' => [
+                    '$cond' => [
+                        'if' => ['$eq' => ['$photo', null]],
+                        'then' => '$$REMOVE',
+                        'else' => '$photo'
+                    ]
+                ],
+                'tags' => [
+                    '$cond' => [
+                        'if' => ['$eq' => ['$tags', null]],
+                        'then' => '$$REMOVE',
+                        'else' => '$tags'
+                    ]
+                ],
+                'date' => [
+                    '$cond' => [
+                        'if' => ['$eq' => ['$date', null]],
+                        'then' => '$$REMOVE',
+                        'else' => '$date'
+                    ]
+                ],
+                'updated_by' => [
+                    '$cond' => [
+                        'if' => ['$eq' => ['$updated_by', null]],
+                        'then' => '$$REMOVE',
+                        'else' => '$updated_by'
+                    ]
+                ],
+                'created_at' => 1,
+                'updated_at' => [
+                    '$cond' => [
+                        'if' => ['$eq' => ['$updated_at', null]],
+                        'then' => '$$REMOVE',
+                        'else' => '$updated_at'
+                    ]
+                ],
+            ]];
+        }
+        
+        if ($page && $limit) {
+            $pipeline[] = ['$skip' => ($page - 1) * $limit];
+        }
+        
+        if ($limit) {
+            $pipeline[] = ['$limit' => $limit];
+        }
+        
+        $result = $collection->aggregate($pipeline);
+        
+        // Return the result as an array
+        return $result;
+    }
+    
 
     /**
      * Retrieves the count of articles filtered by status, tags, and date.
