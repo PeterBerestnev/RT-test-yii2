@@ -8,6 +8,7 @@ use yii\rest\UpdateAction;
 use yii\web\ServerErrorHttpException;
 use yii\web\UploadedFile;
 use MongoDB\BSON\UTCDateTime;
+use MongoDB\BSON\ObjectID;
 
 class ArticleUpdateAction extends UpdateAction
 {
@@ -55,7 +56,7 @@ class ArticleUpdateAction extends UpdateAction
             $authToken = preg_replace('/^Bearer\s/', '', $authHeader);
             $token = Yii::$app->get('jwt')->getParser()->parse((string) $authToken);
             $userId = $token->getClaim('uid');
-            $model->updated_by = $userId;
+            $model->updated_by = new ObjectID($userId);
 
             // Save the uploaded image to disk and update the model's photo attribute
             if (is_object($image)) {

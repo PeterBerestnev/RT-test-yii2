@@ -32,7 +32,7 @@
         </div>
         <div class="card-footer d-flex flex-column" v-if="isAuth && this.$route.name == 'admin-panel-main' || this.$route.name == 'admin-popular'">
             <div :class="{ active: post.status == 'Опубликовано', 'text-danger': post.status != 'Опубликовано' }">{{ post.status }}</div>
-            <div v-if="post.status == 'Опубликовано'" >{{ post.date }}</div>
+            <div v-if="post.status == 'Опубликовано'" >{{ date }}</div>
         </div>
     </div>
 </template>
@@ -52,7 +52,8 @@ export default {
         return {
             isAuth: false,
             errorClass: 'notPublished',
-            img: process.env.VUE_APP_IMG_URL 
+            img: process.env.VUE_APP_IMG_URL ,
+            date: ''
         }
     },
     methods: {
@@ -62,8 +63,15 @@ export default {
     },
     mounted() {
         this.isAuth = authService.isLoggedIn()
-        this.date = convertData(this.post)
-    }
+        this.date = convertData(this.post).date
+    },
+    // watch:{
+    //     post: function(newVal, oldVal){
+    //         if (newVal != oldVal){
+    //             this.date = convertData(this.post).date
+    //         }
+    //     }
+    // }
 }
 </script>
     

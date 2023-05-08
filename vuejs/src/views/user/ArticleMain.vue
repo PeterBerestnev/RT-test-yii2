@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <img v-if="post.photo" class="rounded img-fluid border w-100" :src="img+post.photo">
+                <img v-if="post.photo" class="rounded img-fluid border w-100" :src="img + post.photo">
                 <div class="mt-3">
                     <span v-html="post.text"> </span>
                 </div>
@@ -36,7 +36,7 @@
 <script>
 import Spinner from "../../components/Spinner.vue"
 import httpClient from '@/services/http.service'
-import { inject } from "vue";
+import {convertData} from '../../scripts/convertData'
 
 export default {
     name: "article-main",
@@ -50,25 +50,17 @@ export default {
         return {
             post: [],
             loaded: false,
-            img:process.env.VUE_APP_IMG_URL
+            img: process.env.VUE_APP_IMG_URL
         }
     },
     async mounted() {
-        const $cookies = inject('$cookies');
         const { status, data } = await httpClient.get('article/view', { params: { id: this.id } })
 
         if (status === 200) {
             this.loaded = true
-            this.post = data
+            this.post = convertData(data)
 
-            if (!$cookies.isKey(this.id)) {
-                const { status, data } = await httpClient.post('article/add-view', null, { params: { id: this.id } })
-
-                if (status === 200) {
-                    $cookies.set(this.id, true)
-                    this.post.views = data.views
-                }
-            }
+            await httpClient.post('article/add-view', null, { params: { id: this.id } })
         }
     },
     components: {

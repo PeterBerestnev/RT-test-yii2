@@ -32,7 +32,6 @@
 
 <script>
 import httpClient from "@/services/http.service"
-import { getYesterdayDate } from "@/scripts/getYesterday"
 import ArticleList from "../../components/ArticleList.vue"
 import Paginator from "../../components/Pagination.vue"
 import Spinner from "../../components/Spinner.vue"
@@ -71,7 +70,7 @@ export default {
             }
         }
         try {
-            const { status, data } = await httpClient.get('articles', { params: { sort: "views", status: "", date: getYesterdayDate(), limit: this.size } })
+            const { status, data } = await httpClient.get('articles', { params: { sort: "-views", date: true, limit: this.size } })
             if (status === 200) {
                 this.articles = data
                 this.loaded = true
@@ -83,7 +82,7 @@ export default {
     },
     methods: {
         async changePage(page) {
-            const { status, data } = await httpClient.get('articles', { params: { sort: "views", limit: this.size,date: true ,page: page } })
+            const { status, data } = await httpClient.get('articles', { params: { sort: "-views", limit: this.size,date: true ,page: page } })
 
             if (status === 200) {
                 this.articles = data

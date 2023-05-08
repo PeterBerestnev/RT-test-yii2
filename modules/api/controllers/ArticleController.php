@@ -1,4 +1,5 @@
 <?php
+
 namespace app\modules\api\controllers;
 
 use Yii;
@@ -158,21 +159,6 @@ class ArticleController extends ActiveController
             $pipeline[] = ['$match' => ['tags' => $tags]];
         }
 
-        if ($sortParam) {
-            $sort = explode(',', $sortParam);
-            $sortArray = [];
-            foreach ($sort as $s) {
-                $field = trim($s);
-                if (substr($field, 0, 1) == '-') {
-                    $sortArray[substr($field, 1)] = -1;
-                } else {
-                    $sortArray[$field] = 1;
-                }
-            }
-            $pipeline[] = ['$sort' => $sortArray];
-        } else {
-            $pipeline[] = ['$sort' => ['created_at' => -1]];
-        }
         if ($date) {
             $pipeline[] = ['$unwind' => '$views'];
             $pipeline[] = [
@@ -217,7 +203,7 @@ class ArticleController extends ActiveController
                         ]
                     ],
                     'status' => 1,
-                    'created_by' => 1,
+                    'created_by' => ['$toString' => '$created_by'],
                     'photo' => [
                         '$cond' => [
                             'if' => ['$eq' => ['$photo', null]],
@@ -243,7 +229,7 @@ class ArticleController extends ActiveController
                         '$cond' => [
                             'if' => ['$eq' => ['$updated_by', null]],
                             'then' => '$$REMOVE',
-                            'else' => '$updated_by'
+                            'else' => ['$toString' => '$updated_by']
                         ]
                     ],
                     'created_at' => ['$toLong' => '$created_at'],
@@ -269,7 +255,7 @@ class ArticleController extends ActiveController
                         ]
                     ],
                     'status' => 1,
-                    'created_by' => 1,
+                    'created_by' => ['$toString' => '$created_by'],
                     'photo' => [
                         '$cond' => [
                             'if' => ['$eq' => ['$photo', null]],
@@ -295,7 +281,7 @@ class ArticleController extends ActiveController
                         '$cond' => [
                             'if' => ['$eq' => ['$updated_by', null]],
                             'then' => '$$REMOVE',
-                            'else' => '$updated_by'
+                            'else' => ['$toString' => '$updated_by']
                         ]
                     ],
                     'created_at' => ['$toLong' => '$created_at'],
@@ -310,7 +296,22 @@ class ArticleController extends ActiveController
             ];
         }
 
-
+        if ($sortParam) {
+            $sort = explode(',', $sortParam);
+            $sortArray = [];
+            foreach ($sort as $s) {
+                $field = trim($s);
+                if (substr($field, 0, 1) == '-') {
+                    $sortArray[substr($field, 1)] = -1;
+                } else {
+                    $sortArray[$field] = 1;
+                }
+            }
+            $sortArray['created_at'] = -1; // добавляем сортировку по ID
+            $pipeline[] = ['$sort' => $sortArray];
+        } else {
+            $pipeline[] = ['$sort' => ['created_at' => -1]]; // добавляем сортировку по ID
+        }
 
         if ($page && $limit) {
             $pipeline[] = ['$skip' => ($page - 1) * $limit];

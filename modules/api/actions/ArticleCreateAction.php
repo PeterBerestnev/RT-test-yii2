@@ -9,6 +9,7 @@ use yii\rest\CreateAction;
 use yii\web\UploadedFile;
 use sizeg\jwt\Jwt;
 use MongoDB\BSON\UTCDateTime;
+use MongoDB\BSON\ObjectID;
 
 class ArticleCreateAction extends CreateAction
 {
@@ -53,7 +54,7 @@ class ArticleCreateAction extends CreateAction
             $authToken = preg_replace('/^Bearer\s/', '', $authHeader);
             $token = Yii::$app->get('jwt')->getParser()->parse((string) $authToken);
             $userId = $token->getClaim('uid');
-            $model->created_by = $userId;
+            $model->created_by = new ObjectID($userId);
 
             // Save the image file and model
             if (is_object($image)) {
