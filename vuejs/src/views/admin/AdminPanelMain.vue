@@ -53,7 +53,7 @@ export default {
                 await httpClient.get('article/get-count').then(res => {
                     this.totalCount = res.data
                 })
-                const { status, data } = await httpClient.get('articles', { params: { limit: this.size, status: "",sort: '-created_at'  } })
+                const { status, data } = await httpClient.get('articles', { params: { limit: this.size, sort: '-created_at'  } })
                 if (status === 200) {
                     this.articles = data
                 }
@@ -63,7 +63,7 @@ export default {
             }
         },
         async changePage(page) {
-            const { status, data } = await httpClient.get('articles', { params: { status: "", limit: this.size, page: page, sort: '-created_at' } })
+            const { status, data } = await httpClient.get('articles', { params: { limit: this.size, page: page, sort: '-created_at' } })
 
             if (status === 200) {
                 this.articles = data
@@ -91,7 +91,7 @@ export default {
         }
 
         try {
-            const { status, data } = await httpClient.get('articles', { params: { limit: this.size, status: "",sort: '-created_at'  } })
+            const { status, data } = await httpClient.get('articles', { params: { limit: this.size, sort: '-created_at'  } })
             if (status === 200) {
                 this.articles = data
                 this.loaded = true

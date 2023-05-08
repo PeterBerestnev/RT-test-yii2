@@ -7,7 +7,7 @@
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <li class="nav-item">
-            <routerLink :class="{active: this.$route.path == main}" :to="main" class="nav-link">
+            <routerLink :class="{active: this.$route.name == main}" :to="{name: main}" class="nav-link">
               <i class="nav-icon fa-solid fa-home"></i>
               <p>
                 Главная
@@ -15,7 +15,7 @@
             </routerLink>
           </li>
           <li class="nav-item">
-            <routerLink :class="{active: this.$route.path == popular}" :to="popular" class="nav-link">
+            <routerLink :class="{active: this.$route.name == popular}" :to="{name: popular}" class="nav-link">
               <i class="nav-icon fa-solid fa-fire"></i>
               <p>
                 Популярное
@@ -23,7 +23,7 @@
             </routerLink>
           </li>
           <li class="nav-item">
-            <routerLink :class="{active: this.$route.path == createArticle}" :to="createArticle" class="nav-link">
+            <routerLink :class="{active: this.$route.name == createArticle}" :to="{name: createArticle}" class="nav-link">
               <i class="nav-icon fa-solid fa-pen-to-square"></i>
               <p>
                 Создать статью
@@ -31,7 +31,7 @@
             </routerLink>
           </li>
           <li class="nav-item">
-            <routerLink :class="{active: this.$route.path == options}" :to="options" class="nav-link">
+            <routerLink :class="{active: this.$route.name == options}" :to="{name: options}" class="nav-link">
               <i class="nav-icon fa-solid fa-gear"></i>
               <p>
                 Настройки
@@ -57,10 +57,10 @@ export default {
   name: 'side-bar',
   data(){
     return{
-      main: "/admin",
-      popular: "/adminPopular",
-      createArticle: "/adminCreateArticle",
-      options: "/adminSettings"
+      main: "admin-panel-main",
+      popular: "admin-popular",
+      createArticle: "admin-create-article",
+      options: "admin-settings"
     }
   }
 }

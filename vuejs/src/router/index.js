@@ -9,7 +9,7 @@ const routes = [
     component: () => import('../views/user/HomeView.vue')
   },
   {
-    path: '/adminUpdateArticle',
+    path: '/update',
     name: 'admin-update-article',
     meta: { layout: 'admin', requireAuth: true },
     props: (route) => ({ id: route.query.id }),
@@ -29,13 +29,13 @@ const routes = [
     component: () => import('../views/admin/AdminPanelMain.vue')
   },
   {
-    path: '/adminPopular',
+    path: '/popular',
     name: 'admin-popular',
     meta: { layout: 'admin', requireAuth: true },
     component: () => import('../views/admin/AdminPopular.vue')
   },
   {
-    path: '/adminSettings',
+    path: '/settings',
     name: 'admin-settings',
     meta: { layout: 'admin', requireAuth: true },
     component: () => import('../views/admin/AdminSettings.vue')
@@ -47,13 +47,13 @@ const routes = [
     component: () => import('../views/Login.vue')
   },
   {
-    path: '/adminCreateArticle',
+    path: '/create',
     name: 'admin-create-article',
     meta: { layout: 'admin', requireAuth: true },
     component: () => import('../views/admin/AdminCreateArticle.vue')
   },
   {
-    path: '/articleTags',
+    path: '/article',
     name: 'article-tags',
     meta: { layout: 'main', requireAuth: false },
     props: (route) => ({ tags: route.query.tags }),

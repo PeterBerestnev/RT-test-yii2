@@ -141,25 +141,29 @@ class ArticleController extends ActiveController
 
     public function actionIndex()
     {
-        $request = Yii::$app->getRequest();
-        $status = $request->get('status');
-        $tags = $request->get('tags');
-        $limit = intval($request->get('limit'));
-        $sortParam = $request->get('sort');
-        $page = intval($request->get('page'));
-        $date = $request->get('date');
-        $collection = Yii::$app->mongodb->getCollection('article');
-        $pipeline = [];
-
+        $request = Yii::$app->getRequest(); // Get the current request object
+        $status = $request->get('status'); // Get the 'status' query parameter from the request
+        $tags = $request->get('tags'); // Get the 'tags' query parameter from the request
+        $limit = intval($request->get('limit')); // Get the 'limit' query parameter from the request and convert it to an integer
+        $sortParam = $request->get('sort'); // Get the 'sort' query parameter from the request
+        $page = intval($request->get('page')); // Get the 'page' query parameter from the request and convert it to an integer
+        $pop = $request->get('pop'); // Get the 'pop' query parameter from the request
+        $collection = Yii::$app->mongodb->getCollection('article'); // Get the MongoDB collection for the 'article' model
+        $pipeline = []; // Initialize an empty array to hold the aggregation pipeline
+        
         if ($status && $tags) {
+            // If both 'status' and 'tags' parameters are provided in the request, add a $match stage to the pipeline to filter by both
             $pipeline[] = ['$match' => ['status' => $status, 'tags' => $tags]];
         } elseif ($status) {
+            // If only the 'status' parameter is provided, add a $match stage to the pipeline to filter by it
             $pipeline[] = ['$match' => ['status' => $status]];
         } elseif ($tags) {
+            // If only the 'tags' parameter is provided, add a $match stage to the pipeline to filter by it
             $pipeline[] = ['$match' => ['tags' => $tags]];
         }
-
-        if ($date) {
+        
+        if ($pop) {
+            // If the 'date' parameter is provided, add a series of stages to the pipeline to filter and transform the data accordingly
             $pipeline[] = ['$unwind' => '$views'];
             $pipeline[] = [
                 '$match' => [
@@ -297,55 +301,72 @@ class ArticleController extends ActiveController
         }
 
         if ($sortParam) {
+            // If there is a sort parameter, split it by comma to get an array of fields to sort by
             $sort = explode(',', $sortParam);
+        
+            // Create an empty array to store the fields and sort order
             $sortArray = [];
+        
+            // Loop through each field in the sort parameter array
             foreach ($sort as $s) {
+                // Trim the field to remove any whitespace
                 $field = trim($s);
+        
+                // Check if the field starts with a hyphen to indicate descending order
                 if (substr($field, 0, 1) == '-') {
+                    // If so, add the field to the sort array with a value of -1 to indicate descending order
                     $sortArray[substr($field, 1)] = -1;
                 } else {
+                    // If not, add the field to the sort array with a value of 1 to indicate ascending order
                     $sortArray[$field] = 1;
                 }
             }
-            $sortArray['created_at'] = -1; // добавляем сортировку по ID
+        
+            // Add a default sort field of created_at in descending order
+            $sortArray['created_at'] = -1;
+        
+            // Add the $sort pipeline stage to the pipeline array
             $pipeline[] = ['$sort' => $sortArray];
         } else {
-            $pipeline[] = ['$sort' => ['created_at' => -1]]; // добавляем сортировку по ID
+            // If there is no sort parameter, sort by created_at in descending order
+            $pipeline[] = ['$sort' => ['created_at' => -1]];
         }
-
+        
         if ($page && $limit) {
+            // If pagination parameters are provided, add a $skip pipeline stage to skip the correct number of documents
             $pipeline[] = ['$skip' => ($page - 1) * $limit];
         }
-
+        
         if ($limit) {
+            // If a limit parameter is provided, add a $limit pipeline stage to limit the number of returned documents
             $pipeline[] = ['$limit' => $limit];
         }
-
+        
+        // Run the aggregate query with the constructed pipeline
         $result = $collection->aggregate($pipeline);
 
         // Return the result as an array
         return $result;
     }
 
-
     /**
-     * Retrieves the count of articles filtered by status, tags, and date.
+     * Returns the count of articles in the MongoDB collection that match the given filters.
      *
-     * @param string|null $status The status of the articles to filter by.
-     * @param string|null $tags The tags of the articles to filter by.
-     * @param string|null $date The date from which to filter the articles.
-     *
-     * @return int Returns the count of articles that match the specified filters.
+     * @return int The count of articles.
      */
     public function actionGetCount()
     {
+        // Get the filters from the request parameters
         $request = Yii::$app->getRequest();
         $status = $request->get('status');
         $tags = $request->get('tags');
-        $date = $request->get('date');
+        $pop = $request->get('pop');
+
+        // Get the MongoDB collection and initialize the pipeline
         $collection = Yii::$app->mongodb->getCollection('article');
         $pipeline = [];
-    
+
+        // Add match stage to pipeline based on the given filters
         if ($status && $tags) {
             $pipeline[] = ['$match' => ['status' => $status, 'tags' => $tags]];
         } elseif ($status) {
@@ -353,8 +374,9 @@ class ArticleController extends ActiveController
         } elseif ($tags) {
             $pipeline[] = ['$match' => ['tags' => $tags]];
         }
-    
-        if ($date) {
+
+        // Add date filtering stages to pipeline if date filter is given
+        if ($pop) {
             $pipeline[] = ['$unwind' => '$views'];
             $pipeline[] = [
                 '$match' => [
@@ -367,16 +389,16 @@ class ArticleController extends ActiveController
                 '$group' => [
                     '_id' => ['$toString' => '$_id'],
                 ]
-            ];    
+            ];
         }
-    
+
+        // Add count stage to pipeline
         $pipeline[] = [
             '$count' => 'count'
         ];
-    
+
+        // Execute the pipeline and return the count
         $result = $collection->aggregate($pipeline);
-    
-        // Return the count
         return isset($result[0]['count']) ? $result[0]['count'] : 0;
     }
 }

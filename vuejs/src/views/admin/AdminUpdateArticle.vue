@@ -118,6 +118,7 @@ export default defineComponent({
                 const { status, data } = await httpClient.post('article/update', form_data, { headers: { "Content-Type": " multipart/form-data" }, params: { id: this.id } })
                 if (status == 200) {
                     this.post = convertData(data)
+                    this.updated_by = (await httpClient.get('user/view', { params: { id: this.post.updated_by } })).data
                     getToastr().success('Запись успешно сохранена')
                 }
             }
