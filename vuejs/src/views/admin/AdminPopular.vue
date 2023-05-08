@@ -56,7 +56,7 @@ export default {
     },
     async mounted() {
             
-        await httpClient.get('article/get-count', { params: { date: getYesterdayDate() } }).then(res => {
+        await httpClient.get('article/get-count', { params: { date: true } }).then(res => {
             this.totalCount = res.data
         })
 
@@ -71,7 +71,7 @@ export default {
             }
         }
         try {
-            const { status, data } = await httpClient.get('articles', { params: { sort: "-views", status: "", date: getYesterdayDate(), limit: this.size } })
+            const { status, data } = await httpClient.get('articles', { params: { sort: "views", status: "", date: getYesterdayDate(), limit: this.size } })
             if (status === 200) {
                 this.articles = data
                 this.loaded = true
@@ -83,7 +83,7 @@ export default {
     },
     methods: {
         async changePage(page) {
-            const { status, data } = await httpClient.get('articles', { params: { status: "", limit: this.size,date: getYesterdayDate() ,page: page } })
+            const { status, data } = await httpClient.get('articles', { params: { sort: "views", limit: this.size,date: true ,page: page } })
 
             if (status === 200) {
                 this.articles = data

@@ -104,7 +104,7 @@ class ArticleController extends ActiveController
         return $defaultActions;
     }
 
-/**
+    /**
      * Adds a new view to the specified article.
      *
      * @param int $id the ID of the article to update.
@@ -123,7 +123,7 @@ class ArticleController extends ActiveController
         $dateTime = $utcDateTime->toDateTime();
 
         // Convert the DateTime instance back to a UTC datetime.
-        $utcDateTime = new UTCDateTime($dateTime->getTimestamp() * 1000); 
+        $utcDateTime = new UTCDateTime($dateTime->getTimestamp() * 1000);
 
         // Add the new view to the article's views array.
         $model->views = array_merge($model->views, [$utcDateTime]);
@@ -173,7 +173,7 @@ class ArticleController extends ActiveController
         } else {
             $pipeline[] = ['$sort' => ['created_at' => -1]];
         }
-        if($date) {
+        if ($date) {
             $pipeline[] = ['$unwind' => '$views'];
             $pipeline[] = [
                 '$match' => [
@@ -182,95 +182,150 @@ class ArticleController extends ActiveController
                     ],
                 ],
             ];
-            $pipeline[] = ['$group' => [
-                '_id' => ['$toString' => '$_id'],
-                'title' => ['$first' => '$title'],
-                'text' => ['$first' => '$text'],
-                'views' => ['$sum' => 1],
-                'created_by' => ['$first' => '$created_by'],
-                'updated_by' => ['$first' => '$updated_by'],
-                'created_at' => ['$first' => '$created_at'],
-                'updated_at' => ['$first' => '$updated_at'],
-                'status' => ['$first' => '$status'],
-                'photo' => ['$first' => '$photo'],
-                'tags' => ['$first' => '$tags'],
-                'date' => ['$first' => '$date'],
-            ]];
-            $pipeline[] = ['$project' => [
-                '_id' => ['$toString' => '$_id'],
-                'views' => [
-                    '$cond' => [
-                        'if' => ['$eq' => ['$views', null]],
-                        'then' => '$$REMOVE',
-                        'else' => ['$toLong' => '$views']
+            $pipeline[] = [
+                '$group' => [
+                    '_id' => ['$toString' => '$_id'],
+                    'title' => ['$first' => '$title'],
+                    'text' => ['$first' => '$text'],
+                    'views' => ['$sum' => 1],
+                    'created_by' => ['$first' => '$created_by'],
+                    'updated_by' => ['$first' => '$updated_by'],
+                    'created_at' => ['$first' => '$created_at'],
+                    'updated_at' => ['$first' => '$updated_at'],
+                    'status' => ['$first' => '$status'],
+                    'photo' => ['$first' => '$photo'],
+                    'tags' => ['$first' => '$tags'],
+                    'date' => ['$first' => '$date'],
+                ]
+            ];
+            $pipeline[] = [
+                '$project' => [
+                    '_id' => ['$toString' => '$_id'],
+                    'views' => [
+                        '$cond' => [
+                            'if' => ['$eq' => ['$views', null]],
+                            'then' => '$$REMOVE',
+                            'else' => ['$toLong' => '$views']
+                        ]
+                    ],
+                    'title' => 1,
+                    'text' => [
+                        '$cond' => [
+                            'if' => ['$eq' => ['$text', null]],
+                            'then' => '$$REMOVE',
+                            'else' => '$text'
+                        ]
+                    ],
+                    'status' => 1,
+                    'created_by' => 1,
+                    'photo' => [
+                        '$cond' => [
+                            'if' => ['$eq' => ['$photo', null]],
+                            'then' => '$$REMOVE',
+                            'else' => '$photo'
+                        ]
+                    ],
+                    'tags' => [
+                        '$cond' => [
+                            'if' => ['$eq' => ['$tags', null]],
+                            'then' => '$$REMOVE',
+                            'else' => '$tags'
+                        ]
+                    ],
+                    'date' => [
+                        '$cond' => [
+                            'if' => ['$eq' => ['$date', null]],
+                            'then' => '$$REMOVE',
+                            'else' => ['$toLong' => '$date']
+                        ]
+                    ],
+                    'updated_by' => [
+                        '$cond' => [
+                            'if' => ['$eq' => ['$updated_by', null]],
+                            'then' => '$$REMOVE',
+                            'else' => '$updated_by'
+                        ]
+                    ],
+                    'created_at' => ['$toLong' => '$created_at'],
+                    'updated_at' => [
+                        '$cond' => [
+                            'if' => ['$eq' => ['$updated_at', null]],
+                            'then' => '$$REMOVE',
+                            'else' => ['$toLong' => '$updated_at']
+                        ]
+                    ],
+                ]
+            ];
+        } else {
+            $pipeline[] = [
+                '$project' => [
+                    '_id' => ['$toString' => '$_id'],
+                    'title' => 1,
+                    'text' => [
+                        '$cond' => [
+                            'if' => ['$eq' => ['$text', null]],
+                            'then' => '$$REMOVE',
+                            'else' => '$text'
+                        ]
+                    ],
+                    'status' => 1,
+                    'created_by' => 1,
+                    'photo' => [
+                        '$cond' => [
+                            'if' => ['$eq' => ['$photo', null]],
+                            'then' => '$$REMOVE',
+                            'else' => '$photo'
+                        ]
+                    ],
+                    'tags' => [
+                        '$cond' => [
+                            'if' => ['$eq' => ['$tags', null]],
+                            'then' => '$$REMOVE',
+                            'else' => '$tags'
+                        ]
+                    ],
+                    'date' => [
+                        '$cond' => [
+                            'if' => ['$ifNull' => ['$date', false]],
+                            'then' => ['$toLong' => '$date'],
+                            'else' => '$$REMOVE'
+                        ]
+                    ],
+                    'updated_by' => [
+                        '$cond' => [
+                            'if' => ['$eq' => ['$updated_by', null]],
+                            'then' => '$$REMOVE',
+                            'else' => '$updated_by'
+                        ]
+                    ],
+                    'created_at' => ['$toLong' => '$created_at'],
+                    'updated_at' => [
+                        '$cond' => [
+                            'if' => ['$ifNull' => ['$updated_at', false]],
+                            'then' => ['$toLong' => '$updated_at'],
+                            'else' => '$$REMOVE'
+                        ]
                     ]
-                ],
-                'title' => 1,
-                'text' => [
-                    '$cond' => [
-                        'if' => ['$eq' => ['$text', null]],
-                        'then' => '$$REMOVE',
-                        'else' => '$text'
-                    ]
-                ],
-                'status' => 1,
-                'created_by' => 1,
-                'photo' => [
-                    '$cond' => [
-                        'if' => ['$eq' => ['$photo', null]],
-                        'then' => '$$REMOVE',
-                        'else' => '$photo'
-                    ]
-                ],
-                'tags' => [
-                    '$cond' => [
-                        'if' => ['$eq' => ['$tags', null]],
-                        'then' => '$$REMOVE',
-                        'else' => '$tags'
-                    ]
-                ],
-                'date' => [
-                    '$cond' => [
-                        'if' => ['$eq' => ['$date', null]],
-                        'then' => '$$REMOVE',
-                        'else' => ['$toLong' => '$date']
-                    ]
-                ],
-                'updated_by' => [
-                    '$cond' => [
-                        'if' => ['$eq' => ['$updated_by', null]],
-                        'then' => '$$REMOVE',
-                        'else' => '$updated_by'
-                    ]
-                ],
-                'created_at' => ['$toLong' => '$created_at'],
-                'updated_at' => [
-                    '$cond' => [
-                        'if' => ['$eq' => ['$updated_at', null]],
-                        'then' => '$$REMOVE',
-                        'else' => ['$toLong' => '$updated_at']
-                    ]
-                ],
-            ]
-        ];
+                ]
+            ];
         }
-        
-        
-        
+
+
+
         if ($page && $limit) {
             $pipeline[] = ['$skip' => ($page - 1) * $limit];
         }
-            
+
         if ($limit) {
             $pipeline[] = ['$limit' => $limit];
         }
-            
+
         $result = $collection->aggregate($pipeline);
-            
+
         // Return the result as an array
         return $result;
     }
-    
+
 
     /**
      * Retrieves the count of articles filtered by status, tags, and date.
@@ -281,22 +336,46 @@ class ArticleController extends ActiveController
      *
      * @return int Returns the count of articles that match the specified filters.
      */
-    public function actionGetCount($status = null, $tags = null, $date = null)
+    public function actionGetCount()
     {
-        $query = Article::find();
-
-        if ($status !== null) {
-            $query->andWhere(['status' => $status]);
+        $request = Yii::$app->getRequest();
+        $status = $request->get('status');
+        $tags = $request->get('tags');
+        $date = $request->get('date');
+        $collection = Yii::$app->mongodb->getCollection('article');
+        $pipeline = [];
+    
+        if ($status && $tags) {
+            $pipeline[] = ['$match' => ['status' => $status, 'tags' => $tags]];
+        } elseif ($status) {
+            $pipeline[] = ['$match' => ['status' => $status]];
+        } elseif ($tags) {
+            $pipeline[] = ['$match' => ['tags' => $tags]];
         }
-
-        if ($tags !== null) {
-            $query->andWhere(['tags' => $tags]);
+    
+        if ($date) {
+            $pipeline[] = ['$unwind' => '$views'];
+            $pipeline[] = [
+                '$match' => [
+                    'views' => [
+                        '$gte' => new UTCDateTime((new \DateTime('-1 day'))->getTimestamp() * 1000),
+                    ],
+                ],
+            ];
+            $pipeline[] = [
+                '$group' => [
+                    '_id' => ['$toString' => '$_id'],
+                ]
+            ];    
         }
-
-        if ($date !== null) {
-            $query->andWhere(['>=', 'date', $date]);
-        }
-
-        return $query->count();
+    
+        $pipeline[] = [
+            '$count' => 'count'
+        ];
+    
+        $result = $collection->aggregate($pipeline);
+    
+        // Return the count
+        return isset($result[0]['count']) ? $result[0]['count'] : 0;
     }
 }

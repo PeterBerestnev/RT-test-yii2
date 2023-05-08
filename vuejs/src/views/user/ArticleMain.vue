@@ -9,9 +9,6 @@
                 </h1>
                 <div class="ms-auto d-flex flex-row">
                     <img v-if="!post.photo" style="width:45px" class="rounded" src="../../assets/no-photo-svgrepo-com.svg">
-                    <div class="fa-solid fa-eye d-flex align-self-center">
-                        <div class="ms-1">{{ post.views }}</div>
-                    </div>
                 </div>
             </div>
             <div class="card-body">
