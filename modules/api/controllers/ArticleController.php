@@ -147,9 +147,7 @@ class ArticleController extends ActiveController
         $sortParam = $request->get('sort');
         $page = intval($request->get('page'));
         $date = $request->get('date');
-
         $collection = Yii::$app->mongodb->getCollection('article');
-
         $pipeline = [];
 
         if ($status && $tags) {
@@ -159,8 +157,6 @@ class ArticleController extends ActiveController
         } elseif ($tags) {
             $pipeline[] = ['$match' => ['tags' => $tags]];
         }
-
-    
 
         if ($sortParam) {
             $sort = explode(',', $sortParam);
@@ -259,14 +255,7 @@ class ArticleController extends ActiveController
         ];
         }
         
-        $pipeline[] = [
-            '$addFields' => [
-                'created_at' => ['$toLong' => '$created_at'],
-                'updated_at' => [
-                    ['$ifNull' => ['$toLong' => '$updated_at'], 0]
-                ],
-            ]
-        ];
+        
         
         if ($page && $limit) {
             $pipeline[] = ['$skip' => ($page - 1) * $limit];
