@@ -39,6 +39,11 @@ class Article extends ActiveRecord
         parent::init();
         $this->status = 'Не опубликовано';
         $this->views = [];
+
+        // Create indexes on the MongoDB collection
+        $collection = $this->getCollection();
+        $collection->createIndex(['status' => 1]);
+        $collection->createIndex(['tags' => 1]);
     }
 
     /**

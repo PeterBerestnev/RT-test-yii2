@@ -141,6 +141,7 @@ class ArticleController extends ActiveController
 
     public function actionIndex()
     {
+        
         $request = Yii::$app->getRequest(); // Get the current request object
         $status = $request->get('status'); // Get the 'status' query parameter from the request
         $tags = $request->get('tags'); // Get the 'tags' query parameter from the request
