@@ -284,7 +284,14 @@ class ArticleController extends ActiveController
                     ],
                     'updated_by' => [
                         '$cond' => [
-                            'if' => ['$eq' => ['$updated_by', null]],
+                            'if' => [
+                                '$or' => [
+                                    ['$eq' => ['$updated_by', null]],
+                                    ['$eq' => ['$updated_by', []]],
+                                    ['$eq' => ['$updated_by', '']],
+                                    ['$not' => ['$ifNull' => ['$updated_by', false]]]
+                                ]
+                            ],
                             'then' => '$$REMOVE',
                             'else' => ['$toString' => '$updated_by']
                         ]

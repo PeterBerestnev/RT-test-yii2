@@ -20,6 +20,7 @@ export default {
   name: 'admin-navbar',
   methods: {
     logout() {
+      authService.deleteRefreshToken()
       authService.logout()
     }
   }

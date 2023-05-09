@@ -5,7 +5,7 @@
                 <div class="col-sm-6" :key="post">
                     <h1 class="m-0">Обновление статьи</h1>
                     <div class="mt-2">
-                        Создано {{ created_by }}  {{ post.created_at }} 
+                        Создано: {{ created_by }}  {{ post.created_at }} 
                     </div>
                     <div class="d-flex flex-row" v-if="post.updated_by != null">
                         Последнее изменение: {{ updated_by }} {{ post.updated_at }} 

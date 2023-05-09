@@ -39,11 +39,6 @@ class Article extends ActiveRecord
         parent::init();
         $this->status = 'Не опубликовано';
         $this->views = [];
-
-        // Create indexes on the MongoDB collection
-        $collection = $this->getCollection();
-        $collection->createIndex(['status' => 1]);
-        $collection->createIndex(['tags' => 1]);
     }
 
     /**
@@ -54,7 +49,11 @@ class Article extends ActiveRecord
     {
         parent::afterDelete();
         if ($this->photo) {
-            unlink('img/' . $this->photo);
+            try {
+                unlink('img/' . $this->photo);
+            } catch (\Throwable $e) {
+                Yii::error("Failed to delete photo file: " . $e->getMessage());
+            }
         }
     }
 

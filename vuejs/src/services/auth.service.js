@@ -27,13 +27,13 @@ const authService = {
     },
     async refreshToken() {
         try {
-            const { status, data } = await axiosInstance.post('http://localhost:8080/api/user/refresh-token')
+            const { status, data } = await axiosInstance.post(process.env.VUE_APP_URL + 'api/user/refresh-token')
             if (!data.statusCode  && status === 200) {
                 this.logout()
                 this.setUser(data)
                 return { success: true }
             }
-            else if(data.statusCode){ // может вызвать проблемы
+            else if(data.statusCode){ 
                 this.logout()
                 router.push('login')
             }
@@ -55,6 +55,9 @@ const authService = {
     },
     logout() {
         localStorage.removeItem('ACCESS_TOKEN')
+    },
+    async deleteRefreshToken() {
+        await axiosInstance.delete(process.env.VUE_APP_URL + 'api/user/refresh-token')
     }
 };
 

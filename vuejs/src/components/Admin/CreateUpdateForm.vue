@@ -72,6 +72,7 @@ export default {
     methods: {
         focusOnTitle() {
             this.changeTitle = true
+            this.title = this.post.title
             this.$nextTick(() => {
                 const myRef = this.$refs.text;
                 myRef.focus();
