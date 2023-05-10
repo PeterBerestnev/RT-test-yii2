@@ -11,7 +11,7 @@
 cp .env.example .env
 ~~~
 
-<i>*При изменениее параметров: 'DB_USER', 'DB_PASS', 'DB_NAME' необходимо заменить соответствующие значения в ./migrations/init.js</i>
+_*При изменениее параметров: 'DB_USER', 'DB_PASS', 'DB_NAME' необходимо заменить соответствующие значения в ./migrations/init.js_
 ~~~
 make
 make up
@@ -30,13 +30,16 @@ make rm
 
 ## Документация для API
 
-<h2><strong>Описание</strong></br></h2>
-<h3>Это документация для API нашего приложения. Все эндпоинты начинаются с http://localhost:8080/api/.<h3></br>
-<h2> Документация для работы с коллекцией 'article'</h2>
+## <strong>Описание</strong></h2>
+Это документация для API нашего приложения. Все эндпоинты начинаются с http://localhost:8080/api/.
 
-<strong>Эндпоинт: </strong>/articles</br>
-<strong>Метод: </strong>GET</br>
-<strong>Описание:</strong> Получить список статей в коллекции</br>
+## Документация для работы с коллекцией 'article'
+
+<strong>Эндпоинт: </strong>/articles
+
+<strong>Метод: </strong>GET
+
+<strong>Описание:</strong> Получить список статей в коллекции
 
 <strong>Параметры запроса:</strong>
 <ul>
