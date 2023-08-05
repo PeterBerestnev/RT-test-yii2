@@ -3,6 +3,6 @@
 return [
     'jwt' => [
         'id' => 'UNIQUE-JWT-IDENTIFIER', 
-        'expire' => 60,
+        'expire' => 3600,
     ],
 ];

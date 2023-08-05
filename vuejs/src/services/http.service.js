@@ -20,43 +20,35 @@ const authInterceptor = config => {
 httpClient.interceptors.request.use(authInterceptor);
 
 httpClient.interceptors.response.use(
-  response => {
+  async (response) => {
     return response;
   },
-  error => {
-    
+  async (error) => {
     const originalRequest = error.config;
 
-    if (error.config.url === '/auth/refresh-token') {
+    if (error.config.url === '/auth/refresh') {
       console.log('REDIRECT TO LOGIN');
-      authService.logout()
-      router.push({ name: 'login' })
+      authService.logout();
+      router.push({ name: 'login' });
     }
     if (error.response.status === 401) {
-      authService.refreshToken().then(()=>{
+      try {
+        await authService.refreshToken();
+
         if (!authService.isLoggedIn()) {
-          console.log('some error accured!')
-          router.push({ name: 'login' })
+          console.log('some error occurred!');
+          router.push({ name: 'login' });
+        } else {
+          originalRequest.headers["Authorization"] = 'Bearer ' + authService.getToken();
+          const response = await axios(originalRequest);
+          return response;
         }
-        else {
-          console.log('Request has been send')
-          return new Promise((resolve, reject) => {
-            originalRequest.headers["Authorization"] = 'Bearer ' + authService.getToken();
-            axios(originalRequest)
-              .then(response => {
-                resolve(response);
-                router.go(0)
-                localStorage.setItem('toastrMessage', 'Вы били переавторизованы, последняя операция завершена успешно!');
-              })
-              .catch(error => {
-                getToastr().error(error.response.data[0].message);
-                reject(error);
-              });
-          });
-        }
-      })
+      } catch (error) {
+        getToastr.error(error.response.data[0].message);
+        return Promise.reject(error);
+      }
     }
-  
+
     return Promise.reject(error);
   });
 
